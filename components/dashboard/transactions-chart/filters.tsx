@@ -1,0 +1,44 @@
+import { ColumnFiltersState, Table } from "@tanstack/react-table"
+import { MultiSelectCombobox } from "../table/filter-dropdown"
+import { Button } from "@/components/ui/button"
+import { IconX } from "@tabler/icons-react"
+import { toOptions } from "@/lib/utils"
+import { RangePickerButton } from "@/components/ui/date-picker-button"
+import { DateRange } from "react-day-picker"
+import { Dispatch, SetStateAction } from "react"
+import { dataTagErrorSymbol } from "@tanstack/react-query"
+
+interface TableFiltersProps<TData> {
+  table: Table<TData>
+  columnFilters: ColumnFiltersState,
+  countries: string[]
+  payMethods: string[]
+}
+
+function TransactionsChartFilters<TData>(
+  { table, countries, columnFilters, payMethods }: TableFiltersProps<TData>) {
+  return (
+    <div className="flex gap-2 transition-all">
+      <MultiSelectCombobox
+        table={table}
+        columnId="payMethod"
+        label="Method"
+        options={toOptions(payMethods)}
+      />
+      <MultiSelectCombobox
+        table={table}
+        columnId="country"
+        label="Country"
+        options={toOptions(countries)}
+      />
+      {columnFilters.length > 0 &&
+        <Button onClick={() => { table.resetColumnFilters() }} className="text-sm" size={"sm"} variant={"ghost"}>
+          Reset
+          <IconX size={12} />
+        </Button>
+      }
+    </div>
+  )
+}
+
+export default TransactionsChartFilters
