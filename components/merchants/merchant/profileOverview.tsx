@@ -2,9 +2,10 @@ import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
 import { MerchantFullInfo } from "@/lib/types/merchant"
+import { MerchantProfile } from "@/lib/types/merchat/getMerchantProfile"
 import { IconBrandTelegram, IconBuilding, IconLink, IconMail } from "@tabler/icons-react"
 
-function ProfileOverview({ merchant }: { merchant: MerchantFullInfo }) {
+function ProfileOverview({ merchant }: { merchant: MerchantProfile }) {
   return (
     <Card className="p-5 flex flex-col h-full">
       <div className="flex  flex-col justify-center items-center">
@@ -18,7 +19,7 @@ function ProfileOverview({ merchant }: { merchant: MerchantFullInfo }) {
           <Badge className="dark:bg-green-100 dark:border-green-300 border-green-500 bg-green-400">New</Badge>
         </div>
         <small className="text-muted-foreground text-sm leading-none font-normal">
-          {merchant.businessType} based in {merchant.country?.name}
+          {merchant.businessType} based in {merchant.registeredCountryId}
         </small>
       </div>
       <div className="justify-center items-center flex h-20">

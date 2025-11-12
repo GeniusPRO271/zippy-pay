@@ -36,6 +36,15 @@ export const columns: ColumnDef<BaseTransaction>[] = [
     },
   },
   {
+    accessorKey: "merchantName",
+    header: "Merchant Name",
+    cell: ({ row }) => (
+      <div className="w-50 text-ellipsis overflow-hidden">
+        {row.original.merchantName}
+      </div>
+    ),
+  },
+  {
     accessorKey: "customer",
     header: "Costumer",
     cell: ({ row }) => (
@@ -50,6 +59,15 @@ export const columns: ColumnDef<BaseTransaction>[] = [
     cell: ({ row }) => (
       <div className="w-50 text-ellipsis overflow-hidden">
         {row.original.email}
+      </div>
+    ),
+  },
+  {
+    accessorKey: "provider",
+    header: "Provider",
+    cell: ({ row }) => (
+      <div className="w-50 text-ellipsis overflow-hidden">
+        {row.original.provider}
       </div>
     ),
   },

@@ -4,8 +4,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import ProviderDetailsSheet from "./providerDetailsSheet"
 import { ProviderDetails } from "@/lib/types/provider"
 import { MerchantFullInfo, ProviderInfo } from "@/lib/types/merchant"
+import { MerchantProfile, MerchantProvider } from "@/lib/types/merchat/getMerchantProfile"
+import { CountryProvider } from "@/lib/types/providers/getProvidersByCountry"
 
-function MerchantProviders({ merchant }: { merchant: MerchantFullInfo }) {
+function MerchantProviders({ merchant }: { merchant: MerchantProfile }) {
   return (
     <Card className="flex flex-col flex-1">
       <div className="flex  flex-col justify-center ">
@@ -37,7 +39,7 @@ function MerchantProviders({ merchant }: { merchant: MerchantFullInfo }) {
 }
 
 interface ProviderItemProps {
-  provider: ProviderInfo
+  provider: MerchantProvider
 }
 
 const ProviderItem: React.FC<ProviderItemProps> = ({

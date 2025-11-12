@@ -23,7 +23,7 @@ import {
 import { Button } from "@/components/ui/button"
 import React, { useEffect, useState } from "react"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { IconAdjustmentsHorizontal, IconCirclePlus, IconCirclePlus2 } from "@tabler/icons-react"
+import { IconAdjustmentsHorizontal, IconCirclePlus } from "@tabler/icons-react"
 import { Separator } from "@/components/ui/separator"
 import { useRouter } from "next/navigation"
 

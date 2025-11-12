@@ -1,4 +1,3 @@
-
 import { MonthlyRevenue } from "@/lib/types/transaction"
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { AnalyticChart2 } from "./chart/analyticChart2"
@@ -22,7 +21,7 @@ function AnalyticsCard2(
             }).format(revenue)}
           </p>
           <p className="text-[12px] text-gray-500">
-            +{new Intl.NumberFormat("en-US", {
+            {new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
             }).format(revenueChange)} {" "}

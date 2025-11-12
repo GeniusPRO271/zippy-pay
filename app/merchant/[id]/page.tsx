@@ -3,15 +3,15 @@ import MerchantProviders from "@/components/merchants/merchant/mechantProviders"
 import MerchantProgressOverview from "@/components/merchants/merchant/merchatProgressOverview";
 import ProfileOverview from "@/components/merchants/merchant/profileOverview";
 import TransactionHistory from "@/components/merchants/merchant/transactionHistory";
-import { getMerchantFullInfo } from "@/actions/merchantActions";
+import { getMerchantProfile } from "@/actions/merchant/getProfileAction";
 
 async function MerchantDetail({
   params,
 }: {
   params: { id: string };
 }) {
-  const { id } = params;
-  const merchant = await getMerchantFullInfo(id);
+  const { id } = await params;
+  const merchant = await getMerchantProfile(id);
 
   if (!merchant) {
     notFound();

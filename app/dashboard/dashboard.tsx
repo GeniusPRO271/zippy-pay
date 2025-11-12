@@ -48,6 +48,7 @@ interface DataTableProps<TData, TValue> {
   payMethods: string[]
   dateRange: DateRange | undefined
   dateRangeTrx: DateRange
+  providers: string[]
 }
 
 export function PageDashoard<TData, TValue>({
@@ -56,7 +57,8 @@ export function PageDashoard<TData, TValue>({
   payMethods,
   dateRange,
   dateRangeTrx,
-  countries
+  countries,
+  providers
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
   const [rowSelection, setRowSelection] = React.useState({})
@@ -145,6 +147,7 @@ export function PageDashoard<TData, TValue>({
                 payMethods={payMethods}
                 countries={countries}
                 columnFilters={columnFilters}
+                providers={providers}
               />
             )}
           </div>

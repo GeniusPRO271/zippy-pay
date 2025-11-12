@@ -11,6 +11,12 @@ export const columns: ColumnDef<BaseTransaction>[] = [
     enableGlobalFilter: false,
   },
   {
+    accessorKey: "provider",
+    header: "Provider",
+    filterFn: "arrIncludesSome",
+    enableGlobalFilter: false,
+  },
+  {
     accessorKey: "country",
     header: "Country",
     filterFn: "arrIncludesSome",

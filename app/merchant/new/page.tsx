@@ -1,10 +1,11 @@
-import { getAllCountries, getCountriesWithProviders } from "@/actions/countryActions"
+import { getAllCountriesWithProviders } from "@/actions/provider/getProvidersByCountryAction"
 import CreateMerchantComponentForm from "@/components/merchants/merchant-create/form"
+import { CountryProviders } from "@/lib/types/providers/getProvidersByCountry"
 
 async function CreateMerchantPage() {
-  const { data: countries } = await getCountriesWithProviders()
+  const countriesWithProviders = await getAllCountriesWithProviders() as CountryProviders[]
 
-  console.log("[DEBUG] Countries List: ", countries)
+  console.log("[DEBUG] Countries List: ", countriesWithProviders)
   return (
     <div className="p-5 w-full h-full flex flex-col">
       <div className="items-center justify-between flex mb-2">
@@ -12,9 +13,9 @@ async function CreateMerchantPage() {
           Merchants
         </h1>
       </div>
-      {countries &&
+      {countriesWithProviders &&
         <div className="flex w-full gap-2 justify-center items-start ">
-          <CreateMerchantComponentForm countriesWithProviders={countries} />
+          <CreateMerchantComponentForm countriesWithProviders={countriesWithProviders} />
         </div>
       }
 

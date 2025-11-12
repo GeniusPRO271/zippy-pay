@@ -1,5 +1,7 @@
 export interface BaseTransaction {
   id: string;
+  merchantName: string
+  provider: string
   documentId: string | number;
   quantity: string;
   commerceId: string;

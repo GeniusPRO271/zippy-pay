@@ -6,56 +6,43 @@ import { notFound } from "next/navigation"
 import { getProviderById } from "@/actions/providerActions"
 import { PaymentMethodLimit, ProviderCountryDetail } from "@/lib/types/provider"
 import { CountryWithMethods, ProviderInfo } from "@/lib/types/merchant"
+import { MerchantProvider, MerchantProviderCountry } from "@/lib/types/merchat/getMerchantProfile"
+import { getProviderCountries } from "@/actions/provider/getProviderByCountryAction"
+import { ProviderCountries, ProviderWithCountriesMethods } from "@/lib/types/providers/getProviderByCountry"
 
-async function ProviderDetailsSheet({ children, providerID, providersMerchants }: { children: React.ReactNode, providerID: string, providersMerchants: ProviderInfo }) {
-  const provider = await getProviderById(providerID)
+async function ProviderDetailsSheet({ children, providerID, providersMerchants }: { children: React.ReactNode, providerID: string, providersMerchants: MerchantProvider }) {
+  const provider = await getProviderCountries(providerID)
 
   if (!provider) {
     notFound();
   }
 
-  providersMerchants.countries.forEach((country) => {
-    console.log(
-      `[DEBUG] Method MERCHANT in country: ${country.name} → ${country.paymentMethods
-        .map((m) => m.paymentMethodName)
-        .join(", ")}`
-    );
-  });
-
-  provider.countries.forEach((country) => {
-    console.log(
-      `[DEBUG] Method PROVIDER in country : ${country.countryName} → ${country.paymentMethods
-        .map((m) => m.paymentMethodName)
-        .join(", ")}`
-    );
-  });
-
   provider.countries.forEach((providerCountry) => {
     // Find the matching country in the merchants array
     const merchantCountry = providersMerchants.countries.find((mc) => {
       console.log(
-        `[DEBUG] Comparing Provider country ID: ${providerCountry.countryId} with Merchant country ID: ${mc.id}`
+        `[DEBUG] Comparing Provider country ID: ${providerCountry.name} with Merchant country ID: ${mc.id}`
       );
-      return mc.id === providerCountry.countryId;
+      return mc.id === providerCountry.id;
     });
 
     if (!merchantCountry) {
       console.log(
-        `[DEBUG] No matching merchant country for: ${providerCountry.countryName} (Provider country ID: ${providerCountry.id})`
+        `[DEBUG] No matching merchant country for: ${providerCountry.name} (Provider country ID: ${providerCountry.id})`
       );
       return;
     }
 
     // Compare methods
-    providerCountry.paymentMethods.forEach((providerMethod) => {
-      const merchantMethod = merchantCountry.paymentMethods.find(
-        (m) => m.paymentMethodName === providerMethod.paymentMethodName
+    providerCountry.methods.forEach((providerMethod) => {
+      const merchantMethod = merchantCountry.methods.find(
+        (m) => m.name === providerMethod.name
       );
 
       const existsInMerchant = !!merchantMethod;
 
       console.log(
-        `[DEBUG] Provider method "${providerMethod.paymentMethodName}" `
+        `[DEBUG] Provider method "${providerMethod.name}" `
       );
     });
   });
@@ -70,9 +57,8 @@ async function ProviderDetailsSheet({ children, providerID, providersMerchants }
           <SheetTitle>
             <div className="flex gap-2">
               <h4 className="scroll-m-20 text-2xl font-semibold tracking-tight">
-                {provider.name}
+                {provider.provider.name}
               </h4>
-              <StatusBadge status="connected" statusConfig={STATUS_CONFIG} />
             </div>
           </SheetTitle>
           <SheetDescription>
@@ -80,15 +66,16 @@ async function ProviderDetailsSheet({ children, providerID, providersMerchants }
           </SheetDescription>
           <div className="flex mt-5 gap-5 flex-col">
             {provider.countries.map((country) => {
-              // Find the matching merchant country
               const merchantCountry = providersMerchants.countries.find(
-                (mc) => mc.id === country.countryId
+                (mc) => mc.id === country.id
               );
+
+              if (!merchantCountry) return null; // skip rendering if not found
 
               return (
                 <MethodStatusTable
                   key={country.id}
-                  merchantCountryMethods={merchantCountry} // pass merchant methods or empty array
+                  merchantCountryMethods={merchantCountry}
                   countryMethods={country}
                 />
               );
@@ -96,16 +83,17 @@ async function ProviderDetailsSheet({ children, providerID, providersMerchants }
           </div>
         </SheetHeader>
       </SheetContent>
-    </Sheet>
+    </Sheet >
   )
 }
 
 
-function MethodStatusTable({ countryMethods, merchantCountryMethods }: { countryMethods: ProviderCountryDetail, merchantCountryMethods: CountryWithMethods | undefined }) {
+function MethodStatusTable({ countryMethods, merchantCountryMethods }: { countryMethods: ProviderCountries, merchantCountryMethods: MerchantProviderCountry }) {
+  console.log(countryMethods, merchantCountryMethods)
   return (
     <div>
       <h4 className="scroll-m-20 text-normal font-semibold tracking-tight">
-        {countryMethods.countryName}
+        {countryMethods.name}
       </h4>
       <Table className="mb-4 max-w-[400px]">
         <TableHeader>
@@ -116,14 +104,21 @@ function MethodStatusTable({ countryMethods, merchantCountryMethods }: { country
           </TableRow>
         </TableHeader>
         <TableBody>
-          {countryMethods.paymentMethods.map((method) => {
-            const isConnected = merchantCountryMethods?.paymentMethods.some(
-              (pm) => pm.paymentMethodName === method.paymentMethodName
-            );
+          {countryMethods?.methods?.map((method) => {
+            console.log("Rendering method:", method.name);
+
+            console.log(merchantCountryMethods)
+            const isConnected = merchantCountryMethods?.methods?.some((pm) => {
+              const comparison = pm.name === method.name;
+              console.log(`Comparing ${pm.name} === ${method.name} → ${comparison}`);
+              return comparison;
+            });
+
+            console.log(`Result for ${method.name}: ${isConnected}`);
 
             return (
               <TableRow key={method.id}>
-                <TableCell className="font-medium">{method.paymentMethodName}</TableCell>
+                <TableCell className="font-medium">{method.name}</TableCell>
                 <TableCell>
                   <StatusBadge
                     status={isConnected ? "connected" : "disconnected"}

@@ -1,3 +1,4 @@
+import { CountryProviderMethod, CountryProviders } from "../types/providers/getProvidersByCountry";
 import { BaseTransaction, ChartDataItem, ChartDataWeekly, CountryTransactionSummary, DailyTransactionSummary, FirestoreTimestamp, MonthlyRevenue, RevenueCountry, RevenueEntry } from "../types/transaction";
 
 /**
@@ -844,12 +845,100 @@ export function filterTransactionsByDateRange(
   from: Date,
   to: Date
 ): BaseTransaction[] {
+
+  console.log("DATE RANGE FROM: ", from)
+  console.log("DATE RANGE TO: ", to)
+
   const fromTimestamp = from.getTime();
   const toTimestamp = to.getTime();
 
-  return transactions.filter((transaction) => {
+  console.log("DATE RANGE FROM: ", fromTimestamp)
+  console.log("DATE RANGE TO: ", toTimestamp)
+
+  const transactionsFiltered = transactions.filter((transaction) => {
     const transactionDate = timestampToDate(transaction.dateRequest);
     const timestamp = transactionDate.getTime();
     return timestamp >= fromTimestamp && timestamp <= toTimestamp;
   });
+
+  console.log("DATE RANGE FILTER TRANSACTIONS: ", transactionsFiltered)
+  return transactionsFiltered
+}
+
+/**
+ * Capitalizes the first letter of a string.
+ * @example
+ * capitalizeFirstLetter("banco estado") → "Banco estado"
+ */
+export function capitalizeFirstLetter(str: string): string {
+  if (!str) return str
+  return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+/**
+ * Extracts CountryProviders[] from a list of BaseTransaction
+ * filtering only those inside the [from, to] date range.
+ */
+export function extractCountryProviders(
+  transactions: BaseTransaction[],
+  from: Date,
+  to: Date
+): CountryProviders[] {
+  const fromMs = from.getTime()
+  const toMs = to.getTime()
+
+  const countries = new Map<string, CountryProviders>()
+
+  for (const tx of transactions) {
+    const txDate = timestampToDate(tx.dateRequest)
+    const txMs = txDate.getTime()
+
+    // Filter transactions outside the range
+    if (txMs < fromMs || txMs > toMs) continue
+
+    // `country` is already the ISO code (e.g. "CL", "US", "BR")
+    const isoCode = tx.country.toUpperCase()
+
+    // Create country if not exists
+    if (!countries.has(isoCode)) {
+      countries.set(isoCode, {
+        id: isoCode.toLowerCase(),
+        name: isoCode,
+        isoCode,
+        currencyCode: tx.currency || null,
+        providers: [],
+      })
+    }
+
+    const country = countries.get(isoCode)!
+
+    // Create or find provider
+    const providerId = tx.provider.toLowerCase()
+    let provider = country.providers.find((p) => p.id === providerId)
+    if (!provider) {
+      provider = {
+        id: providerId,
+        name: capitalizeFirstLetter(tx.provider),
+        description: null,
+        methods: [],
+      }
+      country.providers.push(provider)
+    }
+
+    // Create or find method
+    const methodId = tx.payMethod.toLowerCase()
+    if (!provider.methods.some((m) => m.id === methodId)) {
+      const method: CountryProviderMethod = {
+        id: methodId,
+        name: capitalizeFirstLetter(tx.payMethod),
+        code: methodId,
+        minLimit: null,
+        maxLimit: null,
+        config: null,
+      }
+      provider.methods.push(method)
+    }
+  }
+
+  return Array.from(countries.values())
 }

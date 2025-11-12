@@ -13,12 +13,19 @@ interface TableFiltersProps<TData> {
   columnFilters: ColumnFiltersState,
   countries: string[]
   payMethods: string[]
+  providers: string[]
 }
 
 function TransactionsChartFilters<TData>(
-  { table, countries, columnFilters, payMethods }: TableFiltersProps<TData>) {
+  { table, countries, columnFilters, payMethods, providers }: TableFiltersProps<TData>) {
   return (
     <div className="flex gap-2 transition-all">
+      <MultiSelectCombobox
+        table={table}
+        columnId="provider"
+        label="Provider"
+        options={toOptions(providers)}
+      />
       <MultiSelectCombobox
         table={table}
         columnId="payMethod"

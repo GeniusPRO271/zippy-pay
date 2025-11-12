@@ -13,11 +13,11 @@ import {
 } from "@/components/ui/field"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { PopoverMultiSelect } from "./multiSelect"
-import { CountryWithProviders } from "@/lib/types/country"
+import { CountryProviders } from "@/lib/types/providers/getProvidersByCountry"
 
 
 interface CountryProviderSelectorProps<TFormValues extends FieldValues> {
-  countries: CountryWithProviders[]
+  countries: CountryProviders[]
   control: Control<TFormValues>
   setValue: UseFormSetValue<TFormValues>
   watch: UseFormWatch<TFormValues>
@@ -30,7 +30,7 @@ export function CountryProviderSelector<TFormValues extends FieldValues>({
 }: CountryProviderSelectorProps<TFormValues>) {
 
   const providers = watch("providers" as Path<TFormValues>) as any[] || []
-
+  console.log("Countries:", countries)
   return (
     <Card className="w-full sm:max-w-lg max-h-[462.75px] overflow-scroll scrollbar-hidden">
       <CardHeader>
@@ -42,23 +42,23 @@ export function CountryProviderSelector<TFormValues extends FieldValues>({
       <CardContent>
         <FieldGroup>
           {countries.map((country, countryIndex) => {
-            const providerEntry = providers.find((p) => p?.countryName === country.countryName)
+            const providerEntry = providers.find((p) => p?.countryName === country.name)
             const selectedProviderId = providerEntry?.providerId || ""
 
             return (
-              <FieldSet key={country.countryName} className="mb-4">
-                <FieldLabel>{country.countryName}</FieldLabel>
+              <FieldSet key={country.name} className="mb-4">
+                <FieldLabel>{country.name}</FieldLabel>
                 <FieldDescription>
-                  Providers we support in {country.countryName}. You can only select one provider at a time.
+                  Providers we support in {country.name}. You can only select one provider at a time.
                 </FieldDescription>
 
                 <RadioGroup
                   value={selectedProviderId}
                   onValueChange={(val) => {
-                    const existingIndex = providers.findIndex((p) => p?.countryName === country.countryName)
+                    const existingIndex = providers.findIndex((p) => p?.countryName === country.name)
 
                     const newProvider = {
-                      countryName: country.countryName,
+                      countryName: country.name,
                       providerId: val,
                       paymentMethodIds: [],
                     }
@@ -74,26 +74,26 @@ export function CountryProviderSelector<TFormValues extends FieldValues>({
                   }}
                 >
                   {country.providers.map((provider) => (
-                    <Field key={provider.providerId} orientation="horizontal" className="flex">
+                    <Field key={provider.id} orientation="horizontal" className="flex">
                       <div className="flex items-center justify-center gap-2 w-full">
                         <RadioGroupItem
-                          value={provider.providerId}
-                          id={`${provider.providerId}-${countryIndex}`}
+                          value={provider.id}
+                          id={`${provider.id}-${countryIndex}`}
                         />
                         <FieldContent>
                           <PopoverMultiSelect
-                            label={provider.providerName}
+                            label={provider.name}
                             options={provider.methods.map((m) => ({
                               value: m.id,
                               label: m.name,
                             }))}
                             value={
-                              selectedProviderId === provider.providerId
+                              selectedProviderId === provider.id
                                 ? providerEntry?.paymentMethodIds || []
                                 : []
                             }
                             onChange={(methods) => {
-                              const existingIndex = providers.findIndex((p) => p?.countryName === country.countryName)
+                              const existingIndex = providers.findIndex((p) => p?.countryName === country.name)
 
                               if (existingIndex >= 0) {
                                 const updatedProviders = [...providers]
@@ -104,7 +104,7 @@ export function CountryProviderSelector<TFormValues extends FieldValues>({
                                 setValue("providers" as Path<TFormValues>, updatedProviders as any)
                               }
                             }}
-                            disabled={selectedProviderId !== provider.providerId}
+                            disabled={selectedProviderId !== provider.id}
                             resetKey={selectedProviderId}
                           />
                         </FieldContent>

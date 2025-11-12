@@ -12,10 +12,11 @@ import { CountryProviderSelector } from "./countryProviderSelector"
 import { Controller, useForm } from "react-hook-form"
 import z from "zod"
 import { PopoverMultiSelect } from "./country-dropdown"
-import { CountryWithProviders } from "@/lib/types/country"
-import { createMerchant } from "@/actions/merchantActions"
+import { CountryProviders } from "@/lib/types/providers/getProvidersByCountry"
+import { useCreateMerchant } from "@/lib/hooks/merchant/createMerchantAction"
+import { Spinner } from "@/components/ui/spinner"
 
-function CreateMerchantComponentForm({ countriesWithProviders }: { countriesWithProviders: CountryWithProviders[] }) {
+function CreateMerchantComponentForm({ countriesWithProviders }: { countriesWithProviders: CountryProviders[] }) {
 
   const form = useForm<CreateMerchantFormType>({
     resolver: zodResolver(CreateMerchantForm),
@@ -27,10 +28,12 @@ function CreateMerchantComponentForm({ countriesWithProviders }: { countriesWith
   })
 
   const selectedCountryIds = form.watch("countries.countryIds")
-  const filterCountries = countriesWithProviders.filter((c) => selectedCountryIds.includes(c.countryId))
+  const filterCountries = countriesWithProviders.filter((c) => selectedCountryIds.includes(c.id))
+  const { mutate, isPending } = useCreateMerchant();
 
   async function onSubmit(data: z.infer<typeof CreateMerchantForm>) {
-    await createMerchant(data)
+    mutate(data)
+
   }
 
   return (
@@ -125,8 +128,8 @@ function CreateMerchantComponentForm({ countriesWithProviders }: { countriesWith
                       field={field}
                       fieldState={fieldState}
                       options={countriesWithProviders.map((c) => ({
-                        value: c.countryId,
-                        label: c.countryName
+                        value: c.id,
+                        label: c.name
                       }))}
                       label="Providers Countries"
                     />
@@ -159,7 +162,11 @@ function CreateMerchantComponentForm({ countriesWithProviders }: { countriesWith
             type="button"
             onClick={form.handleSubmit(onSubmit)}
           >
-            Submit
+            {isPending ? <>
+              <Spinner />
+              Creating
+            </> :
+              "Submit"}
           </Button>
         </CardFooter>
       </Card>

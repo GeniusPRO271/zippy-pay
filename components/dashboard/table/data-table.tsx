@@ -46,7 +46,8 @@ export function DataTable<TData, TValue>({
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
-      commerceReqId: false
+      commerceReqId: false,
+      merchantName: false
     })
   const [rowSelection, setRowSelection] = React.useState({})
 

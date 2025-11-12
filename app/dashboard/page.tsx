@@ -12,7 +12,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import PageDashoard from "./dashboard"
 import { columns } from "@/components/dashboard/transactions-chart/columns"
-import { convertTransactionsToCurrency, getTransactionDateRange } from "@/lib/analytics/utils"
+import { convertTransactionsToCurrency, filterTransactionsByDateRange, getTransactionDateRange } from "@/lib/analytics/utils"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -21,6 +21,8 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { EmptyState } from "./empty-state"
 import { Spinner } from "@/components/ui/spinner"
+import ReportForm from "@/components/reports/reportForm"
+import ReportsTable from "@/components/reports/reportsTable"
 
 export function Page() {
   const [isLoading, setIsLoading] = React.useState(false)
@@ -36,6 +38,21 @@ export function Page() {
 
   const [transactions, setTransactions] = React.useState<BaseTransaction[]>([])
 
+  const transactionsDateFiltered = React.useMemo(() => {
+    if (!transactions?.length) return [];
+
+    console.log("HAS TRANSACTIONS")
+    const { from, to } = filters.dateRange || {};
+    console.log("CHECKING DATERANGE")
+    if (!from || !to) {
+      console.log("FAILED DATE RANGE")
+      return transactions;
+    }
+
+    console.log("APPLIYING DATE RANGE FILTER")
+    return filterTransactionsByDateRange(transactions, from, to);
+  }, [transactions, filters]);
+
   const transactionsUSD = React.useMemo(
     () => {
       if (transactions.length === 0) return []
@@ -48,6 +65,22 @@ export function Page() {
     () => {
       if (transactions.length === 0) return []
       return Array.from(new Set(transactions.map((t) => t.country).filter(Boolean)))
+    },
+    [transactions]
+  )
+
+  const providers = React.useMemo(
+    () => {
+      if (transactions.length === 0) return []
+      return Array.from(new Set(transactions.map((t) => t.provider).filter(Boolean)))
+    },
+    [transactions]
+  )
+
+  const merchantNames = React.useMemo(
+    () => {
+      if (transactions.length === 0) return []
+      return Array.from(new Set(transactions.map((t) => t.merchantName).filter(Boolean)))
     },
     [transactions]
   )
@@ -67,7 +100,6 @@ export function Page() {
       const { from, to } = getTransactionDateRange(transactions)
       if (from && to) {
         setFilters((prev) => {
-          // Only update if dates actually changed
           if (prev.dateRangeTrx.from?.getTime() !== from.getTime() ||
             prev.dateRangeTrx.to?.getTime() !== to.getTime()) {
             return { ...prev, dateRangeTrx: { from, to } }
@@ -165,11 +197,16 @@ export function Page() {
                   payMethods={payMethods}
                   dateRange={filters.dateRange}
                   dateRangeTrx={filters.dateRangeTrx}
+                  providers={providers}
                 />
               </TabsContent>
 
               <TabsContent value="analytics">Analytics content here.</TabsContent>
-              <TabsContent value="reports">Reports content here.</TabsContent>
+              <TabsContent value="reports">
+                <div className="flex justify-center items-center">
+                  <ReportsTable transactions={transactionsDateFiltered} merchantsNames={merchantNames} />
+                </div>
+              </TabsContent>
             </Tabs>
           </div>
         )

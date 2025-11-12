@@ -9,8 +9,10 @@ import { Merchant, MerchantWithCountry } from "@/lib/types/merchant"
 import StatusBadge from "@/components/dashboard/table/statusBadge"
 import { STATUS_CONFIG } from "./statusConfig"
 import { useRouter } from "next/navigation";
+import { MerchantBasic } from "@/lib/types/merchat/getMerchants"
+import { useDownloadReport } from "@/hooks/useDownloadReport"
 
-export const columns: ColumnDef<MerchantWithCountry>[] = [
+export const columns: ColumnDef<MerchantBasic>[] = [
   // {
   //   enableGlobalFilter: false,
   //   id: "select",
@@ -81,23 +83,23 @@ export const columns: ColumnDef<MerchantWithCountry>[] = [
     cell: ({ row }) => {
       return (
         <div className="text-ellipsis overflow-hidden">
-          {row.original.country.name}
+          {row.original.registeredCountry.name}
         </div>
       )
     },
   },
-  {
-    enableGlobalFilter: false,
-    accessorKey: "date",
-    enableHiding: false,
-    header: "Registration Date",
-    cell: ({ row }) => (
-      <div>
-        {format(row.original.createdAt, "dd MMM, yyyy ")}
-      </div>
-    )
-
-  },
+  // {
+  //   enableGlobalFilter: false,
+  //   accessorKey: "date",
+  //   enableHiding: false,
+  //   header: "Registration Date",
+  //   cell: ({ row }) => (
+  //     <div>
+  //       {format(row.original.businessType, "dd MMM, yyyy ")}
+  //     </div>
+  //   )
+  //
+  // },
   {
     accessorKey: "status",
     header: "Status",

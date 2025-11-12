@@ -1,9 +1,11 @@
 import { db } from "@/db";
-import { countries } from "@/db/schema/countries";
-import { paymentMethods } from "@/db/schema/payment_methods";
-import { providerCountryPaymentMethods } from "@/db/schema/provider_contry_payment_method";
-import { providerCountries } from "@/db/schema/provider_countries";
-import { providers } from "@/db/schema/providers";
+import {
+  providerCountryPaymentMethods,
+  providerCountries,
+  countries,
+  providers,
+  paymentMethods,
+} from "@/db/schema";
 import { PaymentMethodLimit, ProviderCountryDetail, ProviderDetails } from "@/lib/types/provider";
 import { eq } from "drizzle-orm";
 
@@ -52,7 +54,7 @@ export async function getProviderById(
       paymentMethods,
       eq(providerCountryPaymentMethods.paymentMethodId, paymentMethods.id)
     )
-    .where(eq(paymentMethods.providerId, providerId));
+    .where(eq(paymentMethods.id, providerId));
 
   // 4. Group payment methods by provider country
   const paymentMethodsByCountry = paymentMethodsData.reduce((acc, pm) => {

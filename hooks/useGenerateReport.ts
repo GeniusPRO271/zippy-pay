@@ -1,0 +1,23 @@
+import { createReport, CreateReportRequest, CreateReportResponse } from '@/lib/api/reportGenerator';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { toast } from 'sonner'; // ✅ Shadcn 2025 uses `sonner` for toasts
+
+export function useCreateReport() {
+  const queryClient = useQueryClient();
+
+  return useMutation<CreateReportResponse, Error, CreateReportRequest>({
+    mutationFn: createReport,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['reports'] });
+
+      toast.success('Report created successfully!', {
+        description: `Your report has been queued for generation.`
+      });
+    },
+    onError: (error) => {
+      toast.error('Failed to create report', {
+        description: error.message || 'An unexpected error occurred while generating the report.',
+      });
+    },
+  });
+}
