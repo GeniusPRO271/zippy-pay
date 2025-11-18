@@ -1,17 +1,20 @@
 FROM oven/bun:1
 WORKDIR /app
 
+# Accept env vars from Railway at build time
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+
 COPY package.json bun.lock* ./
 
-# Install ALL dependencies (not just production)
 RUN bun install
 
 COPY . .
 
-# Build
+# Build Next.js WITH env variable
 RUN bun run build
 
-# Clean up devDependencies after build (optional)
+# Optional: prune devDependencies
 RUN bun install --production
 
 EXPOSE 3000
