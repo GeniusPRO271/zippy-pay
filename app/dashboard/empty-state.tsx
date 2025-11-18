@@ -1,6 +1,6 @@
 "use client"
 
-import { IconFolderCode, IconUpload } from "@tabler/icons-react"
+import { IconFolderCode, IconUpload, IconDatabase } from "@tabler/icons-react"
 import { Button } from "@/components/ui/button"
 import {
   Empty,
@@ -12,10 +12,17 @@ import {
 } from "@/components/ui/empty"
 import { BaseTransaction } from "@/lib/types/transaction"
 
-export function EmptyState({ setTransactionsAction, setIsLoadingAction }: {
-  setTransactionsAction: React.Dispatch<React.SetStateAction<BaseTransaction[]>>, setIsLoadingAction: React.Dispatch<React.SetStateAction<boolean>>
+export function EmptyState({
+  setTransactionsAction,
+  setIsLoadingAction,
+}: {
+  setTransactionsAction: React.Dispatch<React.SetStateAction<BaseTransaction[]>>
+  setIsLoadingAction: React.Dispatch<React.SetStateAction<boolean>>
 }) {
 
+  // -------------------------
+  // IMPORT FILES FROM USER
+  // -------------------------
   const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files
     if (!files) return
@@ -36,7 +43,6 @@ export function EmptyState({ setTransactionsAction, setIsLoadingAction }: {
           console.error(`[ERROR] Invalid JSON in file ${file.name}`, err)
         } finally {
           completed++
-          // Only update state once when ALL files are read
           if (completed === fileArray.length) {
             setTransactionsAction(imported)
             setIsLoadingAction(false)
@@ -47,6 +53,39 @@ export function EmptyState({ setTransactionsAction, setIsLoadingAction }: {
     })
   }
 
+  // -------------------------
+  // LOAD SAMPLE DATA
+  // -------------------------
+  const handleLoadSampleData = async () => {
+    setIsLoadingAction(true)
+
+    const allData: BaseTransaction[] = []
+    let index = 1
+
+    while (true) {
+      const fileName = `/sample-data/sample-${index}.json`
+
+      try {
+        const res = await fetch(fileName)
+
+        if (!res.ok) break // stop when 404
+
+        const json = await res.json()
+        const data: BaseTransaction[] = Array.isArray(json) ? json : [json]
+
+        allData.push(...data)
+        index++
+
+      } catch (err) {
+        console.error(`Failed to load ${fileName}`, err)
+        break
+      }
+    }
+
+    setTransactionsAction(allData)
+    setIsLoadingAction(false)
+  }
+
   return (
     <Empty>
       <EmptyHeader>
@@ -55,12 +94,13 @@ export function EmptyState({ setTransactionsAction, setIsLoadingAction }: {
         </EmptyMedia>
         <EmptyTitle>No Data Yet</EmptyTitle>
         <EmptyDescription>
-          You haven&apos;t imported any merchants data yet. Get started by importing a
-          your first project.
+          You haven&apos;t imported any merchants data yet. Get started by importing your first project or load sample data.
         </EmptyDescription>
       </EmptyHeader>
+
       <EmptyContent>
         <div className="flex gap-2">
+          {/* Hidden Input */}
           <input
             type="file"
             accept=".json"
@@ -69,19 +109,20 @@ export function EmptyState({ setTransactionsAction, setIsLoadingAction }: {
             className="hidden"
             onChange={handleFileImport}
           />
-          <Button className={"cursor-pointer"} onClick={() => document.getElementById("file-input")?.click()}>
+
+          {/* Import Button */}
+          <Button onClick={() => document.getElementById("file-input")?.click()}>
             Import Data
             <IconUpload className="ml-2 h-4 w-4" />
           </Button>
+
+          {/* Load Sample Data */}
+          <Button variant="secondary" onClick={handleLoadSampleData}>
+            Load Sample Data
+            <IconDatabase className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       </EmptyContent>
-      <Button
-        variant="link"
-        asChild
-        className="text-muted-foreground"
-        size="sm"
-      >
-      </Button>
     </Empty>
   )
 }

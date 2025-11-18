@@ -57,19 +57,10 @@ export function validateRUT(rut: string): boolean {
     multiplier = multiplier < 7 ? multiplier + 1 : 2;
   }
 
-  console.log("[DEBUG]: Calculations:", calculations.join(", "));
-  console.log("[DEBUG]: Total sum:", sum);
-
   const expectedDV = 11 - (sum % 11);
-  let dvCalc = expectedDV === 11 ? "0" : expectedDV === 10 ? "K" : expectedDV.toString();
-
-  console.log("[DEBUG]: Expected check digit calculation: 11 - (" + sum + " % 11) = 11 - " + (sum % 11) + " = " + expectedDV);
-  console.log("[DEBUG]: Final calculated check digit:", dvCalc);
-  console.log("[DEBUG]: Provided check digit:", dv);
+  const dvCalc = expectedDV === 11 ? "0" : expectedDV === 10 ? "K" : expectedDV.toString();
 
   const isValid = dv === dvCalc;
-  console.log("[DEBUG]: Validation result:", isValid ? "VALID" : "INVALID");
-  console.log("[DEBUG]: ----------------------------------------");
 
   return isValid;
 }

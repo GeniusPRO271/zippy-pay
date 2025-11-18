@@ -96,15 +96,15 @@ export function PageDashoard<TData, TValue>({
     return { from: dateRangeTrx.from!, to: dateRangeTrx.to! }
   }, [dateRange, dateRangeTrx])
 
-  const [filters, setFilters] = React.useState<{
-    dateRange?: DateRange
-    dateRangeTrx: DateRange
-  }>({
-    dateRangeTrx: {
-      from: new Date(2025, 5, 9),
-      to: new Date(2025, 5, 26),
-    },
-  })
+  // const [filters, setFilters] = React.useState<{
+  //   dateRange?: DateRange
+  //   dateRangeTrx: DateRange
+  // }>({
+  //   dateRangeTrx: {
+  //     from: new Date(2025, 5, 9),
+  //     to: new Date(2025, 5, 26),
+  //   },
+  // })
 
   const analyticsData = React.useMemo<AnalyticsData>(() => {
     const { from, to } = activeDateRange

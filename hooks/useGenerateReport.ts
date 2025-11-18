@@ -1,11 +1,12 @@
-import { createReport, CreateReportRequest, CreateReportResponse } from '@/lib/api/reportGenerator';
+import { createReport, CreateReportResponse } from '@/lib/api/reportGenerator';
+import { CreateReportSchemaType } from '@/lib/zod/createReport';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'sonner'; // ✅ Shadcn 2025 uses `sonner` for toasts
 
 export function useCreateReport() {
   const queryClient = useQueryClient();
 
-  return useMutation<CreateReportResponse, Error, CreateReportRequest>({
+  return useMutation<CreateReportResponse, Error, CreateReportSchemaType>({
     mutationFn: createReport,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['reports'] });

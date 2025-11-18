@@ -51,7 +51,6 @@ function PaymentForm() {
       payinExpirationTime: "15",
       url_OK: "https://google.cl",
       url_ERROR: "http://youtube.com",
-      objData: {},
     };
 
     mutate(formattedData)

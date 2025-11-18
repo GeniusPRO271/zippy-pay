@@ -3,10 +3,6 @@ import { MultiSelectCombobox } from "../table/filter-dropdown"
 import { Button } from "@/components/ui/button"
 import { IconX } from "@tabler/icons-react"
 import { toOptions } from "@/lib/utils"
-import { RangePickerButton } from "@/components/ui/date-picker-button"
-import { DateRange } from "react-day-picker"
-import { Dispatch, SetStateAction } from "react"
-import { dataTagErrorSymbol } from "@tanstack/react-query"
 
 interface TableFiltersProps<TData> {
   table: Table<TData>

@@ -72,7 +72,6 @@ export interface CountryWithMethods {
   id: string;
   name: string;
   isoCode: string;
-  config: Record<string, any> | null;
   paymentMethods: PaymentMethodLimit[];
 }
 
@@ -95,13 +94,10 @@ export interface ProviderDataRow {
   countryId: string;
   countryName: string;
   countryIsoCode: string;
-  countryConfig: Record<string, any> | null;
   paymentMethodId: string;
   paymentMethodName: string;
   paymentMethodCode: string;
   paymentMethodStatus: string | null;
   paymentMethodMinLimit: string | null;
   paymentMethodMaxLimit: string | null;
-  paymentMethodConfig: Record<string, any> | null;
-  paymentMethodCapabilities: Record<string, any> | null;
 }

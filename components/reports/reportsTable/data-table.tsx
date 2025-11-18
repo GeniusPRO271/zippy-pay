@@ -25,7 +25,6 @@ import React, { useState } from "react"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { IconAdjustmentsHorizontal, IconCirclePlus } from "@tabler/icons-react"
 import { Separator } from "@/components/ui/separator"
-import { useRouter } from "next/navigation"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -40,7 +39,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [globalFilter, setGlobalFilter] = useState<any>([])
+  const [globalFilter, setGlobalFilter] = useState<ColumnFiltersState>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({
@@ -75,8 +74,6 @@ export function DataTable<TData, TValue>({
     },
 
   })
-
-  const router = useRouter();
 
   return (
     <div className="w-full">

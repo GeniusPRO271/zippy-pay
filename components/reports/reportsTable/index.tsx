@@ -3,11 +3,13 @@ import { columns } from "./columns";
 import { DataTable } from "./data-table";
 import { Spinner } from "@/components/ui/spinner";
 import { IconMoodSad } from "@tabler/icons-react";
-import ReportForm from "../reportForm";
 import { BaseTransaction } from "@/lib/types/transaction";
 import React from "react";
+import ReportGeneratorPage from "../reportGeneration";
 
-export default function ReportsTable({ transactions, merchantsNames }: { transactions: BaseTransaction[], merchantsNames: string[] }) {
+export default function ReportsTable(
+  { transactions, countries, payMethods }: { transactions: BaseTransaction[], countries: string[], payMethods: string[] }
+) {
   const { data, isLoading } = useReports()
 
   const [show, setShow] = React.useState(false)
@@ -43,7 +45,7 @@ export default function ReportsTable({ transactions, merchantsNames }: { transac
         />
         :
         <div className="flex items-center justify-center">
-          <ReportForm transactions={transactions} setShow={setShow} merchantsNames={merchantsNames} />
+          <ReportGeneratorPage transactions={transactions} setShow={setShow} />
         </div>
       }
     </div>

@@ -1,15 +1,7 @@
 import { ReportRecord } from "../types/reports/reportTable";
-import { BaseTransaction } from "../types/transaction";
-import { FinalMerchantCommissionType } from "../zod/reportForm";
-import { ReportResumeType } from "../zod/reportResumeForm";
+import { CreateReportSchemaType } from "../zod/createReport";
 
-const API_URL = 'http://localhost:3110';
-
-export interface CreateReportRequest {
-  reportType: 'financial' | 'resume';
-  application?: FinalMerchantCommissionType | ReportResumeType
-  transactions: BaseTransaction[];
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 export interface CreateReportResponse {
   id: string;
@@ -17,7 +9,7 @@ export interface CreateReportResponse {
 }
 
 export async function createReport(
-  payload: CreateReportRequest
+  payload: CreateReportSchemaType
 ): Promise<CreateReportResponse> {
   const res = await fetch(`${API_URL}/reports`, {
     method: 'POST',

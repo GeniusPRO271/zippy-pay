@@ -1,0 +1,2041 @@
+[
+  {
+    "id": "xrIz7fo13mAUdnu8CKmX",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "103440661",
+    "quantity": "50000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "f4d3359c-12f6-4a98-8a72-b3e76ac298c9",
+    "email": "janito4725@gmail.com",
+    "name": "Alejandro Sanchez Silva",
+    "request_timestamp": "1759687322",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/28ee863d-c4ef-4d7b-8fc8-2038a2e1b72b",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/28ee863d-c4ef-4d7b-8fc8-2038a2e1b72b",
+    "dateRequest": {
+      "_seconds": 1759687322,
+      "_nanoseconds": 528000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "RFJmRlVkdUo1WW51OVBEbUxrdlZSVlg5VnhQUzliYytmQWV2OVdaZjFmWT0=-FcDD75aF",
+      "trade_no": "2025100518020200494",
+      "out_trade_no": "f4d3359c-12f6-4a98-8a72-b3e76ac298c9",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/469cba1973464454a97e3977b310633a",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "50000.00",
+      "out_trade_no": "f4d3359c-12f6-4a98-8a72-b3e76ac298c9",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100518020200494",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "103440661",
+        "email": "janito4725@gmail.com",
+        "identification": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "name": "Alejandro Sanchez Silva",
+        "username": "Alejandro Sanchez Silva"
+      },
+      "timestamp": "1759687401"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/28ee863d-c4ef-4d7b-8fc8-2038a2e1b72b",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759687401,
+      "_nanoseconds": 875000000
+    }
+  },
+  {
+    "id": "OOXXQ5Y8DRqjoM9BRGHi",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "103440661",
+    "quantity": "100000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "7926e57f-ea23-49c9-bcde-eb528977cd40",
+    "email": "janito4725@gmail.com",
+    "name": "Alejandro Sanchez Silva",
+    "request_timestamp": "1759687678",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/9e1b2aaf-1e3d-438c-bfbf-229142cda848",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/9e1b2aaf-1e3d-438c-bfbf-229142cda848",
+    "dateRequest": {
+      "_seconds": 1759687678,
+      "_nanoseconds": 975000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "UEpyNytBcnI4Y29lSEV4T1YvVCtjemRFWkhHLzRuUkVXYzdCTUx1L1l6OD0=-FF23DF35",
+      "trade_no": "2025100518075902016",
+      "out_trade_no": "7926e57f-ea23-49c9-bcde-eb528977cd40",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/947772bfeea24d11a303b9ea5f7977ca",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "100000.00",
+      "out_trade_no": "7926e57f-ea23-49c9-bcde-eb528977cd40",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100518075902016",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "103440661",
+        "email": "janito4725@gmail.com",
+        "identification": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "name": "Alejandro Sanchez Silva",
+        "username": "Alejandro Sanchez Silva"
+      },
+      "timestamp": "1759687748"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/9e1b2aaf-1e3d-438c-bfbf-229142cda848",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759687748,
+      "_nanoseconds": 858000000
+    }
+  },
+  {
+    "id": "333kqWeU0u8PYmc67fx7",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "103440661",
+    "quantity": "100000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "aebbb14b-ba62-4feb-84c8-42d8be48d0de",
+    "email": "janito4725@gmail.com",
+    "name": "Alejandro Sanchez Silva",
+    "request_timestamp": "1759688656",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/f82a90b6-0302-4a78-8b64-49295eb1433f",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/f82a90b6-0302-4a78-8b64-49295eb1433f",
+    "dateRequest": {
+      "_seconds": 1759688656,
+      "_nanoseconds": 279000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "ejdiZnYwaFdpMnoxNENBT2hHWmJ0ZW96bjcwMHlBNkowSGlrNkZZVUh2az0=-0c987558",
+      "trade_no": "2025100518241606576",
+      "out_trade_no": "aebbb14b-ba62-4feb-84c8-42d8be48d0de",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/89b13d7fd8b64233946bff8191c6723e",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "100000.00",
+      "out_trade_no": "aebbb14b-ba62-4feb-84c8-42d8be48d0de",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100518241606576",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "103440661",
+        "email": "janito4725@gmail.com",
+        "identification": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "name": "Alejandro Sanchez Silva",
+        "username": "Alejandro Sanchez Silva"
+      },
+      "timestamp": "1759688731"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/f82a90b6-0302-4a78-8b64-49295eb1433f",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759688731,
+      "_nanoseconds": 791000000
+    }
+  },
+  {
+    "id": "013AStOGYH3ia3EZ1uGL",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "180370560",
+    "quantity": "20000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "0a73e2bf-6bde-4eaa-9398-e931fb8bada7",
+    "email": "jessica.escudero.cordero@gmail.com",
+    "name": "Jessica Escudero Cordero",
+    "request_timestamp": "1759690868",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/259cc258-574a-4aaf-8ee6-3dd0d9645f63",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/259cc258-574a-4aaf-8ee6-3dd0d9645f63",
+    "dateRequest": {
+      "_seconds": 1759690868,
+      "_nanoseconds": 778000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "eVc3SENKSFh6UEVPb3NHWDVjT1BQN3U4VFdJbDRwOFV1Z1NxOU90RnJwbz0=-ae4D6a41",
+      "trade_no": "2025100519010807861",
+      "out_trade_no": "0a73e2bf-6bde-4eaa-9398-e931fb8bada7",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/1d39ad40f05a442f9a0b1e90eafb57b5",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "20000.00",
+      "out_trade_no": "0a73e2bf-6bde-4eaa-9398-e931fb8bada7",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100519010807861",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "180370560",
+        "email": "jessica.escudero.cordero@gmail.com",
+        "identification": {
+          "number": "180370560",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "180370560",
+          "type": "RUT"
+        },
+        "name": "Jessica Escudero Cordero",
+        "username": "Jessica Escudero Cordero"
+      },
+      "timestamp": "1759690970"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/259cc258-574a-4aaf-8ee6-3dd0d9645f63",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759690970,
+      "_nanoseconds": 444000000
+    }
+  },
+  {
+    "id": "iXh8cg0VaBv3zGzVhslN",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "116210657",
+    "quantity": "10000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "1096cf14-0509-4c15-aa6b-f2d14f45fd1e",
+    "email": "marieleyc@gmail.com",
+    "name": "Mariel Cataldo",
+    "request_timestamp": "1759700298",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/42af9d7e-3aa5-45be-8da5-21f6a95615aa",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/42af9d7e-3aa5-45be-8da5-21f6a95615aa",
+    "dateRequest": {
+      "_seconds": 1759700298,
+      "_nanoseconds": 524000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "TVYvaDhldDVSejkrblZoUW94SGZrN1U1UnNYN1kyRVQ3WGhsdFBNaXgxUT0=-3FF62056",
+      "trade_no": "2025100521381800364",
+      "out_trade_no": "1096cf14-0509-4c15-aa6b-f2d14f45fd1e",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/694ef3febade437aaf1b46099c39981d",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "10000.00",
+      "out_trade_no": "1096cf14-0509-4c15-aa6b-f2d14f45fd1e",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100521381800364",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "116210657",
+        "email": "marieleyc@gmail.com",
+        "identification": {
+          "number": "116210657",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "116210657",
+          "type": "RUT"
+        },
+        "name": "Mariel Cataldo",
+        "username": "Mariel Cataldo"
+      },
+      "timestamp": "1759700371"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/42af9d7e-3aa5-45be-8da5-21f6a95615aa",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759700371,
+      "_nanoseconds": 537000000
+    }
+  },
+  {
+    "id": "e8NURonKOaDwJme2Zw1t",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "172144136",
+    "quantity": "1000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "ce06fe06-6100-4fb4-b3ad-a2c1e5096cfb",
+    "email": "fernandezbernardita297@gmail.com",
+    "name": "Bernardita Fernandez",
+    "request_timestamp": "1759700678",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/24705f0c-9889-4992-87ce-8c41e9b5240d",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/24705f0c-9889-4992-87ce-8c41e9b5240d",
+    "dateRequest": {
+      "_seconds": 1759700678,
+      "_nanoseconds": 559000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "RU9TOHdCV3VLdzlHYUtSeUwyOEl4dURxaVNRR1Zlbml4TjNTSFdXcFBqST0=-eDD4Dce8",
+      "trade_no": "2025100521443801998",
+      "out_trade_no": "ce06fe06-6100-4fb4-b3ad-a2c1e5096cfb",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/d856ef451e904df9a4f096d3db7f0f72",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "1000.00",
+      "out_trade_no": "ce06fe06-6100-4fb4-b3ad-a2c1e5096cfb",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100521443801998",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "172144136",
+        "email": "fernandezbernardita297@gmail.com",
+        "identification": {
+          "number": "172144136",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "172144136",
+          "type": "RUT"
+        },
+        "name": "Bernardita Fernandez",
+        "username": "Bernardita Fernandez"
+      },
+      "timestamp": "1759700776"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/24705f0c-9889-4992-87ce-8c41e9b5240d",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759700776,
+      "_nanoseconds": 876000000
+    }
+  },
+  {
+    "id": "SSAnfiD0dmSxSdfmz7ER",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "183222481",
+    "quantity": "80000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "0b534c14-847b-461b-9642-d96ca0eb1f84",
+    "email": "bryan.duranfer@gmail.com",
+    "name": "Bryan Duran Fernandez",
+    "request_timestamp": "1759702118",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/afa0687d-da42-4284-a143-a12988145358",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/afa0687d-da42-4284-a143-a12988145358",
+    "dateRequest": {
+      "_seconds": 1759702119,
+      "_nanoseconds": 214000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "VkZGS1h4Tmk4Y3RrTXgydU1CUFJVSms2VkFNWm5CSDRBWWxXVGlMZjFGWT0=-B14D1528",
+      "trade_no": "2025100522083908069",
+      "out_trade_no": "0b534c14-847b-461b-9642-d96ca0eb1f84",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/6c1e9a40589a44a5a12f21027874566c",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "80000.00",
+      "out_trade_no": "0b534c14-847b-461b-9642-d96ca0eb1f84",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100522083908069",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "183222481",
+        "email": "bryan.duranfer@gmail.com",
+        "identification": {
+          "number": "183222481",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "183222481",
+          "type": "RUT"
+        },
+        "name": "Bryan Duran Fernandez",
+        "username": "Bryan Duran Fernandez"
+      },
+      "timestamp": "1759702167"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/afa0687d-da42-4284-a143-a12988145358",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759702167,
+      "_nanoseconds": 484000000
+    }
+  },
+  {
+    "id": "z3W0ENCGhzifNBIt9Zk7",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "103440661",
+    "quantity": "25000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "1997b206-89dc-45e0-9049-2409018e6223",
+    "email": "janito4725@gmail.com",
+    "name": "Alejandro Sanchez Silva",
+    "request_timestamp": "1759705380",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/5292af46-7933-448b-863e-818b724efcab",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/5292af46-7933-448b-863e-818b724efcab",
+    "dateRequest": {
+      "_seconds": 1759705381,
+      "_nanoseconds": 139000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "bVlyODl1ZHNsZGVZSk5aWFJrci9ZWjBnZmd6RGFTOEFMM1FWNTZBMHVxQT0=-824FBc3e",
+      "trade_no": "2025100523030101807",
+      "out_trade_no": "1997b206-89dc-45e0-9049-2409018e6223",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/2528b54d508b469c9b19988e9f9cfa1c",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "25000.00",
+      "out_trade_no": "1997b206-89dc-45e0-9049-2409018e6223",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100523030101807",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "103440661",
+        "email": "janito4725@gmail.com",
+        "identification": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "name": "Alejandro Sanchez Silva",
+        "username": "Alejandro Sanchez Silva"
+      },
+      "timestamp": "1759705455"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/5292af46-7933-448b-863e-818b724efcab",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759705455,
+      "_nanoseconds": 842000000
+    }
+  },
+  {
+    "id": "CSe6kcaOfEFG4K64Vma6",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "107078126",
+    "quantity": "9000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "c17b63ef-0ab4-48eb-ac45-d8bb1c02c0cc",
+    "email": "carolinabrunag@hotmail.com",
+    "name": "Carolina Bruna",
+    "request_timestamp": "1759706878",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/a4436516-155c-46f6-ae30-5d557b6e359d",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/a4436516-155c-46f6-ae30-5d557b6e359d",
+    "dateRequest": {
+      "_seconds": 1759706878,
+      "_nanoseconds": 639000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "dTRWODgxZTNLMWQ4Uk5TZ0p6Qm0vVnh2RitSc1U1RFJKcEZRUjVYOWZhTT0=-F17000a2",
+      "trade_no": "2025100523275808491",
+      "out_trade_no": "c17b63ef-0ab4-48eb-ac45-d8bb1c02c0cc",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/bc80dbc3b7914e559f78f413184c16e2",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "9000.00",
+      "out_trade_no": "c17b63ef-0ab4-48eb-ac45-d8bb1c02c0cc",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100523275808491",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "107078126",
+        "email": "carolinabrunag@hotmail.com",
+        "identification": {
+          "number": "107078126",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "107078126",
+          "type": "RUT"
+        },
+        "name": "Carolina Bruna",
+        "username": "Carolina Bruna"
+      },
+      "timestamp": "1759707035"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/a4436516-155c-46f6-ae30-5d557b6e359d",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759707035,
+      "_nanoseconds": 647000000
+    }
+  },
+  {
+    "id": "UUNiIT60z7xDIrPz4Kj5",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "103440661",
+    "quantity": "25000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "d1efbd32-83ee-4380-b6f4-25771fc5744f",
+    "email": "janito4725@gmail.com",
+    "name": "Alejandro Sanchez Silva",
+    "request_timestamp": "1759707109",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/a695272a-a23e-4912-82d2-ee06d7c71d1d",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/a695272a-a23e-4912-82d2-ee06d7c71d1d",
+    "dateRequest": {
+      "_seconds": 1759707109,
+      "_nanoseconds": 719000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "QzBZYW1GdUJyQTlhUW8vOHFEYnlIc0puOVB6Z0VoUWgwaU5uWEU3Tmk1UT0=-DFFcF469",
+      "trade_no": "2025100523314909558",
+      "out_trade_no": "d1efbd32-83ee-4380-b6f4-25771fc5744f",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/b13fcb1f191049a1ad233ec97beb8893",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "25000.00",
+      "out_trade_no": "d1efbd32-83ee-4380-b6f4-25771fc5744f",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100523314909558",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "103440661",
+        "email": "janito4725@gmail.com",
+        "identification": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "name": "Alejandro Sanchez Silva",
+        "username": "Alejandro Sanchez Silva"
+      },
+      "timestamp": "1759707182"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/a695272a-a23e-4912-82d2-ee06d7c71d1d",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759707182,
+      "_nanoseconds": 536000000
+    }
+  },
+  {
+    "id": "VsP02RAa5KjaxO0HaNVK",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "16526388K",
+    "quantity": "45000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "72b2bbd0-32ab-4f78-befb-2a33b2f4e60a",
+    "email": "albina42255233@gmail.com",
+    "name": "Alba Vilches Rocha",
+    "request_timestamp": "1759707285",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/573ff6b6-370e-4925-8c59-302ba1e63755",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/573ff6b6-370e-4925-8c59-302ba1e63755",
+    "dateRequest": {
+      "_seconds": 1759707285,
+      "_nanoseconds": 988000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "aUNHWEJSYWxaWjJ4c3d1WHpIZFdoOGdERThzQkxqUm0xYy9JakdYY2NnTT0=-688F956e",
+      "trade_no": "2025100523344600380",
+      "out_trade_no": "72b2bbd0-32ab-4f78-befb-2a33b2f4e60a",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/c5e67896edac4fd79b50d2115cd3621f",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "45000.00",
+      "out_trade_no": "72b2bbd0-32ab-4f78-befb-2a33b2f4e60a",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100523344600380",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "16526388K",
+        "email": "albina42255233@gmail.com",
+        "identification": {
+          "number": "16526388K",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "16526388K",
+          "type": "RUT"
+        },
+        "name": "Alba Vilches Rocha",
+        "username": "Alba Vilches Rocha"
+      },
+      "timestamp": "1759707439"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/573ff6b6-370e-4925-8c59-302ba1e63755",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759707439,
+      "_nanoseconds": 464000000
+    }
+  },
+  {
+    "id": "eFan35ziUDkkF2JQusnz",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "16526388K",
+    "quantity": "50000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "8da378db-c5f8-4778-b11a-9419d1e8db45",
+    "email": "albina42255233@gmail.com",
+    "name": "Alba Vilches Rocha",
+    "request_timestamp": "1759709425",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/02fc2b8a-2108-4f60-9eb9-0be8ae30db17",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/02fc2b8a-2108-4f60-9eb9-0be8ae30db17",
+    "dateRequest": {
+      "_seconds": 1759709425,
+      "_nanoseconds": 740000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "U2V1WEd0Wmh6TEFFVlIxSVZPVFZlM3d5T1luMytjaDAxZS90RkdHSG91RT0=-37B40224",
+      "trade_no": "2025100600102502793",
+      "out_trade_no": "8da378db-c5f8-4778-b11a-9419d1e8db45",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/e5b70e83fb72496b9f1d89147398da1a",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "50000.00",
+      "out_trade_no": "8da378db-c5f8-4778-b11a-9419d1e8db45",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100600102502793",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "16526388K",
+        "email": "albina42255233@gmail.com",
+        "identification": {
+          "number": "16526388K",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "16526388K",
+          "type": "RUT"
+        },
+        "name": "Alba Vilches Rocha",
+        "username": "Alba Vilches Rocha"
+      },
+      "timestamp": "1759709595"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/02fc2b8a-2108-4f60-9eb9-0be8ae30db17",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759709595,
+      "_nanoseconds": 454000000
+    }
+  },
+  {
+    "id": "Y6QbBIoVePuVvyqXtBxB",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "103440661",
+    "quantity": "25000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "3e31899f-4a3e-4d24-9cf1-79f95fcc8500",
+    "email": "janito4725@gmail.com",
+    "name": "Alejandro Sanchez Silva",
+    "request_timestamp": "1759710660",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/ff11181d-4918-4f21-a268-9aa95eb62beb",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/ff11181d-4918-4f21-a268-9aa95eb62beb",
+    "dateRequest": {
+      "_seconds": 1759710661,
+      "_nanoseconds": 404000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "MzYvS2c1Z2dRS0ExcFhjeWlwSTBwbGpPOFQrdGxneTI3STRHUlBHUDc4UT0=-e1e200e1",
+      "trade_no": "2025100600310108258",
+      "out_trade_no": "3e31899f-4a3e-4d24-9cf1-79f95fcc8500",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/b7ba81da471f45cc8ee7917f2dff7ba5",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "25000.00",
+      "out_trade_no": "3e31899f-4a3e-4d24-9cf1-79f95fcc8500",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100600310108258",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "103440661",
+        "email": "janito4725@gmail.com",
+        "identification": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "name": "Alejandro Sanchez Silva",
+        "username": "Alejandro Sanchez Silva"
+      },
+      "timestamp": "1759710728"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/ff11181d-4918-4f21-a268-9aa95eb62beb",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759710728,
+      "_nanoseconds": 209000000
+    }
+  },
+  {
+    "id": "SXFRQGReg4ZVOlHE232Z",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "180370560",
+    "quantity": "20000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "27c8d41f-c2c5-407f-8a8a-0785b7f7b976",
+    "email": "jessica.escudero.cordero@gmail.com",
+    "name": "Jessica Escudero Cordero",
+    "request_timestamp": "1759716083",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/cee7e570-d387-46ce-9d15-4bcfd4866f2f",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/cee7e570-d387-46ce-9d15-4bcfd4866f2f",
+    "dateRequest": {
+      "_seconds": 1759716083,
+      "_nanoseconds": 739000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "OTBRVDE2Y1NlR2ZsM3N3M0s2V0Q4YVJCVFlxZ3c0SmRvZ2NRendtb0kxaz0=-aDDF66DD",
+      "trade_no": "2025100602012301506",
+      "out_trade_no": "27c8d41f-c2c5-407f-8a8a-0785b7f7b976",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/093f1c845b5b481899f1fe39452ce1c5",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "20000.00",
+      "out_trade_no": "27c8d41f-c2c5-407f-8a8a-0785b7f7b976",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100602012301506",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "180370560",
+        "email": "jessica.escudero.cordero@gmail.com",
+        "identification": {
+          "number": "180370560",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "180370560",
+          "type": "RUT"
+        },
+        "name": "Jessica Escudero Cordero",
+        "username": "Jessica Escudero Cordero"
+      },
+      "timestamp": "1759716191"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/cee7e570-d387-46ce-9d15-4bcfd4866f2f",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759716191,
+      "_nanoseconds": 273000000
+    }
+  },
+  {
+    "id": "yhvTqz7WhS4MxF5tjZoY",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "153486441",
+    "quantity": "5000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "fc3432e2-6795-4687-a5ce-3c70d4ce2aed",
+    "email": "sinndymanriquez@gmail.com",
+    "name": "Sinndy Beatriz Manriquez Rivera",
+    "request_timestamp": "1759716819",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/97cc4117-c5e7-4435-a29a-905758273fb3",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/97cc4117-c5e7-4435-a29a-905758273fb3",
+    "dateRequest": {
+      "_seconds": 1759716820,
+      "_nanoseconds": 41000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "U2hsa0NhTnZNbTNjdUViSEcyWmdaZURyQklYcUtNTlFBc0R0NENWbjZrZz0=-F28B519a",
+      "trade_no": "2025100602134004417",
+      "out_trade_no": "fc3432e2-6795-4687-a5ce-3c70d4ce2aed",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/32d9769996e144a3ad31531f9baff10d",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "5000.00",
+      "out_trade_no": "fc3432e2-6795-4687-a5ce-3c70d4ce2aed",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100602134004417",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "153486441",
+        "email": "sinndymanriquez@gmail.com",
+        "identification": {
+          "number": "153486441",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "153486441",
+          "type": "RUT"
+        },
+        "name": "Sinndy Beatriz Manriquez Rivera",
+        "username": "Sinndy Beatriz Manriquez Rivera"
+      },
+      "timestamp": "1759716905"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/97cc4117-c5e7-4435-a29a-905758273fb3",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759716905,
+      "_nanoseconds": 499000000
+    }
+  },
+  {
+    "id": "c41A50uOzfLNK5wnba1n",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "13101970K",
+    "quantity": "10000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "558c78ee-6784-4d82-877b-de8fbbe4dd80",
+    "email": "rignatorres@gmail.com",
+    "name": "Gabriel Torres",
+    "request_timestamp": "1759723726",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/14163f9f-cce0-4fb0-a4e3-a0d3a3828fbc",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/14163f9f-cce0-4fb0-a4e3-a0d3a3828fbc",
+    "dateRequest": {
+      "_seconds": 1759723727,
+      "_nanoseconds": 101000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "VXFIb1BQUnkvOGJ0bUxxL0FYaEliUXhubXBDN2FyNUo4TVBKT2NKTEhyOD0=-D41aF0B9",
+      "trade_no": "2025100604084707440",
+      "out_trade_no": "558c78ee-6784-4d82-877b-de8fbbe4dd80",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/9e63ed05efbe40598df3edd920d3b4c2",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "10000.00",
+      "out_trade_no": "558c78ee-6784-4d82-877b-de8fbbe4dd80",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100604084707440",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "13101970K",
+        "email": "rignatorres@gmail.com",
+        "identification": {
+          "number": "13101970K",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "13101970K",
+          "type": "RUT"
+        },
+        "name": "Gabriel Torres",
+        "username": "Gabriel Torres"
+      },
+      "timestamp": "1759724214"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/14163f9f-cce0-4fb0-a4e3-a0d3a3828fbc",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759724214,
+      "_nanoseconds": 251000000
+    }
+  },
+  {
+    "id": "a5aLww9i4KIdKCrHyAe7",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "180370560",
+    "quantity": "20000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "bd239161-a35e-45a0-b5d9-1dde7be72025",
+    "email": "jessica.escudero.cordero@gmail.com",
+    "name": "Jessica Escudero Cordero",
+    "request_timestamp": "1759724838",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/08c3d12d-852d-4aab-81e3-4e5eb497f688",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/08c3d12d-852d-4aab-81e3-4e5eb497f688",
+    "dateRequest": {
+      "_seconds": 1759724839,
+      "_nanoseconds": 67000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "dU5qeDVPc3ZNeUNXVGF4czY1MUtBMXVaRUR3d2NRVWxYeHpjMEpPZ2kwaz0=-66D55a77",
+      "trade_no": "2025100604271900341",
+      "out_trade_no": "bd239161-a35e-45a0-b5d9-1dde7be72025",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/7abb6aed3dd2400bb36c60a124f3f4ea",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "20000.00",
+      "out_trade_no": "bd239161-a35e-45a0-b5d9-1dde7be72025",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100604271900341",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "180370560",
+        "email": "jessica.escudero.cordero@gmail.com",
+        "identification": {
+          "number": "180370560",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "180370560",
+          "type": "RUT"
+        },
+        "name": "Jessica Escudero Cordero",
+        "username": "Jessica Escudero Cordero"
+      },
+      "timestamp": "1759724979"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/08c3d12d-852d-4aab-81e3-4e5eb497f688",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759724979,
+      "_nanoseconds": 728000000
+    }
+  },
+  {
+    "id": "1sLeDy2QbwVJF6oegkbR",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "140125873",
+    "quantity": "5000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "f6b0ee95-c3c6-4a78-8ec9-b16ad43e9155",
+    "email": "trinisimon2018@gmail.com",
+    "name": "Ana Gomez Salvatierra",
+    "request_timestamp": "1759725217",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/33bab4ba-b2f2-4d20-be2f-84aca456cfb7",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/33bab4ba-b2f2-4d20-be2f-84aca456cfb7",
+    "dateRequest": {
+      "_seconds": 1759725217,
+      "_nanoseconds": 530000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "V1ovS2c0R0Y2OGxvcS9ubVQrdnN3Z1NZcnBoSE9jRy92U0VQRlo3OGRVMD0=-5eaDD5B1",
+      "trade_no": "2025100604333701345",
+      "out_trade_no": "f6b0ee95-c3c6-4a78-8ec9-b16ad43e9155",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/b1379bee00b64fde8650fee382d72ea0",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "5000.00",
+      "out_trade_no": "f6b0ee95-c3c6-4a78-8ec9-b16ad43e9155",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100604333701345",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "140125873",
+        "email": "trinisimon2018@gmail.com",
+        "identification": {
+          "number": "140125873",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "140125873",
+          "type": "RUT"
+        },
+        "name": "Ana Gomez Salvatierra",
+        "username": "Ana Gomez Salvatierra"
+      },
+      "timestamp": "1759725324"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/33bab4ba-b2f2-4d20-be2f-84aca456cfb7",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759725324,
+      "_nanoseconds": 759000000
+    }
+  },
+  {
+    "id": "fsvcfkgB4HWa52zQKJqs",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "202735738",
+    "quantity": "20000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "ca42f957-2eb6-4851-8abe-021a9bf932df",
+    "email": "dylan.esaycancino@gmail.com",
+    "name": "Catalina Cancino",
+    "request_timestamp": "1759726501",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/7531864f-f9cb-40e9-b82f-07a016ca87d5",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/7531864f-f9cb-40e9-b82f-07a016ca87d5",
+    "dateRequest": {
+      "_seconds": 1759726502,
+      "_nanoseconds": 694000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "NGxuUFE2S011THVKQTlHc0lxL2FmbU5YREkxdE9pMGk5ZTczeE9jRFpRTT0=-eB447B14",
+      "trade_no": "2025100604550204599",
+      "out_trade_no": "ca42f957-2eb6-4851-8abe-021a9bf932df",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/38334cf296cb4075a245fe79a14102f2",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "20000.00",
+      "out_trade_no": "ca42f957-2eb6-4851-8abe-021a9bf932df",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100604550204599",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "202735738",
+        "email": "dylan.esaycancino@gmail.com",
+        "identification": {
+          "number": "202735738",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "202735738",
+          "type": "RUT"
+        },
+        "name": "Catalina Cancino",
+        "username": "Catalina Cancino"
+      },
+      "timestamp": "1759726627"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/7531864f-f9cb-40e9-b82f-07a016ca87d5",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759726627,
+      "_nanoseconds": 158000000
+    },
+    "assessment": 0
+  },
+  {
+    "id": "Ytr1RvDyAwOGaMEkRMDO",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "13101970K",
+    "quantity": "25000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "8adf3c57-97db-488a-ab42-12e4ccfcbac4",
+    "email": "rignatorres@gmail.com",
+    "name": "Gabriel Torres",
+    "request_timestamp": "1759728530",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/ffa80ef1-06e4-4a13-8c8c-2f933d67a443",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/ffa80ef1-06e4-4a13-8c8c-2f933d67a443",
+    "dateRequest": {
+      "_seconds": 1759728530,
+      "_nanoseconds": 382000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "KzBtM0gzRDBsYUFUeEhuRFR4K1BqYVh5Z1k3b3FIRjA5bzBYYW1CdnhXRT0=-2eD3ecD9",
+      "trade_no": "2025100605285008972",
+      "out_trade_no": "8adf3c57-97db-488a-ab42-12e4ccfcbac4",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/96ba12471d7642de999741c6b40d7cd6",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "25000.00",
+      "out_trade_no": "8adf3c57-97db-488a-ab42-12e4ccfcbac4",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100605285008972",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "13101970K",
+        "email": "rignatorres@gmail.com",
+        "identification": {
+          "number": "13101970K",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "13101970K",
+          "type": "RUT"
+        },
+        "name": "Gabriel Torres",
+        "username": "Gabriel Torres"
+      },
+      "timestamp": "1759728693"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/ffa80ef1-06e4-4a13-8c8c-2f933d67a443",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759728693,
+      "_nanoseconds": 425000000
+    }
+  },
+  {
+    "id": "cOsmamUkUJC50LDMpUmL",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "154150919",
+    "quantity": "2400.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "367d3d8d-e463-44bf-be0c-f5d9d4899b48",
+    "email": "margaritapazchavarriacampos@gmail.com",
+    "name": "Margarita Chavarria",
+    "request_timestamp": "1759738975",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/d985fc52-a251-4f08-beff-2ab0a2e79ff6",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/d985fc52-a251-4f08-beff-2ab0a2e79ff6",
+    "dateRequest": {
+      "_seconds": 1759738975,
+      "_nanoseconds": 714000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "M0tiZ1czbVNnSmhkUXgyUm9qcDZwSVhDQkRaZGJpRitLMjBaamRhMDRvbz0=-10ee0674",
+      "trade_no": "2025100608225504800",
+      "out_trade_no": "367d3d8d-e463-44bf-be0c-f5d9d4899b48",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/4ac2e63a750d4af59c3dad5c837fe9e2",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "2400.00",
+      "out_trade_no": "367d3d8d-e463-44bf-be0c-f5d9d4899b48",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100608225504800",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "154150919",
+        "email": "margaritapazchavarriacampos@gmail.com",
+        "identification": {
+          "number": "154150919",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "154150919",
+          "type": "RUT"
+        },
+        "name": "Margarita Chavarria",
+        "username": "Margarita Chavarria"
+      },
+      "timestamp": "1759739069"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/d985fc52-a251-4f08-beff-2ab0a2e79ff6",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759739069,
+      "_nanoseconds": 145000000
+    }
+  },
+  {
+    "id": "CMzygBtjasByNBiZ2bNa",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "16526388K",
+    "quantity": "80000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "0956f6eb-379e-485d-8540-8a2f01880840",
+    "email": "albina42255233@gmail.com",
+    "name": "Alba Vilches Rocha",
+    "request_timestamp": "1759755068",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/7a6654c4-25b5-41b7-a4af-4ebf83f8e9c7",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/7a6654c4-25b5-41b7-a4af-4ebf83f8e9c7",
+    "dateRequest": {
+      "_seconds": 1759755068,
+      "_nanoseconds": 316000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "QWxCeVZXVHBCeFl6SitvN3FxSGpQUkJKaVVCWXdjNFdwUWJHTUpTV2poUT0=-e4D7286D",
+      "trade_no": "2025100612510808470",
+      "out_trade_no": "0956f6eb-379e-485d-8540-8a2f01880840",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/27c40e7f1b6841b596e843d68fa4d03a",
+      "trade_status": "PROCESSING"
+    },
+    "code": 0,
+    "webhookResponse": {
+      "amount": "80000.00",
+      "out_trade_no": "0956f6eb-379e-485d-8540-8a2f01880840",
+      "method": "WebPay",
+      "trade_status": "SUCCESS",
+      "trade_no": "2025100612510808470",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "16526388K",
+        "email": "albina42255233@gmail.com",
+        "identification": {
+          "number": "16526388K",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "16526388K",
+          "type": "RUT"
+        },
+        "name": "Alba Vilches Rocha",
+        "username": "Alba Vilches Rocha"
+      },
+      "timestamp": "1759755218"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/7a6654c4-25b5-41b7-a4af-4ebf83f8e9c7",
+    "status": "ok",
+    "dateTransfer": {
+      "_seconds": 1759755218,
+      "_nanoseconds": 679000000
+    }
+  },
+  {
+    "id": "bzx6dZa6ua3x5bJ8i9ed",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "168230516",
+    "quantity": "10000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "44b4916f-ab1f-416f-8f48-1fd68eefbfef",
+    "email": "natyvaldebenito2015@gmail.com",
+    "name": "Natalia Valdebenito",
+    "request_timestamp": "1759694011",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/49baaff2-7624-4f41-82fe-f7eb41792467",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/49baaff2-7624-4f41-82fe-f7eb41792467",
+    "dateRequest": {
+      "_seconds": 1759694011,
+      "_nanoseconds": 841000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "MmVmL0pTbmIwNEJaVGxOZzFSczhRMU52US9peVZKUTI5OFliWjZsay9lTT0=-3FB9DF06",
+      "trade_no": "2025100519533201676",
+      "out_trade_no": "44b4916f-ab1f-416f-8f48-1fd68eefbfef",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/c5277a92aee24e02abf130405bc7a6e8",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "10000.00",
+      "out_trade_no": "44b4916f-ab1f-416f-8f48-1fd68eefbfef",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100519533201676",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "168230516",
+        "email": "natyvaldebenito2015@gmail.com",
+        "identification": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "name": "Natalia Valdebenito",
+        "username": "Natalia Valdebenito"
+      },
+      "timestamp": "1759695532"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/49baaff2-7624-4f41-82fe-f7eb41792467",
+    "status": "error"
+  },
+  {
+    "id": "HaJ1quxsGov2xA5GwVqN",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "168230516",
+    "quantity": "10000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "18af8079-a71c-4ae5-9b9c-3f8c2140ea0b",
+    "email": "natyvaldebenito2015@gmail.com",
+    "name": "Natalia Valdebenito",
+    "request_timestamp": "1759694034",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/f30a5336-1f9c-4fc7-8a48-7a93cefe7fa2",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/f30a5336-1f9c-4fc7-8a48-7a93cefe7fa2",
+    "dateRequest": {
+      "_seconds": 1759694034,
+      "_nanoseconds": 697000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "WTQydG1xZThUVkgzRzc1a1ovL3BJZUFxWHA0YTAyZmlUWU9FTm02YXZTZz0=-BDac55Bc",
+      "trade_no": "2025100519535401784",
+      "out_trade_no": "18af8079-a71c-4ae5-9b9c-3f8c2140ea0b",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/5d748a19b0c44cdd9417575376da6975",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "10000.00",
+      "out_trade_no": "18af8079-a71c-4ae5-9b9c-3f8c2140ea0b",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100519535401784",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "168230516",
+        "email": "natyvaldebenito2015@gmail.com",
+        "identification": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "name": "Natalia Valdebenito",
+        "username": "Natalia Valdebenito"
+      },
+      "timestamp": "1759695530"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/f30a5336-1f9c-4fc7-8a48-7a93cefe7fa2",
+    "status": "error"
+  },
+  {
+    "id": "4ItG6EgQC4IEieLIKLU6",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "168230516",
+    "quantity": "10000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "d163c6e8-3688-4d7d-83d2-4e373af73182",
+    "email": "natyvaldebenito2015@gmail.com",
+    "name": "Natalia Valdebenito",
+    "request_timestamp": "1759694202",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/9d18926d-55e9-4ba5-b4c4-ed286e947ce3",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/9d18926d-55e9-4ba5-b4c4-ed286e947ce3",
+    "dateRequest": {
+      "_seconds": 1759694202,
+      "_nanoseconds": 368000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "bUx1WVRNU2VPckdGdWhndjl0U09MazVUTGtQVnFIWW5Ed3EvWFFmYXY3Yz0=-846c415a",
+      "trade_no": "2025100519564202627",
+      "out_trade_no": "d163c6e8-3688-4d7d-83d2-4e373af73182",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/06830d7950664ed485c241146c3255e9",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "10000.00",
+      "out_trade_no": "d163c6e8-3688-4d7d-83d2-4e373af73182",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100519564202627",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "168230516",
+        "email": "natyvaldebenito2015@gmail.com",
+        "identification": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "name": "Natalia Valdebenito",
+        "username": "Natalia Valdebenito"
+      },
+      "timestamp": "1759695531"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/9d18926d-55e9-4ba5-b4c4-ed286e947ce3",
+    "status": "error"
+  },
+  {
+    "id": "CZxDle8vOK2yFT4uIVaa",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "168230516",
+    "quantity": "10000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "ab38ce19-c24e-4a70-bf81-528d42a78927",
+    "email": "natyvaldebenito2015@gmail.com",
+    "name": "Natalia Valdebenito",
+    "request_timestamp": "1759694239",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/236d57d9-073a-4bef-b403-c928ffc3ee45",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/236d57d9-073a-4bef-b403-c928ffc3ee45",
+    "dateRequest": {
+      "_seconds": 1759694240,
+      "_nanoseconds": 92000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "dUZoK21yNEdvSzVPak1YYThYL0w3YnR3RDI1bDN1ZmZSRUdIK2wyaGwvZz0=-3ec83261",
+      "trade_no": "2025100519572002819",
+      "out_trade_no": "ab38ce19-c24e-4a70-bf81-528d42a78927",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/bd2e32acea0942f2a9ba0fd9d96998d0",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "10000.00",
+      "out_trade_no": "ab38ce19-c24e-4a70-bf81-528d42a78927",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100519572002819",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "168230516",
+        "email": "natyvaldebenito2015@gmail.com",
+        "identification": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "name": "Natalia Valdebenito",
+        "username": "Natalia Valdebenito"
+      },
+      "timestamp": "1759695532"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/236d57d9-073a-4bef-b403-c928ffc3ee45",
+    "status": "error"
+  },
+  {
+    "id": "oJ7bSvTtE4jNvtLQ3Cb9",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "168230516",
+    "quantity": "10000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "0fca9b2d-8652-4bb5-a3a9-143442e69462",
+    "email": "natyvaldebenito2015@gmail.com",
+    "name": "Natalia Valdebenito",
+    "request_timestamp": "1759698347",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/66934ea1-b807-4d74-8cf0-397154bb14ef",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/66934ea1-b807-4d74-8cf0-397154bb14ef",
+    "dateRequest": {
+      "_seconds": 1759698348,
+      "_nanoseconds": 129000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "UU5JdzA0anJNQjdVcGpCYnBvU3BzQkxFL1lDQ1h4Y3JNREFiL2N2aGNzWT0=-999Fc7Ba",
+      "trade_no": "2025100521054801085",
+      "out_trade_no": "0fca9b2d-8652-4bb5-a3a9-143442e69462",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/5560252dbda34fb5a08348f55ff6d57e",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "10000.00",
+      "out_trade_no": "0fca9b2d-8652-4bb5-a3a9-143442e69462",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100521054801085",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "168230516",
+        "email": "natyvaldebenito2015@gmail.com",
+        "identification": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "name": "Natalia Valdebenito",
+        "username": "Natalia Valdebenito"
+      },
+      "timestamp": "1759700035"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/66934ea1-b807-4d74-8cf0-397154bb14ef",
+    "status": "error"
+  },
+  {
+    "id": "4Rm213s8uhbX0PC1ESjZ",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "168230516",
+    "quantity": "10000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "94eeefc3-afb7-4be5-98e7-5e96b178a2e1",
+    "email": "natyvaldebenito2015@gmail.com",
+    "name": "Natalia Valdebenito",
+    "request_timestamp": "1759698453",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/2f397b31-46a6-4ee5-9aec-5fed14b835db",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/2f397b31-46a6-4ee5-9aec-5fed14b835db",
+    "dateRequest": {
+      "_seconds": 1759698453,
+      "_nanoseconds": 763000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "UnJwY0ZVVVBHdmJXbkZBcFVKRDVndFVBRUVBaDU5RHFpQkVIKzAzUkY3Zz0=-F9D0540D",
+      "trade_no": "2025100521073301613",
+      "out_trade_no": "94eeefc3-afb7-4be5-98e7-5e96b178a2e1",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/39b725d72f1c4fb981a711c25f338223",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "10000.00",
+      "out_trade_no": "94eeefc3-afb7-4be5-98e7-5e96b178a2e1",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100521073301613",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "168230516",
+        "email": "natyvaldebenito2015@gmail.com",
+        "identification": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "168230516",
+          "type": "RUT"
+        },
+        "name": "Natalia Valdebenito",
+        "username": "Natalia Valdebenito"
+      },
+      "timestamp": "1759700030"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/2f397b31-46a6-4ee5-9aec-5fed14b835db",
+    "status": "error"
+  },
+  {
+    "id": "LWngvEulAMCU6Q4yMGlF",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "210156143",
+    "quantity": "3000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "76b4fa05-d7ae-4085-a257-03c40165ad7f",
+    "email": "pizarrod549@gmail.com",
+    "name": "Daniel Pizarro",
+    "request_timestamp": "1759703473",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/69de9003-eae1-479b-8d10-9999d7cbb23b",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/69de9003-eae1-479b-8d10-9999d7cbb23b",
+    "dateRequest": {
+      "_seconds": 1759703473,
+      "_nanoseconds": 789000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "NWY5QzhYa2V0eS9YUW5JMEZjbXd1VDV0MnlGeUI4cnVmU0l6UGJNSkxLaz0=-22DD8cDB",
+      "trade_no": "2025100522311403771",
+      "out_trade_no": "76b4fa05-d7ae-4085-a257-03c40165ad7f",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/47032977ef6f482f9f8be1c1f0ccc98c",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "3000.00",
+      "out_trade_no": "76b4fa05-d7ae-4085-a257-03c40165ad7f",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100522311403771",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "210156143",
+        "email": "pizarrod549@gmail.com",
+        "identification": {
+          "number": "210156143",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "210156143",
+          "type": "RUT"
+        },
+        "name": "Daniel Pizarro",
+        "username": "Daniel Pizarro"
+      },
+      "timestamp": "1759704534"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/69de9003-eae1-479b-8d10-9999d7cbb23b",
+    "status": "error"
+  },
+  {
+    "id": "HEN0QTKgwp4JFXDSf45r",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "180370560",
+    "quantity": "20000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "c682a027-cef2-4588-aa2d-527d3748bec5",
+    "email": "jessica.escudero.cordero@gmail.com",
+    "name": "Jessica Escudero Cordero",
+    "request_timestamp": "1759716023",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/37fddd77-efd9-4f15-91b4-643d33b11932",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/37fddd77-efd9-4f15-91b4-643d33b11932",
+    "dateRequest": {
+      "_seconds": 1759716023,
+      "_nanoseconds": 735000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "ZHNMUEZQTTJQR09mUFo0amYweXh4eElDRHhFZ0xJRTY0NEtIMDYyblg2bz0=-6ee62F81",
+      "trade_no": "2025100602002301266",
+      "out_trade_no": "c682a027-cef2-4588-aa2d-527d3748bec5",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/54efd38bc76f4ca992b1e24d69140d9a",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "20000.00",
+      "out_trade_no": "c682a027-cef2-4588-aa2d-527d3748bec5",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100602002301266",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "180370560",
+        "email": "jessica.escudero.cordero@gmail.com",
+        "identification": {
+          "number": "180370560",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "180370560",
+          "type": "RUT"
+        },
+        "name": "Jessica Escudero Cordero",
+        "username": "Jessica Escudero Cordero"
+      },
+      "timestamp": "1759717137"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/37fddd77-efd9-4f15-91b4-643d33b11932",
+    "status": "error"
+  },
+  {
+    "id": "5lB5eYOKzerJHpC9wyfu",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "16526388K",
+    "quantity": "80000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "0c8543ec-b895-41af-a835-d6ab7c548c48",
+    "email": "albina42255233@gmail.com",
+    "name": "Alba Vilches Rocha",
+    "request_timestamp": "1759754998",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/cfae0bdc-0099-41ab-b4ef-1edde65cbff2",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/cfae0bdc-0099-41ab-b4ef-1edde65cbff2",
+    "dateRequest": {
+      "_seconds": 1759754998,
+      "_nanoseconds": 481000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "Tnp1eWorbFMrUG8vYzlXUU41eGNIbm5IVW1HSUZ4TXhUbWd0czI5VFc5dz0=-ec9cB795",
+      "trade_no": "2025100612495808269",
+      "out_trade_no": "0c8543ec-b895-41af-a835-d6ab7c548c48",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/a05dd4941c7845b5930f1a0fa22fb636",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "80000.00",
+      "out_trade_no": "0c8543ec-b895-41af-a835-d6ab7c548c48",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100612495808269",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "16526388K",
+        "email": "albina42255233@gmail.com",
+        "identification": {
+          "number": "16526388K",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "16526388K",
+          "type": "RUT"
+        },
+        "name": "Alba Vilches Rocha",
+        "username": "Alba Vilches Rocha"
+      },
+      "timestamp": "1759756731"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/cfae0bdc-0099-41ab-b4ef-1edde65cbff2",
+    "status": "error"
+  },
+  {
+    "id": "p4F0wBvgN69QujA2Yk3W",
+    "merchantName": "2023TechOptions1F7c",
+    "provider": "pagsmile",
+    "documentId": "103440661",
+    "quantity": "25000.00",
+    "commerceId": "2023TechOptions1F7c",
+    "commerceReqId": "9dae63cd-c0c8-404d-b971-4673c13cc6b8",
+    "email": "janito4725@gmail.com",
+    "name": "Alejandro Sanchez Silva",
+    "request_timestamp": "1759763321",
+    "country": "CL",
+    "currency": "CLP",
+    "payMethod": "bankCard",
+    "payinExpirationTime": "240",
+    "zippy_test": false,
+    "url_OK": "https://pgateway.pgwsoft.com/api/cashier/return/bc269bc3-e467-4535-b404-9f3ea73bc625",
+    "url_ERROR": "https://pgateway.pgwsoft.com/api/cashier/return/bc269bc3-e467-4535-b404-9f3ea73bc625",
+    "dateRequest": {
+      "_seconds": 1759763321,
+      "_nanoseconds": 659000000
+    },
+    "payinResponse": {
+      "code": "10000",
+      "msg": "Success",
+      "prepay_id": "MHY3K2pkMDVVcnN0MWRwT3dMak5JQUVzRWVlR2dwSm9BNUN4QWdvUzRpdz0=-DB0a2D54",
+      "trade_no": "2025100615084108745",
+      "out_trade_no": "9dae63cd-c0c8-404d-b971-4673c13cc6b8",
+      "web_url": "",
+      "pay_url": "https://api.kushkipagos.com/card-async/v1/agent/ca0291cf6f384a8e96c5df6e6d672647",
+      "trade_status": "PROCESSING"
+    },
+    "code": 12,
+    "webhookResponse": {
+      "amount": "25000.00",
+      "out_trade_no": "9dae63cd-c0c8-404d-b971-4673c13cc6b8",
+      "method": "WebPay",
+      "trade_status": "REFUSED",
+      "refused_reason": {
+        "detail": "No hubo respuesta del procesador"
+      },
+      "trade_no": "2025100615084108745",
+      "currency": "CLP",
+      "app_id": "17156358961223179",
+      "user": {
+        "buyer_id": "103440661",
+        "email": "janito4725@gmail.com",
+        "identification": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "identify": {
+          "number": "103440661",
+          "type": "RUT"
+        },
+        "name": "Alejandro Sanchez Silva",
+        "username": "Alejandro Sanchez Silva"
+      },
+      "timestamp": "1759764838"
+    },
+    "url": "https://pgateway.pgwsoft.com/api/cashier/return/bc269bc3-e467-4535-b404-9f3ea73bc625",
+    "status": "error"
+  }
+]

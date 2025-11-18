@@ -20,6 +20,5 @@ export interface ProviderWithCountriesMethods {
   code: string;
   minLimit: string | null;
   maxLimit: string | null;
-  config: Record<string, any> | null;
 }
 

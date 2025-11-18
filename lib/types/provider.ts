@@ -5,8 +5,6 @@ export interface PaymentMethodLimit {
   paymentMethodCode: string;
   minLimit: string | null;
   maxLimit: string | null;
-  config: Record<string, any> | null;
-  capabilities: Record<string, any> | null;
 }
 
 export interface ProviderCountryDetail {
@@ -14,7 +12,6 @@ export interface ProviderCountryDetail {
   countryId: string;
   countryName: string;
   countryIsoCode: string;
-  config: Record<string, any> | null;
   paymentMethods: PaymentMethodLimit[];
 }
 

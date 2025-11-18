@@ -1,12 +1,11 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { ColumnDef } from "@tanstack/react-table"
-import { IconArrowDown, IconArrowUp, IconDotsVertical } from "@tabler/icons-react"
+import { ColumnDef, Row } from "@tanstack/react-table"
+import { IconArrowDown, IconArrowUp } from "@tabler/icons-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import { format } from "date-fns"
-import { generateGcpLogLink, timestampToDate } from "@/lib/analytics/utils"
 import { ReportRecord } from "@/lib/types/reports/reportTable"
 import { Spinner } from "@/components/ui/spinner"
 import { useDownloadReport } from "@/hooks/useDownloadReport"
@@ -66,14 +65,15 @@ export const columns: ColumnDef<ReportRecord>[] = [
     accessorKey: "createdAt",
     enableHiding: false,
     enableSorting: true,
-    sortingFn: (rowA: any, rowB: any, columnId: string) => {
-      const dateA = timestampToDate(rowA.original[columnId])
-      const dateB = timestampToDate(rowB.original[columnId])
+    sortingFn: (rowA: Row<ReportRecord>, rowB: Row<ReportRecord>): number => {
+      const dateA = new Date(rowA.original.createdAt);
+      const dateB = new Date(rowB.original.createdAt);
 
-      const timeA = dateA?.getTime?.() ?? 0
-      const timeB = dateB?.getTime?.() ?? 0
+      const timeA = dateA.getTime() || 0;
+      const timeB = dateB.getTime() || 0;
 
-      return timeA === timeB ? 0 : timeA > timeB ? 1 : -1
+      if (timeA === timeB) return 0;
+      return timeA > timeB ? 1 : -1;
     },
     header: ({ column }) => {
       const isSorted = column.getIsSorted();
@@ -135,49 +135,52 @@ export const columns: ColumnDef<ReportRecord>[] = [
     enableGlobalFilter: false,
     enableHiding: false,
     id: "actions",
-    cell: ({ row }) => {
-      const isReady = row.original.status === 'done';
-      const reportId = row.original.id;
-
-      const { data: blob, isFetching, refetch } = useDownloadReport(reportId);
-
-      const handleDownload = async () => {
-        const { data } = await refetch(); // fetch the blob on click
-        if (!data) return;
-
-        const url = URL.createObjectURL(data);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `report_${reportId}.xlsx`;
-        a.click();
-        URL.revokeObjectURL(url);
-      };
-
-      return (
-        <div className="max-w-[91px]">
-          {!isReady
-            ? <div
-              className="flex items-center gap-2"
-            >
-              <Spinner />
-            </div>
-            : <Button
-              variant={"outline"}
-              size={"sm"}
-              className="cursor-pointer"
-              disabled={!isReady || isFetching}
-              onClick={handleDownload}
-            >
-              {isFetching ?
-                <>
-                  <Spinner />
-                  Downloading…
-                </>
-                : 'Download'}
-            </Button>
-          }
-        </div>
-      )
-    },
+    cell: (props) => <DownloadCell {...props} />
   }
 ]
+
+
+const DownloadCell = ({ row }: { row: Row<ReportRecord> }) => {
+  const isReady = row.original.status === "done";
+  const reportId = row.original.id;
+
+  const { isFetching, refetch } = useDownloadReport(reportId);
+
+  const handleDownload = async () => {
+    const { data } = await refetch();
+    if (!data) return;
+    const url = URL.createObjectURL(data);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `report_${reportId}.xlsx`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <div className="max-w-[91px]">
+      {!isReady ? (
+        <div className="flex items-center gap-2">
+          <Spinner />
+        </div>
+      ) : (
+        <Button
+          variant="outline"
+          size="sm"
+          disabled={!isReady || isFetching}
+          onClick={handleDownload}
+        >
+          {isFetching ? (
+            <>
+              <Spinner />
+              Downloading…
+            </>
+          ) : (
+            "Download"
+          )}
+        </Button>
+      )}
+    </div>
+  );
+};
+

@@ -1,7 +1,7 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, Row } from "@tanstack/react-table"
 import { IconArrowDown, IconArrowUp, IconDotsVertical } from "@tabler/icons-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
@@ -130,9 +130,9 @@ export const columns: ColumnDef<BaseTransaction>[] = [
     accessorKey: "dateRequest",
     enableHiding: false,
     enableSorting: true,
-    sortingFn: (rowA: any, rowB: any, columnId: string) => {
-      const dateA = timestampToDate(rowA.original[columnId])
-      const dateB = timestampToDate(rowB.original[columnId])
+    sortingFn: (rowA: Row<BaseTransaction>, rowB: Row<BaseTransaction>) => {
+      const dateA = timestampToDate(rowA.original.dateRequest)
+      const dateB = timestampToDate(rowB.original.dateRequest)
 
       const timeA = dateA?.getTime?.() ?? 0
       const timeB = dateB?.getTime?.() ?? 0

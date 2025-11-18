@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const ReportResumeSchema = z.object({
+export const ReportResumePathSchema = z.object({
   merchants: z.array(
     z.object({
       merchantName: z.string(),
@@ -47,4 +47,4 @@ export const ReportResumeSchema = z.object({
   )
 });
 
-export type ReportResumeType = z.infer<typeof ReportResumeSchema>["merchants"];
+export type ReportResumePathSchemaType = z.infer<typeof ReportResumePathSchema>["merchants"];

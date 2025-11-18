@@ -2,46 +2,46 @@
 
 import * as React from "react"
 import { CalendarIcon } from "lucide-react"
-
+import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { DateRange } from "react-day-picker"
 
-function formatDate(date: Date | undefined) {
-  if (!date) return ""
-  return date.toLocaleDateString("en-US", {
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  })
+type Filters = {
+  dateRange?: DateRange
+  dateRangeTrx: DateRange
 }
 
-export function RangePickerButton({ dateRange, setDateRange }: {
-  dateRange: DateRange | undefined
-  setDateRange: React.Dispatch<React.SetStateAction<DateRange | undefined>>
+export function RangePickerButton({
+  filters,
+  setFilters,
+}: {
+  filters: Filters
+  setFilters: React.Dispatch<React.SetStateAction<Filters>>
 }) {
   const [open, setOpen] = React.useState(false)
+  const dateRange = filters.dateRangeTrx
 
   const value =
     dateRange?.from && dateRange?.to
-      ? `${formatDate(dateRange.from)} - ${formatDate(dateRange.to)}`
+      ? `${format(dateRange.from, "dd MMMM yyyy")} - ${format(
+        dateRange.to,
+        "dd MMMM yyyy"
+      )}`
       : ""
 
   return (
     <div className="flex flex-col gap-3">
       <div className="relative flex gap-2">
-        <Input id="date"
+        <Input
+          id="date"
           value={value}
           placeholder="Select a date range"
           className="text-sm bg-background pr-10"
           readOnly
+          onClick={() => setOpen(true)}
           onKeyDown={(e) => {
             if (e.key === "ArrowDown") {
               e.preventDefault()
@@ -49,6 +49,7 @@ export function RangePickerButton({ dateRange, setDateRange }: {
             }
           }}
         />
+
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
@@ -60,6 +61,7 @@ export function RangePickerButton({ dateRange, setDateRange }: {
               <span className="sr-only">Select date</span>
             </Button>
           </PopoverTrigger>
+
           <PopoverContent
             className="w-auto overflow-hidden p-0"
             align="end"
@@ -68,9 +70,15 @@ export function RangePickerButton({ dateRange, setDateRange }: {
           >
             <Calendar
               mode="range"
-              defaultMonth={dateRange?.from}
               selected={dateRange}
-              onSelect={setDateRange}
+              defaultMonth={dateRange?.from ?? new Date()}
+              onSelect={(range) => {
+                setFilters((prev) => ({
+                  ...prev,
+                  dateRange: range ?? prev.dateRange,
+                  dateRangeTrx: range ?? prev.dateRangeTrx,
+                }))
+              }}
               className="rounded-lg border shadow-sm"
             />
           </PopoverContent>

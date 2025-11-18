@@ -14,7 +14,6 @@ export interface PayInRequest {
   payinExpirationTime: string;
   url_OK: string;
   url_ERROR: string;
-  objData?: Record<string, any>;
 }
 
 export interface PayInResponse {

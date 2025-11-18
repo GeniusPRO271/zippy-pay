@@ -1,5 +1,5 @@
 import { CountryProviderMethod, CountryProviders } from "../types/providers/getProvidersByCountry";
-import { BaseTransaction, ChartDataItem, ChartDataWeekly, CountryTransactionSummary, DailyTransactionSummary, FirestoreTimestamp, MonthlyRevenue, RevenueCountry, RevenueEntry } from "../types/transaction";
+import { BaseTransaction, ChartDataItem, ChartDataWeekly, CountryTransactionSummary, DailyTransactionSummary, FirestoreTimestamp, MonthlyRevenue, RevenueCountry } from "../types/transaction";
 
 /**
  * A helper function to convert a FirestoreTimestamp to a JavaScript Date object.
@@ -934,7 +934,6 @@ export function extractCountryProviders(
         code: methodId,
         minLimit: null,
         maxLimit: null,
-        config: null,
       }
       provider.methods.push(method)
     }
