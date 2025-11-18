@@ -1,3 +1,4 @@
+"use client"
 import { ReportRecord } from "../types/reports/reportTable";
 import { CreateReportSchemaType } from "../zod/createReport";
 
