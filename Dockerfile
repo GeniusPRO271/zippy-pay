@@ -1,22 +1,25 @@
-# Use Debian-based Bun (NOT Alpine)
-FROM oven/bun:1
-
+# Build stage
+FROM node:20-slim AS builder
 WORKDIR /app
 
-# Copy package files
 COPY package.json bun.lock* ./
+RUN npm ci
 
-# Install dependencies using Bun
-RUN bun install --production
-
-# Copy the rest of the app
 COPY . .
+RUN npm run build
 
-# Build the Next.js app using Bun
-RUN bun run build
+# Production stage
+FROM node:20-slim
+WORKDIR /app
 
-# Expose port for Next.js
+ENV NODE_ENV=production
+
+COPY package.json package-lock.json* ./
+RUN npm ci --omit=dev
+
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY next.config.* ./
+
 EXPOSE 3000
-
-# Start Next.js production server with Bun
-CMD ["bun", "start"]
+CMD ["npm", "start"]
