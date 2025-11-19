@@ -14,7 +14,7 @@ import { ReportFinanceStep1Schema } from "@/lib/zod/reportFinancePath"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RangePickerButton } from "../../../utils/timeIntervalSelction"
-import { extractCountryProviders } from "@/lib/analytics/utils"
+import { extractCountryProviders, extractCountryProvidersByMerchant, filterTransactionsByCriteria } from "@/lib/analytics/utils"
 
 export const getMerchantName = (input: string): string => {
   const match = input.match(/^\d{4}([A-Za-z]+)-[A-Za-z0-9]+$/)
@@ -65,14 +65,14 @@ export default function ReportFinanceStep1({
   const { watch, getValues, setValue, control } = formLocal
 
   const transactions = form.watch('transactions')
-
+  const merchantName = watch("merchantName")
 
   const providers: CountryProviders[] = React.useMemo(() => {
-    if (dateRange.dateRange.from && dateRange.dateRange.to) {
-      return extractCountryProviders(transactions, dateRange.dateRange.from, dateRange.dateRange.to)
+    if (dateRange.dateRange.from && dateRange.dateRange.to && merchantName) {
+      return extractCountryProvidersByMerchant(transactions, dateRange.dateRange.from, dateRange.dateRange.to, merchantName)
     }
     return []
-  }, [dateRange])
+  }, [dateRange, merchantName])
 
   const countries = providers.map((country) => ({
     value: country.id,
@@ -85,15 +85,17 @@ export default function ReportFinanceStep1({
   }))
 
   const onSubmitLocalForm = (data: z.infer<typeof ReportFinanceStep1Schema>) => {
+    const transactionsFilter = filterTransactionsByCriteria(transactions, data)
+    console.log("TRANSACTION AFTER CRITERIA: ", transactionsFilter)
     form.reset({
       reportType: "finance",
       parameters: {
         ...form.getValues().parameters,
         ...data
       },
-      transactions: form.getValues("transactions")
-    })
+      transactions: transactionsFilter
 
+    })
     onNext()
   }
 
@@ -101,7 +103,7 @@ export default function ReportFinanceStep1({
     formLocal.reset({
       merchantName: formLocal.getValues("merchantName"),
     })
-  }, [dateRange])
+  }, [dateRange, merchantName])
 
   return (
     <Card className="w-full h-full overflow-hidden">
@@ -164,7 +166,7 @@ export default function ReportFinanceStep1({
             )}
           />
 
-          {watch("countryId") && (dateRange.dateRange.from && dateRange.dateRange.to) && (
+          {watch("countryId") && watch("merchantName") && (dateRange.dateRange.from && dateRange.dateRange.to) && (
             <Controller
               name="providers"
               control={control}
@@ -226,7 +228,7 @@ export function CountrySelect({ value, onChange, countries }: CountrySelectProps
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between">
+        <Button variant="outline" role="combobox" aria-expanded={open} className="w-[200px] justify-between" disabled={countries.length <= 0}>
           {selected ? selected.label : "Select country..."}
           <ChevronsUpDown className="opacity-50" />
         </Button>

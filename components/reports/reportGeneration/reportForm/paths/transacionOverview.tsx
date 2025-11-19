@@ -28,14 +28,14 @@ export default function ReportGeneratorTransactionOverview(
   }
 
   return (
-    <Card>
+    <Card className="w-full h-full overflow-hidden">
       <CardHeader>
         <CardTitle>Transactions Overview</CardTitle>
         <CardDescription>
           This is the data that will be use on the report
         </CardDescription>
       </CardHeader>
-      <CardContent>
+      <CardContent className="h-full overflow-y-scroll">
         <ReportGeneratorTransactionTable transactions={transaction} />
       </CardContent>
       <CardFooter>

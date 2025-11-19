@@ -54,7 +54,7 @@ export default function ReportResumeStep1({
 
 
   return (
-    <Card className="w-full">
+    <Card className="w-full h-full overflow-hidden">
       <CardHeader>
         <CardTitle>Commissions</CardTitle>
         <CardDescription>
@@ -65,7 +65,7 @@ export default function ReportResumeStep1({
         </CardAction>
       </CardHeader>
 
-      <CardContent className="max-h-[441px] overflow-y-scroll">
+      <CardContent className="h-full overflow-y-scroll">
         {merchants.map((merchant, merchantIndex) => (
           <div key={merchant.merchantName} className="mt-2">
             <h2 className="text-xl font-bold">{merchant.merchantName}</h2>

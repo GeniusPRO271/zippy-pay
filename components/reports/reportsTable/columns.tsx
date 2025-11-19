@@ -9,6 +9,7 @@ import { format } from "date-fns"
 import { ReportRecord } from "@/lib/types/reports/reportTable"
 import { Spinner } from "@/components/ui/spinner"
 import { useDownloadReport } from "@/hooks/useDownloadReport"
+import { toast } from "sonner"
 
 export const columns: ColumnDef<ReportRecord>[] = [
   {
@@ -26,11 +27,26 @@ export const columns: ColumnDef<ReportRecord>[] = [
     accessorKey: "merchantName",
     header: "Merchant",
     cell: ({ row }) => {
+      const createdAt = new Date(row.original.createdAt);
+      const now = new Date();
+
+      // Difference in minutes
+      const diffMs = now.getTime() - createdAt.getTime();
+      const diffMinutes = diffMs / (1000 * 60);
+
+      const isNew = diffMinutes < 15;
+
       return (
-        <div className="w-50 text-ellipsis overflow-hidden">
-          {row.original.merchantName}
+        <div className="w-50 text-ellipsis overflow-hidden flex items-center gap-2">
+          <span>{row.original.merchantName}</span>
+
+          {isNew && (
+            <Badge className="rounded-full px-2 font-mono tabular-nums text-[10px] ">
+              New
+            </Badge>
+          )}
         </div>
-      )
+      );
     },
   },
   {
@@ -144,43 +160,66 @@ const DownloadCell = ({ row }: { row: Row<ReportRecord> }) => {
   const isReady = row.original.status === "done";
   const reportId = row.original.id;
 
-  const { isFetching, refetch } = useDownloadReport(reportId);
+  // Hook
+  const { refetch, isEnabled, error, isLoading, isPending } = useDownloadReport(reportId);
 
-  const handleDownload = async () => {
-    const { data } = await refetch();
-    if (!data) return;
-    const url = URL.createObjectURL(data);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `report_${reportId}.xlsx`;
-    a.click();
-    URL.revokeObjectURL(url);
+  const handleDownload = () => {
+    toast.promise(
+      async () => {
+        const result = await refetch();
+
+        if (result.error) throw new Error("Download failed");
+        if (!result.data) throw new Error("No file received");
+
+        const blobUrl = URL.createObjectURL(result.data);
+
+        const a = document.createElement("a");
+        a.href = blobUrl;
+        a.download = `report_${reportId}.xlsx`;
+        a.click();
+
+        URL.revokeObjectURL(blobUrl);
+
+        return { name: `Report ${reportId}` };
+      },
+      {
+        loading: "Downloading report…",
+        success: `Your report has been downloaded`,
+        error: "Could not download the report",
+      }
+    );
   };
 
   return (
-    <div className="max-w-[91px]">
-      {!isReady ? (
-        <div className="flex items-center gap-2">
-          <Spinner />
-        </div>
-      ) : (
+    <div className="max-w-[120px] ">
+      {/* Report NOT READY */}
+      {!isReady && (
         <Button
           variant="outline"
           size="sm"
-          disabled={!isReady || isFetching}
+          disabled={true}
+        >
+          <div className="flex items-center gap-2">
+            <Spinner />
+            Generating...
+          </div>
+        </Button>
+      )}
+
+      {/* Report READY */}
+      {isReady && (
+        <Button
+          className="cursor-pointer"
+          variant="outline"
+          size="sm"
+          disabled={!isEnabled || isLoading}
           onClick={handleDownload}
         >
-          {isFetching ? (
-            <>
-              <Spinner />
-              Downloading…
-            </>
-          ) : (
-            "Download"
-          )}
+          <div className="flex items-center gap-2">
+            Download
+          </div>
         </Button>
       )}
     </div>
   );
 };
-

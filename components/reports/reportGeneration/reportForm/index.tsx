@@ -10,6 +10,7 @@ import { BaseTransaction } from '@/lib/types/transaction'
 import { ResumeReportPath } from './paths/resumeReport/resumeReportPath'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCreateReport } from '@/hooks/useGenerateReport'
+import { toast } from 'sonner'
 
 interface ReportFormProps {
   transactions: BaseTransaction[]
@@ -54,10 +55,14 @@ export default function ReportForm({ transactions, setShow }: ReportFormProps) {
     }
   }
 
-  const { mutate } = useCreateReport()
+  const { mutateAsync } = useCreateReport()
   const onSubmit = (data: CreateReportSchemaType) => {
-    console.log('Form submitted:', data)
-    mutate(data)
+    toast.promise(
+      mutateAsync(data),
+      {
+        loading: "We are creating your report...",
+      }
+    )
     setShow(false)
   }
 

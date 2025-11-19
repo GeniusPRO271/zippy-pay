@@ -1,5 +1,8 @@
+import { getMerchantName } from "@/components/reports/reportGeneration/reportForm/paths/financialReport/step-1";
 import { CountryProviderMethod, CountryProviders } from "../types/providers/getProvidersByCountry";
 import { BaseTransaction, ChartDataItem, ChartDataWeekly, CountryTransactionSummary, DailyTransactionSummary, FirestoreTimestamp, MonthlyRevenue, RevenueCountry } from "../types/transaction";
+import { ReportFinancePathSchemaType, ReportFinanceStep1Schema } from "../zod/reportFinancePath";
+import z from "zod";
 
 /**
  * A helper function to convert a FirestoreTimestamp to a JavaScript Date object.
@@ -479,6 +482,7 @@ export function getLast5WeeksSuccessRateChartData(
   endDate: Date
 ): ChartDataWeekly[] {
   const MS_IN_DAY = 1000 * 60 * 60 * 24;
+
   const MS_IN_WEEK = 7 * MS_IN_DAY;
 
   const chartData: ChartDataWeekly[] = [];
@@ -940,4 +944,117 @@ export function extractCountryProviders(
   }
 
   return Array.from(countries.values())
+}
+
+/**
+ * Extracts CountryProviders[] from a list of BaseTransaction,
+ * filtering only those inside the [from, to] date range
+ * AND matching a specific merchant name.
+ */
+export function extractCountryProvidersByMerchant(
+  transactions: BaseTransaction[],
+  from: Date,
+  to: Date,
+  merchantName: string
+): CountryProviders[] {
+  const fromMs = from.getTime();
+  const toMs = to.getTime();
+  const targetMerchant = merchantName.toLowerCase();
+
+  const countries = new Map<string, CountryProviders>();
+
+  for (const tx of transactions) {
+    const txDate = timestampToDate(tx.dateRequest);
+    const txMs = txDate.getTime();
+
+    if (txMs < fromMs || txMs > toMs) continue;
+
+    if (getMerchantName(tx.merchantName).toLowerCase() !== targetMerchant) continue;
+
+    const isoCode = tx.country.toUpperCase();
+
+    if (!countries.has(isoCode)) {
+      countries.set(isoCode, {
+        id: isoCode.toLowerCase(),
+        name: isoCode,
+        isoCode,
+        currencyCode: tx.currency || null,
+        providers: [],
+      });
+    }
+
+    const country = countries.get(isoCode)!;
+
+    const providerId = tx.provider.toLowerCase();
+    let provider = country.providers.find((p) => p.id === providerId);
+
+    if (!provider) {
+      provider = {
+        id: providerId,
+        name: capitalizeFirstLetter(tx.provider),
+        description: null,
+        methods: [],
+      };
+      country.providers.push(provider);
+    }
+
+    const methodId = tx.payMethod.toLowerCase();
+
+    if (!provider.methods.some((m) => m.id === methodId)) {
+      provider.methods.push({
+        id: methodId,
+        name: capitalizeFirstLetter(tx.payMethod),
+        code: methodId,
+        minLimit: null,
+        maxLimit: null,
+      });
+    }
+  }
+
+  return Array.from(countries.values());
+}
+
+
+export function filterTransactionsByCriteria(
+  transactions: BaseTransaction[],
+  params: z.infer<typeof ReportFinanceStep1Schema>
+): BaseTransaction[] {
+  const merchant = params.merchantName.toLowerCase();
+  const country = params.countryId.toUpperCase();
+
+  // Build fast lookup tables
+  const allowedProviders = new Map<
+    string,
+    Set<string> // allowed methods for this provider
+  >();
+
+  for (const p of params.providers) {
+    const providerId = p.providerId.toLowerCase();
+    const methods = new Set(
+      p.methods.map((m) => m.methodId.toLowerCase())
+    );
+
+    allowedProviders.set(providerId, methods);
+  }
+
+  return transactions.filter((tx) => {
+    // Merchant check
+    if (getMerchantName(tx.merchantName).toLowerCase() !== merchant) return false;
+
+
+    // Country check
+    if (tx.country.toUpperCase() !== country) return false;
+
+    const providerId = tx.provider.toLowerCase();
+    const methodId = tx.payMethod.toLowerCase();
+
+    // Check if provider exists in allowed list
+    if (!allowedProviders.has(providerId)) return false;
+
+    // Check if pay method is allowed for that provider
+    const allowedMethods = allowedProviders.get(providerId)!;
+    if (!allowedMethods.has(methodId)) return false;
+
+    return true;
+  });
 }
