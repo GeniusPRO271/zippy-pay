@@ -4,7 +4,7 @@ import { Control, Controller } from "react-hook-form";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { IconReportMoney, IconReportAnalytics } from "@tabler/icons-react";
+import { IconReportMoney, IconReportAnalytics, IconPercentage } from "@tabler/icons-react";
 import { CreateReportSchemaType } from "@/lib/zod/createReport";
 
 export default function ReportTypeSelect({
@@ -68,6 +68,25 @@ export default function ReportTypeSelect({
                 A high-level overview of all countries aggregated by time ranges.
               </p>
             </div>
+            <div
+              onClick={() => field.onChange("daily")}
+              className={`flex flex-col gap-1 p-4 rounded-2xl transition cursor-pointer
+              border hover:bg-muted/50
+              ${field.value === "daily" ? "border-solid border-white bg-muted/50" : "border-dashed"}`}
+            >
+              <div className="flex items-center justify-between">
+                <div className="flex items-start gap-1">
+                  <IconPercentage />
+                  <h3 className="text-lg font-semibold">Daily Report</h3>
+                </div>
+                <Badge className="text-xs h-5">.xlsx</Badge>
+              </div>
+
+              <p className="text-sm text-muted-foreground mt-1">
+                A multi-sheet Excel with resume of transaction group daily and monthly.
+              </p>
+            </div>
+
           </CardContent>
 
           <CardFooter className="w-full justify-end">

@@ -2,14 +2,11 @@
 
 import { FieldErrors, UseFormReturn } from 'react-hook-form'
 import { CreateReportSchemaType } from '@/lib/zod/createReport'
-import { Step } from '@/components/ui/stepHandler'
 import { BaseTransaction } from '@/lib/types/transaction'
 import React from 'react'
 import { ReportResumePathSchemaType } from '@/lib/zod/reportResumeForm'
-import ReportResumeStep1 from './step-1'
-import ReportGeneratorTransactionOverview from '../transacionOverview'
 
-interface ResumeReportPathProps {
+interface DailyReportPathProps {
   step: number
   direction: 'forward' | 'backward'
   form: UseFormReturn<CreateReportSchemaType>
@@ -27,18 +24,14 @@ export function ResumeReportPath({
   onNext,
   onBack,
   onSubmit,
-}: ResumeReportPathProps) {
+}: DailyReportPathProps) {
 
   const transactionsResumeReport = form.watch("transactions")
 
   return (
     <>
-      <Step isActive={step === 1} isPast={step > 1} direction={direction}>
-        <ReportResumeStep1 form={form} errors={errors} onNext={() => {
-          onNext()
-          onSubmit()
-        }} onBack={onBack} merchants={groupByMerchant(transactionsResumeReport)} />
-      </Step>
+      {/* <Step isActive={step === 1} isPast={step > 1} direction={direction}> */}
+      {/* </Step> */}
       {/* <Step isActive={step === 2} isPast={step > 2} direction={direction}> */}
       {/*   <ReportGeneratorTransactionOverview form={form} transaction={transactionsResumeReport} onNext={onSubmit} onBack={onBack} /> */}
       {/* </Step> */}

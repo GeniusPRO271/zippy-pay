@@ -6,8 +6,7 @@ const chartConfig = {
   visitors: {
     label: "Success",
     color: "var(--chart-1)",
-  },
-  desktop: {
+  }, desktop: {
     label: "Fail",
     color: "var(--chart-1)",
   },

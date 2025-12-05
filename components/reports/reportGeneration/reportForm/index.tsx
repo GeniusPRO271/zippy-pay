@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { CreateReportSchema, CreateReportSchemaType } from '@/lib/zod/createReport'
 import { Step } from '@/components/ui/stepHandler'
@@ -67,6 +67,13 @@ export default function ReportForm({ transactions, setShow }: ReportFormProps) {
   }
 
 
+  useEffect(() => {
+
+    if (reportType === 'daily') {
+      onSubmit(form.getValues())
+    }
+
+  }, [reportType])
   return (
     <div className="w-full h-full ">
       <div className="relative h-full overflow-hidden">

@@ -16,15 +16,11 @@ export interface BaseTransaction {
   zippy_test: boolean;
   url_OK: string;
   url_ERROR: string;
-  dateRequest: FirestoreTimestamp;
+  dateRequest: Date;
   code: number;
   status: 'pending' | 'ok' | 'error';
 }
 
-export interface FirestoreTimestamp {
-  _seconds: number;
-  _nanoseconds: number;
-}
 
 export interface DailyTransactionSummary {
   date: string;

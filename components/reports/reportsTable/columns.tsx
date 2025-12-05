@@ -212,7 +212,7 @@ const DownloadCell = ({ row }: { row: Row<ReportRecord> }) => {
           className="cursor-pointer"
           variant="outline"
           size="sm"
-          disabled={!isEnabled || isLoading}
+          disabled={!isEnabled}
           onClick={handleDownload}
         >
           <div className="flex items-center gap-2">

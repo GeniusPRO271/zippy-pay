@@ -70,6 +70,11 @@ export default function AnalyticChart3({ data }: { data: ChartDataItem[] }) {
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    const text = totalCount.toLocaleString()
+                    const baseFont = 28
+                    const length = text.length
+                    const fontSize = Math.max(8, baseFont - Math.max(0, (length - 6) * 2))
+
                     return (
                       <text
                         x={viewBox.cx}
@@ -80,14 +85,21 @@ export default function AnalyticChart3({ data }: { data: ChartDataItem[] }) {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          style={{
+                            fill: "var(--foreground)",
+                            fontSize: `${fontSize}px`,
+                            fontWeight: 700,
+                          }}
                         >
-                          {totalCount.toLocaleString()}
+                          {text}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          y={(viewBox.cy || 0) + fontSize * 0.9}
+                          style={{
+                            fill: "var(--muted-foreground)",
+                            fontSize: "12px",
+                          }}
                         >
                           Total Items
                         </tspan>

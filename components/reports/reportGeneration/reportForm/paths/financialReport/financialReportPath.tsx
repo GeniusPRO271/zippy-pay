@@ -4,12 +4,12 @@ import { FieldErrors, UseFormReturn } from 'react-hook-form'
 import { CreateReportSchemaType } from '@/lib/zod/createReport'
 import { Step } from '@/components/ui/stepHandler'
 import ReportFinanceStep1 from './step-1'
-import React, { useMemo, useState } from 'react'
-import { filterTransactionsByDateRange } from '@/lib/analytics/utils'
+import React, { useState, useMemo } from 'react'
 import ReportFinanceStep2 from './step-2'
 import ReportGeneratorTransactionOverview from '../transacionOverview'
+import { useFinancialReportWorker } from '@/lib/analytics/useFinancialReportWorker'
 
-type Filters = {
+export type FinancalReportPathFilters = {
   dateRange: {
     from?: Date
     to?: Date
@@ -19,7 +19,6 @@ type Filters = {
     to?: Date
   }
 }
-
 
 interface FinancialReportPathProps {
   step: number
@@ -38,87 +37,96 @@ export function FinancialReportPath({
   errors,
   onNext,
   onBack,
-  onSubmit,
 }: FinancialReportPathProps) {
 
   const transactions = form.watch("transactions");
 
   const initialDateRange = useMemo(() => {
-    if (transactions.length === 0) {
+    if (!transactions || transactions.length === 0) {
       return {
-        dateRange: {
-          from: undefined,
-          to: undefined
-        },
-        originalDateRange: {
-          from: undefined,
-          to: undefined
-        }
-      }
+        dateRange: { from: undefined, to: undefined },
+        originalDateRange: { from: undefined, to: undefined },
+      };
     }
 
-    const dates = transactions.map(t => new Date(t.dateRequest._seconds * 1000))
+    let min = Infinity;
+    let max = -Infinity;
 
-    const oldestDate = new Date(Math.min(...dates.map(d => d.getTime())))
-    const latestDate = new Date(Math.max(...dates.map(d => d.getTime())))
+    for (let i = 0; i < transactions.length; i++) {
+      const t = transactions[i];
+      const ts = t.dateRequest?._seconds
+        ? t.dateRequest._seconds * 1000
+        : t.request_timestamp ?? 0;
+
+      if (ts < min) min = ts;
+      if (ts > max) max = ts;
+    }
 
     return {
       dateRange: {
-        from: oldestDate,
-        to: latestDate
+        from: new Date(min),
+        to: new Date(max),
       },
       originalDateRange: {
-        from: oldestDate,
-        to: latestDate
-      }
-    }
-  }, [transactions])
+        from: new Date(min),
+        to: new Date(max),
+      },
+    };
+  }, [transactions]);
 
-  const [dateRange, setDateRange] = useState<Filters>(initialDateRange)
+  const [dateRange, setDateRange] =
+    useState<FinancalReportPathFilters>(initialDateRange);
 
+  const {
+    loading,
+    uniqueMerchantNames,
+  } = useFinancialReportWorker({
+    transactions,
+    dateRange,
+  });
 
-  const transactionsFinancialReport = useMemo(() => {
-    const { from, to } = dateRange.dateRange
-
-    if (!from || !to) {
-      const { from: fromOriginal, to: toOriginal } = dateRange.originalDateRange
-
-      if (fromOriginal && toOriginal) {
-        const transactionsOriginal = filterTransactionsByDateRange(
-          transactions,
-          fromOriginal,
-          toOriginal
-        )
-        return transactionsOriginal.filter(trx => trx.status === "ok")
-      }
-
-      return transactions.filter(trx => trx.status === "ok")
-    }
-
-    const filtered = filterTransactionsByDateRange(transactions, from, to)
-    return filtered.filter(trx => trx.status === "ok")
-  }, [transactions, dateRange])
-
-  const uniqueMerchantNames = [
-    ...new Set(transactionsFinancialReport.map(trx => trx.merchantName))
-  ];
-
-
-
+  if (loading) {
+    return (
+      <Step isActive={step === 1} isPast={step > 1} direction={direction}>
+        <div className="w-full h-full flex items-center justify-center">
+          <span className="text-xs text-muted-foreground">
+            {loading ? "Loading form..." : "No analytics available for current filters."}
+          </span>
+        </div>
+      </Step>
+    );
+  }
   return (
     <>
+      {/* STEP 1 — Filtering UI */}
       <Step isActive={step === 1} isPast={step > 1} direction={direction}>
-        <ReportFinanceStep1 form={form} errors={errors} onNext={onNext} onBack={onBack} merchantsNames={uniqueMerchantNames} dateRange={dateRange} setDateRange={setDateRange} />
+        <ReportFinanceStep1
+          form={form}
+          errors={errors}
+          onNext={onNext}
+          onBack={onBack}
+          merchantsNames={uniqueMerchantNames}
+          dateRange={dateRange}
+          setDateRange={setDateRange}
+        />
       </Step>
 
-      {form.watch("parameters.providers") &&
+      {/* STEP 2 — Providers */}
+      {form.watch("parameters.providers") && (
         <Step isActive={step === 2} isPast={step > 2} direction={direction}>
           <ReportFinanceStep2 form={form} onNext={onNext} onBack={onBack} />
         </Step>
-      }
-      <Step isActive={step === 3} isPast={step > 3} direction={direction}>
-        <ReportGeneratorTransactionOverview form={form} transaction={transactionsFinancialReport} onNext={onSubmit} onBack={onBack} />
-      </Step>
+      )}
+
+      {/* STEP 3 — Final Overview */}
+      {/* <Step isActive={step === 3} isPast={step > 3} direction={direction}> */}
+      {/*   <ReportGeneratorTransactionOverview */}
+      {/*     form={form} */}
+      {/*     transaction={transactionsFinancialReport} */}
+      {/*     onNext={onSubmit} */}
+      {/*     onBack={onBack} */}
+      {/*   /> */}
+      {/* </Step> */}
     </>
-  )
+  );
 }

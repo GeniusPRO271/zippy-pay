@@ -15,7 +15,7 @@ export const ReportTransactionSchema = z.object({
   quantity: z.string(),
   commerceId: z.string(),
   commerceReqId: z.string(),
-  email: z.string().email(),
+  email: z.string(),
   name: z.string(),
   request_timestamp: z.coerce.number(),
   country: z.string(),
@@ -23,8 +23,8 @@ export const ReportTransactionSchema = z.object({
   payMethod: z.string(),
   payinExpirationTime: z.string(),
   zippy_test: z.boolean(),
-  url_OK: z.string().url(),
-  url_ERROR: z.string().url(),
+  url_OK: z.string(),
+  url_ERROR: z.string(),
   dateRequest: FirestoreTimestampSchema,
   code: z.number(),
   status: z.enum(["pending", "ok", "error"]),
@@ -35,6 +35,10 @@ export const CreateReportSchema = z.discriminatedUnion("reportType", [
   z.object({
     reportType: z.literal("finance"),
     parameters: ReportFinancePathSchema,
+    transactions: z.array(ReportTransactionSchema)
+  }),
+  z.object({
+    reportType: z.literal("daily"),
     transactions: z.array(ReportTransactionSchema)
   }),
   z.object({

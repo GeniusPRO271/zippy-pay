@@ -14,7 +14,7 @@ import { ReportFinanceStep1Schema } from "@/lib/zod/reportFinancePath"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { RangePickerButton } from "../../../utils/timeIntervalSelction"
-import { extractCountryProviders, extractCountryProvidersByMerchant, filterTransactionsByCriteria } from "@/lib/analytics/utils"
+import { extractCountryProvidersByMerchant, filterTransactionsByCriteria } from "@/lib/analytics/utils"
 
 export const getMerchantName = (input: string): string => {
   const match = input.match(/^\d{4}([A-Za-z]+)-[A-Za-z0-9]+$/)
@@ -86,7 +86,6 @@ export default function ReportFinanceStep1({
 
   const onSubmitLocalForm = (data: z.infer<typeof ReportFinanceStep1Schema>) => {
     const transactionsFilter = filterTransactionsByCriteria(transactions, data)
-    console.log("TRANSACTION AFTER CRITERIA: ", transactionsFilter)
     form.reset({
       reportType: "finance",
       parameters: {

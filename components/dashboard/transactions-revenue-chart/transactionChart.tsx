@@ -55,8 +55,6 @@ function TransactionChart({
 
   const totalShowState = filter?.total === true
 
-  console.log("totalState:", totalShowState)
-  console.log("filter revenue chart:", filter)
   return (
     <div className="flex flex-col items-center gap-4">
       <ChartContainer config={config} className="aspect-auto h-[250px] w-full">
@@ -126,7 +124,6 @@ function TransactionChart({
                     })}
                   </p>
                   {filteredPayload.map((entry) => {
-                    const color = colorMap[entry.name as string]
                     return (
                       <div
                         key={entry.name}
