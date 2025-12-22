@@ -12,7 +12,7 @@ export interface CreateReportResponse {
 export async function getAllTransactions(batchSize = 10000): Promise<BaseTransaction[]> {
   let page = 1;
   const limit = 1000;
-  let allData: BaseTransaction[] = [];
+  const allData: BaseTransaction[] = [];
 
   console.log("Starting transaction download...");
 

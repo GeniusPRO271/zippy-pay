@@ -160,8 +160,7 @@ const DownloadCell = ({ row }: { row: Row<ReportRecord> }) => {
   const isReady = row.original.status === "done";
   const reportId = row.original.id;
 
-  // Hook
-  const { refetch, isEnabled, error, isLoading, isPending } = useDownloadReport(reportId);
+  const { refetch, isEnabled } = useDownloadReport(reportId);
 
   const handleDownload = () => {
     toast.promise(

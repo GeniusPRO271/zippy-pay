@@ -75,7 +75,7 @@ function DetailSheet({ children, data }: { children: ReactNode, data: BaseTransa
               <TableRow>
                 <TableCell className="font-medium">Date Requested</TableCell>
                 <TableCell>
-                  {format(timestampToDate(data.dateRequest), "dd/MM/yyyy hh:mm")}
+                  {format(data.dateRequest, "dd/MM/yyyy hh:mm")}
                 </TableCell>
               </TableRow>
             </TableBody>

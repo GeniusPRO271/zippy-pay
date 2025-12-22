@@ -6,7 +6,6 @@ import { Step } from '@/components/ui/stepHandler'
 import ReportFinanceStep1 from './step-1'
 import React, { useState, useMemo } from 'react'
 import ReportFinanceStep2 from './step-2'
-import ReportGeneratorTransactionOverview from '../transacionOverview'
 import { useFinancialReportWorker } from '@/lib/analytics/useFinancialReportWorker'
 
 export type FinancalReportPathFilters = {
@@ -54,9 +53,7 @@ export function FinancialReportPath({
 
     for (let i = 0; i < transactions.length; i++) {
       const t = transactions[i];
-      const ts = t.dateRequest?._seconds
-        ? t.dateRequest._seconds * 1000
-        : t.request_timestamp ?? 0;
+      const ts = t.dateRequest ? new Date(t.dateRequest).getTime() : t.request_timestamp ?? 0
 
       if (ts < min) min = ts;
       if (ts > max) max = ts;

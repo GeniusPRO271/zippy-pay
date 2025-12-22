@@ -86,14 +86,14 @@ export function Page() {
     return () => clearTimeout(timeoutId)
   }, [transactions])
 
-  const setQuickRange = React.useCallback((range: "7days" | "30days" | "3months") => {
-    const now = new Date()
-    const from = new Date()
-    if (range === "7days") from.setDate(now.getDate() - 7)
-    else if (range === "30days") from.setDate(now.getDate() - 30)
-    else if (range === "3months") from.setMonth(now.getMonth() - 3)
-    setFilters((prev) => ({ ...prev, dateRange: { from, to: now } }))
-  }, [])
+  // const setQuickRange = React.useCallback((range: "7days" | "30days" | "3months") => {
+  //   const now = new Date()
+  //   const from = new Date()
+  //   if (range === "7days") from.setDate(now.getDate() - 7)
+  //   else if (range === "30days") from.setDate(now.getDate() - 30)
+  //   else if (range === "3months") from.setMonth(now.getMonth() - 3)
+  //   setFilters((prev) => ({ ...prev, dateRange: { from, to: now } }))
+  // }, [])
 
   if (isLoading) {
     return (

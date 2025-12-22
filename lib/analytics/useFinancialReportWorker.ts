@@ -96,11 +96,11 @@ export function useFinancialReportWorker({
     for (let i = 0; i < length; i++) {
       const t = transactions[i];
 
-      const ts =
-        (t.dateRequest?._seconds ?? 0) * 1000 ||
-        (typeof t.request_timestamp === "number"
+      const ts = t.dateRequest
+        ? new Date(t.dateRequest).getTime()
+        : typeof t.request_timestamp === "number"
           ? t.request_timestamp
-          : 0);
+          : 0
 
       timestamps[i] = ts;
       quantities[i] = Number(t.quantity || 0);

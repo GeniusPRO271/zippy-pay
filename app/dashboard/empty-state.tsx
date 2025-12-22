@@ -21,26 +21,35 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTransactions } from "@/hooks/transactions/useTransactions";
 import { Spinner } from "@/components/ui/spinner";
 
-function convertFirestoreTimestamp(obj: any): any {
-  if (!obj || typeof obj !== "object") return obj;
 
-  if (
-    typeof obj._seconds === "number" &&
-    typeof obj._nanoseconds === "number"
-  ) {
-    return new Date(
-      obj._seconds * 1000 + obj._nanoseconds / 1_000_000
-    ).toISOString();
-  }
-
-  return obj;
+interface FirestoreTimestamp {
+  _seconds: number
+  _nanoseconds: number
 }
 
-function normalizeTransaction(t: any): BaseTransaction {
+// ----- Helpers -----
+
+function convertFirestoreTimestamp(obj: unknown): string | unknown {
+  if (!obj || typeof obj !== "object") return obj
+
+  const candidate = obj as FirestoreTimestamp
+  if (
+    typeof candidate._seconds === "number" &&
+    typeof candidate._nanoseconds === "number"
+  ) {
+    return new Date(
+      candidate._seconds * 1000 + candidate._nanoseconds / 1_000_000
+    ).toISOString()
+  }
+
+  return obj
+}
+
+function normalizeTransaction(t: Partial<BaseTransaction>): BaseTransaction {
   return {
     ...t,
-    dateRequest: convertFirestoreTimestamp(t.dateRequest),
-  };
+    dateRequest: convertFirestoreTimestamp(t.dateRequest) as string,
+  } as BaseTransaction
 }
 
 export function EmptyState({
@@ -102,9 +111,6 @@ export function EmptyState({
     }
   };
 
-  /* ------------------------------------------------------
-     🔥 Parse JSON or NDJSON and convert dateRequest
-  ------------------------------------------------------ */
   const parseJSONFile = async (file: File): Promise<BaseTransaction[]> => {
     const text = await file.text();
 

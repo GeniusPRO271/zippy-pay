@@ -131,8 +131,8 @@ export const columns: ColumnDef<BaseTransaction>[] = [
     enableHiding: false,
     enableSorting: true,
     sortingFn: (rowA: Row<BaseTransaction>, rowB: Row<BaseTransaction>) => {
-      const dateA = timestampToDate(rowA.original.dateRequest)
-      const dateB = timestampToDate(rowB.original.dateRequest)
+      const dateA = new Date(rowA.original.dateRequest)
+      const dateB = new Date(rowB.original.dateRequest)
 
       const timeA = dateA?.getTime?.() ?? 0
       const timeB = dateB?.getTime?.() ?? 0
@@ -191,7 +191,7 @@ export const columns: ColumnDef<BaseTransaction>[] = [
     },
     cell: ({ row }) => (
       <div>
-        {format(timestampToDate(row.original.dateRequest), "dd/MM/yyyy hh:mm")}
+        {format(row.original.dateRequest, "dd/MM/yyyy hh:mm")}
       </div>
     )
   },

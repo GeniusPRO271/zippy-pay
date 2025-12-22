@@ -17,13 +17,7 @@ interface DailyReportPathProps {
 }
 
 export function ResumeReportPath({
-  step,
-  direction,
   form,
-  errors,
-  onNext,
-  onBack,
-  onSubmit,
 }: DailyReportPathProps) {
 
   const transactionsResumeReport = form.watch("transactions")

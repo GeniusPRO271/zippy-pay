@@ -27,7 +27,7 @@ export default function ReportForm({ transactions, setShow }: ReportFormProps) {
     }
   });
 
-  const { control, watch, handleSubmit, formState: { errors } } = form;
+  const { control, watch } = form;
 
   const reportType = watch('reportType')
 
@@ -46,12 +46,12 @@ export default function ReportForm({ transactions, setShow }: ReportFormProps) {
     }
   }
 
-  const handleBack = () => {
-    if (step > 0) {
-      setDirection('backward')
-      setStep(step - 1)
-    }
-  }
+  // const handleBack = () => {
+  //   if (step > 0) {
+  //     setDirection('backward')
+  //     setStep(step - 1)
+  //   }
+  // }
 
   const { mutateAsync } = useCreateReport()
   const onSubmit = (data: CreateReportSchemaType) => {

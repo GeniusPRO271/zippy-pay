@@ -86,16 +86,21 @@ export default function ReportFinanceStep1({
 
   const onSubmitLocalForm = (data: z.infer<typeof ReportFinanceStep1Schema>) => {
     const transactionsFilter = filterTransactionsByCriteria(transactions, data)
-    form.reset({
-      reportType: "finance",
-      parameters: {
-        ...form.getValues().parameters,
-        ...data
-      },
-      transactions: transactionsFilter
+    const currentValues = form.getValues()
 
-    })
-    onNext()
+    if (currentValues.reportType === "finance") {
+      const transactionsFilter = filterTransactionsByCriteria(transactions, data)
+
+      form.reset({
+        reportType: "finance",
+        parameters: {
+          ...currentValues.parameters, // ✅ safe now
+          ...data
+        },
+        transactions: transactionsFilter
+      })
+      onNext()
+    }
   }
 
   useEffect(() => {

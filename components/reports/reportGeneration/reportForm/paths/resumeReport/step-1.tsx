@@ -40,16 +40,19 @@ export default function ReportResumeStep1({
 
 
   const onSubmitLocalForm = (data: z.infer<typeof ReportResumePathSchema>) => {
-    form.reset({
-      reportType: "resume",
-      parameters: {
-        ...form.getValues().parameters,
-        ...data
-      },
-      transactions: form.getValues("transactions")
-    })
+    const currentValues = form.getValues()
+    if (currentValues.reportType === "resume") {
+      form.reset({
+        reportType: "resume",
+        parameters: {
+          ...currentValues.parameters, // ✅ safe now
+          ...data
+        },
+        transactions: currentValues.transactions ?? []
+      })
 
-    onNext()
+      onNext()
+    }
   }
 
 
