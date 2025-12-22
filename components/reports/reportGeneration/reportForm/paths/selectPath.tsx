@@ -28,20 +28,16 @@ export default function ReportTypeSelect({
           </CardHeader>
 
           <CardContent className="h-full space-y-4">
-
-            {/* FINANCIAL REPORT */}
             <div
-              onClick={() => field.onChange("finance")}
-              className={`flex flex-col gap-1 p-4 rounded-2xl transition cursor-pointer
-              border hover:bg-muted/50
-              ${field.value === "finance" ? "border-solid border-white bg-muted/50" : "border-dashed"}`}
+              className={`flex flex-col gap-1 p-4 text-muted-foreground rounded-2xl transition 
+              bg-muted/50 `}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-start gap-1">
                   <IconReportMoney />
                   <h3 className="text-lg font-semibold">Financial Report</h3>
                 </div>
-                <Badge className="text-xs h-5">.xlsx</Badge>
+                <Badge className="text-xs h-5">coming soon...</Badge>
               </div>
 
               <p className="text-sm text-muted-foreground mt-1">
@@ -51,17 +47,15 @@ export default function ReportTypeSelect({
 
             {/* SUMMARY REPORT */}
             <div
-              onClick={() => field.onChange("resume")}
-              className={`flex flex-col gap-1 p-4 rounded-2xl transition cursor-pointer
-              border hover:bg-muted/50
-              ${field.value === "resume" ? "border-solid border-white bg-muted/50" : "border-dashed"}`}
+              className={`flex flex-col gap-1 p-4 text-muted-foreground rounded-2xl transition 
+              bg-muted/50 `}
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-start gap-1">
                   <IconReportAnalytics />
                   <h3 className="text-lg font-semibold">Summary Report</h3>
                 </div>
-                <Badge className="text-xs h-5">.xlsx</Badge>
+                <Badge className="text-xs h-5">coming soon...</Badge>
               </div>
 
               <p className="text-sm text-muted-foreground mt-1">

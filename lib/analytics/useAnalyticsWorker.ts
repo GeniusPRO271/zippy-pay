@@ -10,29 +10,23 @@ import type {
   LastWeekIncreaseResult,
 } from "@/lib/analytics/utils";
 
-
 export interface AnalyticsData {
   totalTransactions: number;
   avgOrderValue: number;
   successRate: number;
   totalRevenue: number;
-
   transactionByDateRange: BaseTransaction[];
-
   monthlyRevenue: { month: string; revenue: number }[];
   revenueChange: number;
   revenueByCountry: RevenueCountry[];
-
   transactionsForChart: DailyTransactionSummary[];
   countriesData: CountryTransactionSummary[];
   revenuByDay: { data: RevenueChartData[]; config: ChartConfig };
   chartConfig: ChartConfig;
   trxRate: ChartDataItem[];
-
   last5WeeksData: ChartDataWeekly[];
   last5WeeksAOVData: ChartDataWeekly[];
   last5WeeksSuccessRateData: ChartDataWeekly[];
-
   lastWeekIncreaseCount: LastWeekIncreaseResult;
   lastWeekIncreaseAOV: LastWeekIncreaseResult;
   lastWeekIncreaseSuccessRate: LastWeekIncreaseResult;
@@ -68,31 +62,25 @@ export interface ChartDataWeekly {
   amount: number;
 }
 
-
 type AnalyticsWorkerResultPayload = {
   totalTransactions: number;
   avgOrderValue: number;
   successRate: number;
   totalRevenue: number;
-
   monthlyRevenue: { month: string; revenue: number }[];
   revenueChange: number;
   revenueByCountry: RevenueCountry[];
-
   transactionsForChart: DailyTransactionSummary[];
   countriesData: CountryTransactionSummary[];
   revenuByDay: { data: RevenueChartData[]; config: ChartConfig };
   chartConfig: ChartConfig;
   trxRate: ChartDataItem[];
-
   last5WeeksData: ChartDataWeekly[];
   last5WeeksAOVData: ChartDataWeekly[];
   last5WeeksSuccessRateData: ChartDataWeekly[];
-
   lastWeekIncreaseCount: LastWeekIncreaseResult;
   lastWeekIncreaseAOV: LastWeekIncreaseResult;
   lastWeekIncreaseSuccessRate: LastWeekIncreaseResult;
-
   rowIndices: number[];
 };
 
@@ -139,38 +127,30 @@ export function useAnalyticsWorker({ data, from, to, filters }: UseAnalyticsWork
     workerRef.current = worker;
 
     worker.onmessage = (event: MessageEvent<AnalyticsWorkerResponse>) => {
-      const { data: message } = event;
-
+      const message = event.data;
       if (message.type === "result") {
         const core = message.payload;
         const currentData = dataRef.current;
 
         const indices = core.rowIndices || [];
-        const limitedIndices =
-          indices.length > MAX_DETAIL_ROWS ? indices.slice(0, MAX_DETAIL_ROWS) : indices;
+        const limited = indices.length > MAX_DETAIL_ROWS ? indices.slice(0, MAX_DETAIL_ROWS) : indices;
+        const rows = limited.map((i) => currentData[i]);
 
-        const rows: BaseTransaction[] = limitedIndices.map((idx) => currentData[idx]);
-
-        const {
-          rowIndices,
-          ...restCore
-        } = core;
+        const { rowIndices, ...rest } = core;
 
         setAnalyticsData({
-          ...restCore,
+          ...rest,
           transactionByDateRange: rows,
         });
 
         setLoading(false);
       } else if (message.type === "error") {
-        console.error("Analytics worker error:", message.message);
         setError(message.message);
         setLoading(false);
       }
     };
 
-    worker.onerror = (e) => {
-      console.error("Analytics worker crashed:", e);
+    worker.onerror = () => {
       setError("Analytics worker crashed");
       setLoading(false);
     };
@@ -181,46 +161,43 @@ export function useAnalyticsWorker({ data, from, to, filters }: UseAnalyticsWork
     };
   }, []);
 
-  // Send dataset to worker when data changes
   React.useEffect(() => {
     const worker = workerRef.current;
-    if (!worker) return;
-
-    if (!data || data.length === 0) {
+    if (!worker || !data || data.length === 0) {
       setAnalyticsData(null);
       return;
     }
 
     const length = data.length;
 
-    console.log("LENGTH OF ARRAY: ", length)
     const timestamps = new Float64Array(length);
     const quantities = new Float32Array(length);
     const statuses = new Uint8Array(length);
     const countryIndex = new Uint16Array(length);
     const methodIndex = new Uint16Array(length);
     const providerIndex = new Uint16Array(length);
+    const merchantIndex = new Uint16Array(length);
 
     const countryDict: string[] = [];
     const methodDict: string[] = [];
     const providerDict: string[] = [];
+    const merchantDict: string[] = [];
 
     const countryMap = new Map<string, number>();
     const methodMap = new Map<string, number>();
     const providerMap = new Map<string, number>();
+    const merchantMap = new Map<string, number>();
 
     for (let i = 0; i < length; i++) {
       const tx = data[i];
 
-      const ts = tx.dateRequest ? new Date(tx.dateRequest).getTime() : 0;
-      timestamps[i] = ts;
+      timestamps[i] = tx.dateRequest ? new Date(tx.dateRequest).getTime() : 0;
 
       const qty = Number(tx.quantity);
       quantities[i] = Number.isFinite(qty) ? qty : 0;
 
       statuses[i] = tx.status === "ok" ? 1 : tx.status === "pending" ? 0 : 2;
 
-      // country
       let cIdx = countryMap.get(tx.country);
       if (cIdx === undefined) {
         cIdx = countryDict.length;
@@ -229,8 +206,7 @@ export function useAnalyticsWorker({ data, from, to, filters }: UseAnalyticsWork
       }
       countryIndex[i] = cIdx;
 
-      // payment method (adapt to your field name)
-      const methodKey = (tx as any).payMethod ?? (tx as any).paymentMethod ?? "";
+      const methodKey = tx.payMethod ?? "";
       let mIdx = methodMap.get(methodKey);
       if (mIdx === undefined) {
         mIdx = methodDict.length;
@@ -239,8 +215,7 @@ export function useAnalyticsWorker({ data, from, to, filters }: UseAnalyticsWork
       }
       methodIndex[i] = mIdx;
 
-      // provider
-      const providerKey = (tx as any).provider ?? "";
+      const providerKey = tx.provider ?? "";
       let pIdx = providerMap.get(providerKey);
       if (pIdx === undefined) {
         pIdx = providerDict.length;
@@ -248,9 +223,17 @@ export function useAnalyticsWorker({ data, from, to, filters }: UseAnalyticsWork
         providerMap.set(providerKey, pIdx);
       }
       providerIndex[i] = pIdx;
+
+      const merchantKey = tx.merchantName ?? "";
+      let mnIdx = merchantMap.get(merchantKey);
+      if (mnIdx === undefined) {
+        mnIdx = merchantDict.length;
+        merchantDict.push(merchantKey);
+        merchantMap.set(merchantKey, mnIdx);
+      }
+      merchantIndex[i] = mnIdx;
     }
 
-    // Send typed arrays via transferables (zero-copy)
     worker.postMessage(
       {
         type: "init",
@@ -261,9 +244,11 @@ export function useAnalyticsWorker({ data, from, to, filters }: UseAnalyticsWork
         countryIndex: countryIndex.buffer,
         methodIndex: methodIndex.buffer,
         providerIndex: providerIndex.buffer,
+        merchantIndex: merchantIndex.buffer,
         countries: countryDict,
         methods: methodDict,
         providers: providerDict,
+        merchants: merchantDict,
       },
       [
         timestamps.buffer,
@@ -272,16 +257,14 @@ export function useAnalyticsWorker({ data, from, to, filters }: UseAnalyticsWork
         countryIndex.buffer,
         methodIndex.buffer,
         providerIndex.buffer,
+        merchantIndex.buffer,
       ],
     );
   }, [data]);
 
-  // Recompute analytics when range or filters change
   React.useEffect(() => {
     const worker = workerRef.current;
-    if (!worker) return;
-    if (!from || !to) return;
-    if (!data || data.length === 0) {
+    if (!worker || !from || !to || !data || data.length === 0) {
       setAnalyticsData(null);
       return;
     }

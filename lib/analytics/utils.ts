@@ -12,11 +12,9 @@ import {
 import { ReportFinanceStep1Schema } from "../zod/reportFinancePath";
 import z from "zod";
 
-export const timestampToDate = (timestamp: Date): Date => {
-  return new Date(timestamp);
-};
+export const timestampToDate = (d: Date): Date => d;
 
-export function generateGcpLogLink(trxid: string, duration: string = "P30D", authuser: number = 1): string {
+export function generateGcpLogLink(trxid: string, duration = "P30D", authuser = 1): string {
   const projectId = "stratech-pay";
   const encodedQuery = encodeURIComponent(trxid);
   return `https://console.cloud.google.com/logs/query;query=${encodedQuery};duration=${duration}?authuser=${authuser}&project=${projectId}`;
@@ -24,140 +22,140 @@ export function generateGcpLogLink(trxid: string, duration: string = "P30D", aut
 
 const formatDate = (date: Date): string => date.toISOString().split("T")[0];
 
+const getTxMs = (tx: BaseTransaction) => new Date(tx.dateRequest).getTime();
+
 export type ChartConfigEntry = { label: string; color: string };
 export type ChartConfig = { [key: string]: ChartConfigEntry };
 
-export function calculateAOV(transactions: BaseTransaction[], startDate: Date, endDate: Date): number {
-  const startMs = startDate.getTime();
-  const endMs = endDate.getTime();
+export function calculateAOV(transactions: BaseTransaction[], start: Date, end: Date): number {
+  const s = start.getTime();
+  const e = end.getTime();
 
-  let totalValue = 0;
+  let total = 0;
   let count = 0;
 
   for (const tx of transactions) {
     if (tx.status !== "ok") continue;
+    const ms = getTxMs(tx);
+    if (ms < s || ms > e) continue;
 
-    const txMs = tx.dateRequest.getTime();
-    if (txMs < startMs || txMs > endMs) continue;
-
-    totalValue += parseFloat(tx.quantity);
+    total += Number(tx.quantity);
     count++;
   }
 
-  return count === 0 ? 0 : totalValue / count;
+  return count === 0 ? 0 : total / count;
 }
 
-export function calculateSuccessRate(transactions: BaseTransaction[], startDate: Date, endDate: Date): number {
-  const startMs = startDate.getTime();
-  const endMs = endDate.getTime();
+export function calculateSuccessRate(transactions: BaseTransaction[], start: Date, end: Date): number {
+  const from = start.getTime();
+  const to = end.getTime();
 
   let total = 0;
-  let successful = 0;
+  let ok = 0;
 
   for (const tx of transactions) {
-    const txMs = tx.dateRequest.getTime();
-    if (txMs < startMs || txMs > endMs) continue;
+    const ms = getTxMs(tx);
+    if (ms < from || ms > to) continue;
 
     total++;
-    if (tx.status === "ok") successful++;
+    if (tx.status === "ok") ok++;
   }
 
-  return total === 0 ? 0 : (successful / total) * 100;
+  return total === 0 ? 0 : (ok / total) * 100;
 }
 
-export function getNewTransactions(transactions: BaseTransaction[], startDate: Date, endDate: Date): BaseTransaction[] {
-  const startMs = startDate.getTime();
-  const endMs = endDate.getTime();
+export function getNewTransactions(transactions: BaseTransaction[], start: Date, end: Date) {
+  const s = start.getTime();
+  const e = end.getTime();
 
   return transactions.filter(tx => {
-    const txMs = tx.dateRequest.getTime();
-    return txMs >= startMs && txMs <= endMs;
+    const ms = getTxMs(tx);
+    return ms >= s && ms <= e;
   });
 }
 
-export function getTotalTransactions(transactions: BaseTransaction[], startDate: Date, endDate: Date): number {
-  const startMs = startDate.getTime();
-  const endMs = endDate.getTime();
+export function getTotalTransactions(transactions: BaseTransaction[], start: Date, end: Date): number {
+  const s = start.getTime();
+  const e = end.getTime();
 
   return transactions.filter(tx => {
-    const txMs = tx.dateRequest.getTime();
-    return txMs >= startMs && txMs <= endMs;
+    const ms = getTxMs(tx);
+    return ms >= s && ms <= e;
   }).length;
 }
 
 export function aggregateTransactionsByDay(
   transactions: BaseTransaction[],
-  startDate: Date,
-  endDate: Date
+  start: Date,
+  end: Date
 ): DailyTransactionSummary[] {
-  const startMs = startDate.getTime();
-  const endMs = endDate.getTime();
-  const dailyStats: Record<string, { success: number; pending: number; fail: number }> = {};
+  const s = start.getTime();
+  const e = end.getTime();
+
+  const map: Record<string, { success: number; pending: number; fail: number }> = {};
 
   for (const tx of transactions) {
-    const txMs = tx.dateRequest.getTime();
-    if (txMs < startMs || txMs > endMs) continue;
+    const ms = getTxMs(tx);
+    if (ms < s || ms > e) continue;
 
-    const dateKey = formatDate(new Date(txMs));
-    dailyStats[dateKey] ||= { success: 0, pending: 0, fail: 0 };
+    const key = formatDate(new Date(ms));
 
-    if (tx.status === "ok") dailyStats[dateKey].success++;
-    else if (tx.status === "pending") dailyStats[dateKey].pending++;
-    else if (tx.status === "error") dailyStats[dateKey].fail++;
+    if (!map[key]) map[key] = { success: 0, pending: 0, fail: 0 };
+
+    if (tx.status === "ok") map[key].success++;
+    else if (tx.status === "pending") map[key].pending++;
+    else map[key].fail++;
   }
 
-  return Object.entries(dailyStats)
+  return Object.entries(map)
     .map(([date, stats]) => ({ date, ...stats }))
     .sort((a, b) => a.date.localeCompare(b.date));
 }
 
 export function groupTransactionsByCountry(
   transactions: BaseTransaction[],
-  startDate: Date,
-  endDate: Date
+  start: Date,
+  end: Date
 ): CountryTransactionSummary[] {
-  const startMs = startDate.getTime();
-  const endMs = endDate.getTime();
-  const countryStats: Record<string, number> = {};
+  const s = start.getTime();
+  const e = end.getTime();
+  const map: Record<string, number> = {};
 
   for (const tx of transactions) {
-    const txMs = tx.dateRequest.getTime();
-    if (txMs >= startMs && txMs <= endMs) {
-      countryStats[tx.country] = (countryStats[tx.country] || 0) + 1;
-    }
+    const ms = getTxMs(tx);
+    if (ms < s || ms > e) continue;
+    map[tx.country] = (map[tx.country] || 0) + 1;
   }
 
-  return Object.keys(countryStats).map(country => ({
+  return Object.keys(map).map(country => ({
     country,
-    transactions: countryStats[country],
+    transactions: map[country],
     fill: "#2B9D90"
   }));
 }
 
 export function generateChartConfig(transactions: BaseTransaction[]): ChartConfig {
-  const uniqueCountries = [...new Set(transactions.map(tx => tx.country))];
+  const countries = [...new Set(transactions.map(t => t.country))];
+  const cfg: ChartConfig = {};
 
-  const config: ChartConfig = {};
-  uniqueCountries.forEach((country, index) => {
-    config[country] = { label: country, color: `var(--chart-${index + 1})` };
+  countries.forEach((c, i) => {
+    cfg[c] = { label: c, color: `var(--chart-${i + 1})` };
   });
 
-  return config;
+  return cfg;
 }
 
-export function calculateTotalRevenue(transactions: BaseTransaction[], startDate: Date, endDate: Date): number {
-  const startMs = startDate.getTime();
-  const endMs = endDate.getTime();
-
+export function calculateTotalRevenue(transactions: BaseTransaction[], start: Date, end: Date): number {
+  const s = start.getTime();
+  const e = end.getTime();
   let total = 0;
 
   for (const tx of transactions) {
     if (tx.status !== "ok") continue;
+    const ms = getTxMs(tx);
+    if (ms < s || ms > e) continue;
 
-    const txMs = tx.dateRequest.getTime();
-    if (txMs < startMs || txMs > endMs) continue;
-
-    total += parseFloat(tx.quantity);
+    total += Number(tx.quantity);
   }
 
   return total;
@@ -165,22 +163,22 @@ export function calculateTotalRevenue(transactions: BaseTransaction[], startDate
 
 export function aggregateRevenueByMonth(
   transactions: BaseTransaction[],
-  startDate: Date,
-  endDate: Date
+  start: Date,
+  end: Date
 ): MonthlyRevenue[] {
-  const startMs = startDate.getTime();
-  const endMs = endDate.getTime();
+  const s = start.getTime();
+  const e = end.getTime();
 
-  const monthlyRevenue: Record<number, number> = {};
+  const m: Record<number, number> = {};
 
   for (const tx of transactions) {
     if (tx.status !== "ok") continue;
 
-    const txMs = tx.dateRequest.getTime();
-    if (txMs < startMs || txMs > endMs) continue;
+    const ms = getTxMs(tx);
+    if (ms < s || ms > e) continue;
 
-    const month = new Date(txMs).getMonth();
-    monthlyRevenue[month] = (monthlyRevenue[month] || 0) + parseFloat(tx.quantity);
+    const month = new Date(ms).getMonth();
+    m[month] = (m[month] || 0) + Number(tx.quantity);
   }
 
   const monthNames = [
@@ -188,33 +186,33 @@ export function aggregateRevenueByMonth(
     "July", "August", "September", "October", "November", "December"
   ];
 
-  return Object.keys(monthlyRevenue).map(k => {
-    const month = parseInt(k);
-    return { month: monthNames[month], revenue: monthlyRevenue[month] };
-  });
+  return Object.keys(m).map(k => ({
+    month: monthNames[Number(k)],
+    revenue: m[Number(k)]
+  }));
 }
 
 export function calculateRevenueChangeValue(
   transactions: BaseTransaction[],
-  startDate: Date,
-  endDate: Date
+  start: Date,
+  end: Date
 ): number {
-  const monthlyData = aggregateRevenueByMonth(transactions, startDate, endDate);
-  if (monthlyData.length === 0) return 0;
+  const monthly = aggregateRevenueByMonth(transactions, start, end);
+  if (monthly.length <= 1) return 0;
 
-  const sorted = [...monthlyData].sort(
-    (a, b) => new Date(`${a.month} 1, 2024`).getTime() - new Date(`${b.month} 1, 2024`).getTime()
+  const sorted = monthly.sort(
+    (a, b) =>
+      new Date(`${a.month} 1, 2024`).getTime() -
+      new Date(`${b.month} 1, 2024`).getTime()
   );
 
-  const last = sorted[sorted.length - 1];
-  const previous = sorted.length > 1 ? sorted[sorted.length - 2] : null;
+  const last = sorted[sorted.length - 1].revenue;
+  const prev = sorted.length > 1 ? sorted[sorted.length - 2].revenue : 0;
 
-  return last.revenue - (previous?.revenue ?? 0);
+  return last - prev;
 }
 
-export function getTransactionDateRange(
-  transactions: BaseTransaction[]
-): { from: Date | null; to: Date | null } {
+export function getTransactionDateRange(transactions: BaseTransaction[]) {
   if (transactions.length === 0) return { from: null, to: null };
 
   let min = getTxMs(transactions[0]);
@@ -231,19 +229,21 @@ export function getTransactionDateRange(
 
 export function getLast5WeeksChartData(
   transactions: BaseTransaction[],
-  endDate: Date
+  end: Date
 ): ChartDataWeekly[] {
-  const WEEK = 7 * 24 * 60 * 60 * 1000;
-  const endMs = endDate.getTime();
+  const WEEK = 604800000;
+  const DAY = 86400000;
+  const endMs = end.getTime();
+
   const data: ChartDataWeekly[] = [];
 
   for (let i = 4; i >= 0; i--) {
     const weekEnd = endMs - i * WEEK;
-    const weekStart = weekEnd - WEEK + 86400000;
+    const weekStart = weekEnd - WEEK + DAY;
 
-    const count = transactions.filter(tx => {
-      const txMs = tx.dateRequest.getTime();
-      return txMs >= weekStart && txMs <= weekEnd;
+    const count = transactions.filter(t => {
+      const ms = getTxMs(t);
+      return ms >= weekStart && ms <= weekEnd;
     }).length;
 
     data.push({ week: `Week ${5 - i}`, amount: count });
@@ -254,25 +254,52 @@ export function getLast5WeeksChartData(
 
 export function getLast5WeeksAOVChartData(
   transactions: BaseTransaction[],
-  endDate: Date
+  end: Date
 ): ChartDataWeekly[] {
-  const WEEK = 7 * 24 * 60 * 60 * 1000;
-  const endMs = endDate.getTime();
+  const WEEK = 604800000;
+  const DAY = 86400000;
+  const endMs = end.getTime();
+
   const data: ChartDataWeekly[] = [];
 
   for (let i = 4; i >= 0; i--) {
     const weekEnd = endMs - i * WEEK;
-    const weekStart = weekEnd - WEEK + 86400000;
+    const weekStart = weekEnd - WEEK + DAY;
 
-    const avg = calculateAOV(transactions, new Date(weekStart), new Date(weekEnd));
-
-    data.push({ week: `Week ${5 - i}`, amount: avg });
+    const value = calculateAOV(transactions, new Date(weekStart), new Date(weekEnd));
+    data.push({ week: `Week ${5 - i}`, amount: value });
   }
 
   return data;
 }
 
-export type WeekValueType = "count" | "aov" | "successRate";
+export function getLast5WeeksSuccessRateChartData(
+  transactions: BaseTransaction[],
+  end: Date
+): ChartDataWeekly[] {
+  const WEEK = 604800000;
+  const DAY = 86400000;
+  const endMs = end.getTime();
+
+  const data: ChartDataWeekly[] = [];
+
+  for (let i = 4; i >= 0; i--) {
+    const weekEnd = endMs - i * WEEK;
+    const weekStart = weekEnd - WEEK + DAY;
+
+    const txs = transactions.filter(t => {
+      const ms = getTxMs(t);
+      return ms >= weekStart && ms <= weekEnd;
+    });
+
+    const ok = txs.filter(t => t.status === "ok").length;
+    const rate = txs.length === 0 ? 0 : (ok / txs.length) * 100;
+
+    data.push({ week: `Week ${5 - i}`, amount: rate });
+  }
+
+  return data;
+}
 
 export interface LastWeekIncreaseResult {
   current: number;
@@ -284,137 +311,108 @@ export interface LastWeekIncreaseResult {
 
 export function calculateLastWeekIncrease(
   transactions: BaseTransaction[],
-  endDate: Date,
-  type: WeekValueType = "count"
+  end: Date,
+  type: "count" | "aov" | "successRate" = "count"
 ): LastWeekIncreaseResult {
-  const WEEK = 7 * 24 * 60 * 60 * 1000;
-  const DAY = 24 * 60 * 60 * 1000;
+  const WEEK = 604800000;
+  const DAY = 86400000;
 
-  const endMs = endDate.getTime();
+  const endMs = end.getTime();
   const currentStart = endMs - WEEK + DAY;
-  const previousEnd = currentStart - DAY;
-  const previousStart = previousEnd - WEEK + DAY;
+  const prevEnd = currentStart - DAY;
+  const prevStart = prevEnd - WEEK + DAY;
 
-  const currentTx = transactions.filter(tx => {
-    const t = tx.dateRequest.getTime();
-    return t >= currentStart && t <= endMs;
+  const currentTx = transactions.filter(t => {
+    const ms = getTxMs(t);
+    return ms >= currentStart && ms <= endMs;
   });
 
-  const previousTx = transactions.filter(tx => {
-    const t = tx.dateRequest.getTime();
-    return t >= previousStart && t <= previousEnd;
+  const prevTx = transactions.filter(t => {
+    const ms = getTxMs(t);
+    return ms >= prevStart && ms <= prevEnd;
   });
 
-  const calcSuccessRate = (txs: BaseTransaction[]) =>
+  const success = (txs: BaseTransaction[]) =>
     txs.length === 0 ? 0 : (txs.filter(t => t.status === "ok").length / txs.length) * 100;
 
-  const calcAOV = (txs: BaseTransaction[]) =>
+  const aov = (txs: BaseTransaction[]) =>
     txs.length === 0 ? 0 : txs.reduce((s, t) => s + Number(t.quantity), 0) / txs.length;
 
-  let current: number;
-  let previous: number;
+  let curr: number;
+  let prev: number;
 
   if (type === "count") {
-    current = currentTx.length;
-    previous = previousTx.length;
+    curr = currentTx.length;
+    prev = prevTx.length;
   } else if (type === "aov") {
-    current = calcAOV(currentTx);
-    previous = calcAOV(previousTx);
+    curr = aov(currentTx);
+    prev = aov(prevTx);
   } else {
-    current = calcSuccessRate(currentTx);
-    previous = calcSuccessRate(previousTx);
+    curr = success(currentTx);
+    prev = success(prevTx);
   }
 
-  const percentage = previous === 0 ? (current === 0 ? 0 : Infinity) : ((current - previous) / previous) * 100;
+  const pct = prev === 0 ? (curr > 0 ? 100 : 0) : ((curr - prev) / prev) * 100;
 
   return {
-    current,
-    previous,
-    percentage,
-    successRateCurrent: calcSuccessRate(currentTx),
-    successRatePrevious: calcSuccessRate(previousTx)
+    current: curr,
+    previous: prev,
+    percentage: pct,
+    successRateCurrent: success(currentTx),
+    successRatePrevious: success(prevTx)
   };
-}
-
-export function getLast5WeeksSuccessRateChartData(
-  transactions: BaseTransaction[],
-  endDate: Date
-): ChartDataWeekly[] {
-  const WEEK = 7 * 24 * 60 * 60 * 1000;
-  const DAY = 24 * 60 * 60 * 1000;
-  const endMs = endDate.getTime();
-
-  const data: ChartDataWeekly[] = [];
-
-  for (let i = 4; i >= 0; i--) {
-    const weekEnd = endMs - i * WEEK;
-    const weekStart = weekEnd - WEEK + DAY;
-
-    const txs = transactions.filter(tx => {
-      const t = tx.dateRequest.getTime();
-      return t >= weekStart && t <= weekEnd;
-    });
-
-    const successCount = txs.filter(t => t.status === "ok").length;
-    const successRate = txs.length === 0 ? 0 : (successCount / txs.length) * 100;
-
-    data.push({ week: `Week ${5 - i}`, amount: successRate });
-  }
-
-  return data;
 }
 
 export interface RevenueChartData {
   date: string;
   total: number;
-  [countryCode: string]: string | number;
+  [country: string]: string | number;
 }
 
-const colorPalette = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
+const palette = ["#3b82f6", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6", "#06b6d4"];
 
 export function generateRevenueChartData(
   transactions: BaseTransaction[],
   from: Date,
   to: Date
-): { data: RevenueChartData[]; config: ChartConfig } {
-  const fromMs = from.getTime();
-  const toMs = to.getTime();
+) {
+  const f = from.getTime();
+  const t = to.getTime();
 
   const countries = new Set<string>();
-  const dateMap = new Map<string, Map<string, number>>();
+  const map = new Map<string, Map<string, number>>();
 
-  for (const t of transactions) {
-    if (t.status !== "ok") continue;
+  for (const tx of transactions) {
+    if (tx.status !== "ok") continue;
+    const ms = getTxMs(tx);
+    if (ms < f || ms > t) continue;
 
-    const txMs = t.dateRequest.getTime();
-    if (txMs < fromMs || txMs > toMs) continue;
-
-    const dateStr = new Date(txMs).toISOString().split("T")[0];
-    const qty = parseFloat(t.quantity);
+    const date = new Date(ms).toISOString().split("T")[0];
+    const qty = Number(tx.quantity);
     if (isNaN(qty)) continue;
 
-    countries.add(t.country);
+    countries.add(tx.country);
 
-    if (!dateMap.has(dateStr)) dateMap.set(dateStr, new Map());
+    if (!map.has(date)) map.set(date, new Map());
 
-    const countryMap = dateMap.get(dateStr)!;
-    countryMap.set(t.country, (countryMap.get(t.country) || 0) + qty);
+    const m = map.get(date)!;
+    m.set(tx.country, (m.get(tx.country) || 0) + qty);
   }
 
-  const sortedDates = [...dateMap.keys()].sort();
+  const sorted = [...map.keys()].sort();
   const data: RevenueChartData[] = [];
 
-  for (const dateStr of sortedDates) {
-    const entry: RevenueChartData = { date: dateStr, total: 0 };
-    const map = dateMap.get(dateStr)!;
+  for (const date of sorted) {
+    const entry: RevenueChartData = { date, total: 0 };
+    const m = map.get(date)!;
 
-    [...countries].sort().forEach(country => {
-      const revenue = map.get(country) || 0;
-      entry[country] = parseFloat(revenue.toFixed(2));
-      entry.total += revenue;
+    [...countries].sort().forEach(c => {
+      const v = m.get(c) || 0;
+      entry[c] = Number(v.toFixed(2));
+      entry.total += v;
     });
 
-    entry.total = parseFloat(entry.total.toFixed(2));
+    entry.total = Number(entry.total.toFixed(2));
     data.push(entry);
   }
 
@@ -422,11 +420,8 @@ export function generateRevenueChartData(
     total: { label: "Total Revenue", color: "hsl(var(--chart-3))" }
   };
 
-  [...countries].forEach((country, i) => {
-    config[country] = {
-      label: country,
-      color: colorPalette[i % colorPalette.length]
-    };
+  [...countries].forEach((c, i) => {
+    config[c] = { label: c, color: palette[i % palette.length] };
   });
 
   return { data, config };
@@ -441,16 +436,11 @@ const USD_PER_UNIT: Record<string, number> = {
   GTQ: 0.13
 };
 
-export function convertCurrency(
-  amount: number,
-  from: string,
-  to: string,
-  usdPerUnit: Record<string, number> = USD_PER_UNIT
-): number {
+export function convertCurrency(amount: number, from: string, to: string, table = USD_PER_UNIT): number {
   if (!isFinite(amount)) return 0;
 
-  const fromRate = usdPerUnit[from.toUpperCase()];
-  const toRate = usdPerUnit[to.toUpperCase()];
+  const fromRate = table[from.toUpperCase()];
+  const toRate = table[to.toUpperCase()];
 
   if (!fromRate || !toRate) return amount;
 
@@ -459,21 +449,21 @@ export function convertCurrency(
 
 export function convertTransactionsToCurrency(
   transactions: BaseTransaction[],
-  targetCurrency: string,
+  target: string,
   options?: { decimals?: number; usdPerUnit?: Record<string, number> }
 ): BaseTransaction[] {
   const decimals = options?.decimals ?? 2;
   const table = options?.usdPerUnit ?? USD_PER_UNIT;
-  const target = targetCurrency.toUpperCase();
+  const tgt = target.toUpperCase();
 
   return transactions.map(tx => {
-    const amount = parseFloat(tx.quantity);
-    const converted = convertCurrency(amount, tx.currency, target, table);
+    const qty = Number(tx.quantity);
+    const converted = convertCurrency(qty, tx.currency, tgt, table);
 
     return {
       ...tx,
       quantity: converted.toFixed(decimals),
-      currency: target
+      currency: tgt
     };
   });
 }
@@ -483,55 +473,48 @@ export function calculateRevenueByCountry(
   from: Date,
   to: Date
 ): RevenueCountry[] {
-  const fromMs = from.getTime();
-  const toMs = to.getTime();
-  const WEEK = 7 * 24 * 60 * 60 * 1000;
+  const f = from.getTime();
+  const t = to.getTime();
 
-  const lastWeekStart = toMs - WEEK;
-  const prevWeekStart = toMs - 2 * WEEK;
-  const prevWeekEnd = toMs - WEEK;
+  const WEEK = 604800000;
+  const lastWeekStart = t - WEEK;
+  const prevWeekStart = t - 2 * WEEK;
+  const prevWeekEnd = t - WEEK;
 
-  const countryData = new Map<
+  const map = new Map<
     string,
-    { totalRevenue: number; lastWeekRevenue: number; previousWeekRevenue: number }
+    { total: number; lastWeek: number; prevWeek: number }
   >();
 
-  for (const t of transactions) {
-    if (t.status !== "ok") continue;
+  for (const tx of transactions) {
+    if (tx.status !== "ok") continue;
 
-    const txMs = t.dateRequest.getTime();
-    if (txMs < fromMs || txMs > toMs) continue;
+    const ms = getTxMs(tx);
+    if (ms < f || ms > t) continue;
 
-    const qty = parseFloat(t.quantity);
-    if (isNaN(qty)) continue;
+    const qty = Number(tx.quantity);
+    if (!isFinite(qty)) continue;
 
-    if (!countryData.has(t.country)) {
-      countryData.set(t.country, {
-        totalRevenue: 0,
-        lastWeekRevenue: 0,
-        previousWeekRevenue: 0
-      });
+    if (!map.has(tx.country)) {
+      map.set(tx.country, { total: 0, lastWeek: 0, prevWeek: 0 });
     }
 
-    const ref = countryData.get(t.country)!;
-    ref.totalRevenue += qty;
+    const ref = map.get(tx.country)!;
 
-    if (txMs >= lastWeekStart && txMs <= toMs) ref.lastWeekRevenue += qty;
-    if (txMs >= prevWeekStart && txMs < prevWeekEnd) ref.previousWeekRevenue += qty;
+    ref.total += qty;
+
+    if (ms >= lastWeekStart) ref.lastWeek += qty;
+    if (ms >= prevWeekStart && ms < prevWeekEnd) ref.prevWeek += qty;
   }
 
-  return [...countryData.entries()].map(([country, data]) => {
-    let increase =
-      data.previousWeekRevenue === 0
-        ? data.lastWeekRevenue > 0
-          ? 100
-          : 0
-        : ((data.lastWeekRevenue - data.previousWeekRevenue) / data.previousWeekRevenue) * 100;
+  return [...map.entries()].map(([country, r]) => {
+    const pct =
+      r.prevWeek === 0 ? (r.lastWeek > 0 ? 100 : 0) : ((r.lastWeek - r.prevWeek) / r.prevWeek) * 100;
 
     return {
       country,
-      totalRevenue: parseFloat(data.totalRevenue.toFixed(2)),
-      lastWeekIncrease: parseFloat(increase.toFixed(2))
+      totalRevenue: Number(r.total.toFixed(2)),
+      lastWeekIncrease: Number(pct.toFixed(2))
     };
   });
 }
@@ -541,24 +524,24 @@ export function processTransactionData(
   from: Date,
   to: Date
 ): ChartDataItem[] {
-  const fromMs = from.getTime();
-  const toMs = to.getTime();
+  const f = from.getTime();
+  const t = to.getTime();
 
-  let success = 0;
+  let ok = 0;
   let pending = 0;
   let fail = 0;
 
   for (const tx of transactions) {
-    const txMs = tx.dateRequest.getTime();
-    if (txMs < fromMs || txMs > toMs) continue;
+    const ms = getTxMs(tx);
+    if (ms < f || ms > t) continue;
 
-    if (tx.status === "ok") success++;
+    if (tx.status === "ok") ok++;
     else if (tx.status === "pending") pending++;
-    else if (tx.status === "error") fail++;
+    else fail++;
   }
 
   return [
-    { status: "success", count: success, fill: "var(--color-success)" },
+    { status: "success", count: ok, fill: "var(--color-success)" },
     { status: "pending", count: pending, fill: "var(--color-pending)" },
     { status: "fail", count: fail, fill: "var(--color-fail)" }
   ];
@@ -569,16 +552,16 @@ export function filterTransactionsByDateRange(
   from: Date,
   to: Date
 ): BaseTransaction[] {
-  const fromMs = from.getTime();
-  const toMs = to.getTime();
+  const f = from.getTime();
+  const t = to.getTime();
 
   return transactions.filter(tx => {
-    const txMs = tx.dateRequest.getTime();
-    return txMs >= fromMs && txMs <= toMs;
+    const ms = getTxMs(tx);
+    return ms >= f && ms <= t;
   });
 }
 
-export function capitalizeFirstLetter(str: string): string {
+export function capitalize(str: string): string {
   return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
 }
 
@@ -587,34 +570,33 @@ export function extractCountryProviders(
   from: Date,
   to: Date
 ): CountryProviders[] {
-  const fromMs = from.getTime();
-  const toMs = to.getTime();
+  const f = from.getTime();
+  const t = to.getTime();
 
-  const countries = new Map<string, CountryProviders>();
+  const map = new Map<string, CountryProviders>();
 
   for (const tx of transactions) {
-    const txMs = tx.dateRequest.getTime();
-    if (txMs < fromMs || txMs > toMs) continue;
+    const ms = getTxMs(tx);
+    if (ms < f || ms > t) continue;
 
     const iso = tx.country.toUpperCase();
-
-    if (!countries.has(iso)) {
-      countries.set(iso, {
+    if (!map.has(iso)) {
+      map.set(iso, {
         id: iso.toLowerCase(),
         name: iso,
         isoCode: iso,
-        currencyCode: tx.currency || null,
+        currencyCode: tx.currency,
         providers: []
       });
     }
 
-    const country = countries.get(iso)!;
+    const country = map.get(iso)!;
 
     let provider = country.providers.find(p => p.id === tx.provider.toLowerCase());
     if (!provider) {
       provider = {
         id: tx.provider.toLowerCase(),
-        name: capitalizeFirstLetter(tx.provider),
+        name: capitalize(tx.provider),
         description: null,
         methods: []
       };
@@ -625,7 +607,7 @@ export function extractCountryProviders(
     if (!provider.methods.some(m => m.id === methodId)) {
       provider.methods.push({
         id: methodId,
-        name: capitalizeFirstLetter(tx.payMethod),
+        name: capitalize(tx.payMethod),
         code: methodId,
         minLimit: null,
         maxLimit: null
@@ -633,7 +615,7 @@ export function extractCountryProviders(
     }
   }
 
-  return [...countries.values()];
+  return [...map.values()];
 }
 
 export function extractCountryProvidersByMerchant(
@@ -642,37 +624,36 @@ export function extractCountryProvidersByMerchant(
   to: Date,
   merchantName: string
 ): CountryProviders[] {
-  const fromMs = from.getTime();
-  const toMs = to.getTime();
+  const f = from.getTime();
+  const t = to.getTime();
   const merchant = merchantName.toLowerCase();
 
-  const countries = new Map<string, CountryProviders>();
+  const map = new Map<string, CountryProviders>();
 
   for (const tx of transactions) {
-    const txMs = tx.dateRequest.getTime();
-    if (txMs < fromMs || txMs > toMs) continue;
+    const ms = getTxMs(tx);
+    if (ms < f || ms > t) continue;
 
     if (getMerchantName(tx.merchantName).toLowerCase() !== merchant) continue;
 
     const iso = tx.country.toUpperCase();
-
-    if (!countries.has(iso)) {
-      countries.set(iso, {
+    if (!map.has(iso)) {
+      map.set(iso, {
         id: iso.toLowerCase(),
         name: iso,
         isoCode: iso,
-        currencyCode: tx.currency || null,
+        currencyCode: tx.currency,
         providers: []
       });
     }
 
-    const country = countries.get(iso)!;
+    const country = map.get(iso)!;
 
     let provider = country.providers.find(p => p.id === tx.provider.toLowerCase());
     if (!provider) {
       provider = {
         id: tx.provider.toLowerCase(),
-        name: capitalizeFirstLetter(tx.provider),
+        name: capitalize(tx.provider),
         description: null,
         methods: []
       };
@@ -683,7 +664,7 @@ export function extractCountryProvidersByMerchant(
     if (!provider.methods.some(m => m.id === methodId)) {
       provider.methods.push({
         id: methodId,
-        name: capitalizeFirstLetter(tx.payMethod),
+        name: capitalize(tx.payMethod),
         code: methodId,
         minLimit: null,
         maxLimit: null
@@ -691,7 +672,7 @@ export function extractCountryProvidersByMerchant(
     }
   }
 
-  return [...countries.values()];
+  return [...map.values()];
 }
 
 export function filterTransactionsByCriteria(
@@ -701,12 +682,12 @@ export function filterTransactionsByCriteria(
   const merchant = params.merchantName.toLowerCase();
   const country = params.countryId.toUpperCase();
 
-  const allowedProviders = new Map<string, Set<string>>();
+  const allowed = new Map<string, Set<string>>();
 
   for (const p of params.providers) {
     const providerId = p.providerId.toLowerCase();
     const methods = new Set(p.methods.map(m => m.methodId.toLowerCase()));
-    allowedProviders.set(providerId, methods);
+    allowed.set(providerId, methods);
   }
 
   return transactions.filter(tx => {
@@ -716,6 +697,6 @@ export function filterTransactionsByCriteria(
     const providerId = tx.provider.toLowerCase();
     const methodId = tx.payMethod.toLowerCase();
 
-    return allowedProviders.has(providerId) && allowedProviders.get(providerId)!.has(methodId);
+    return allowed.has(providerId) && allowed.get(providerId)!.has(methodId);
   });
 }

@@ -25,7 +25,7 @@ export const ReportTransactionSchema = z.object({
   zippy_test: z.boolean(),
   url_OK: z.string(),
   url_ERROR: z.string(),
-  dateRequest: FirestoreTimestampSchema,
+  dateRequest: z.string(),
   code: z.number(),
   status: z.enum(["pending", "ok", "error"]),
 });
@@ -39,7 +39,6 @@ export const CreateReportSchema = z.discriminatedUnion("reportType", [
   }),
   z.object({
     reportType: z.literal("daily"),
-    transactions: z.array(ReportTransactionSchema)
   }),
   z.object({
     reportType: z.literal("resume"),

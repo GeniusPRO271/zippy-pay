@@ -2,24 +2,15 @@
 import * as React from "react"
 import { BaseTransaction } from "@/lib/types/transaction"
 import { DateRange } from "react-day-picker"
-import { Button } from "@/components/ui/button"
 import {
   IconBolt,
   IconReport,
-  IconCalendar
 } from "@tabler/icons-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { columns } from "@/components/dashboard/transactions-chart/columns"
 import { convertTransactionsToCurrency, getTransactionDateRange } from "@/lib/analytics/utils"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { Spinner } from "@/components/ui/spinner"
 import ReportsTable from "@/components/reports/reportsTable"
-import { RangePickerButton } from "@/components/ui/date-picker-button"
 import PageDashoard from "./dashboard/dashboard"
 import { EmptyState } from "./dashboard/empty-state"
 
@@ -36,21 +27,6 @@ export function Page() {
   })
 
   const [transactions, setTransactions] = React.useState<BaseTransaction[]>([])
-
-  // const transactionsDateFiltered = React.useMemo(() => {
-  //   if (!transactions?.length) return [];
-  //   console.log("HAS TRANSACTIONS")
-  //   const { from, to } = filters.dateRange || {};
-  //   console.log("CHECKING DATERANGE")
-  //   if (!from || !to) {
-  //     console.log("FAILED DATE RANGE")
-  //     return transactions;
-  //   }
-  //
-  //   console.log("APPLIYING DATE RANGE FILTER")
-  //   return filterTransactionsByDateRange(transactions, from, to);
-  // }, [transactions, filters]);
-
   const transactionsUSD = React.useMemo(
     () => {
       if (transactions.length === 0) return []
@@ -75,13 +51,13 @@ export function Page() {
     [transactions]
   )
 
-  // const merchantNames = React.useMemo(
-  //   () => {
-  //     if (transactions.length === 0) return []
-  //     return Array.from(new Set(transactions.map((t) => t.merchantName).filter(Boolean)))
-  //   },
-  //   [transactions]
-  // )
+  const merchantNames = React.useMemo(
+    () => {
+      if (transactions.length === 0) return []
+      return Array.from(new Set(transactions.map((t) => t.merchantName).filter(Boolean)))
+    },
+    [transactions]
+  )
 
   const payMethods = React.useMemo(
     () => {
@@ -147,28 +123,28 @@ export function Page() {
                 Dashboard
               </h1>
 
-              <div className="flex gap-2">
-                <RangePickerButton filters={filters} setFilters={setFilters} />
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline">
-                      <IconCalendar className="h-4 w-4 mr-2" />
-                      Quick Range
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end">
-                    <DropdownMenuItem onClick={() => setQuickRange("7days")}>
-                      Last 7 Days
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setQuickRange("30days")}>
-                      Last 30 Days
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setQuickRange("3months")}>
-                      Last 3 Months
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+              {/* <div className="flex gap-2"> */}
+              {/*   <RangePickerButton filters={filters} setFilters={setFilters} /> */}
+              {/*   <DropdownMenu> */}
+              {/*     <DropdownMenuTrigger asChild> */}
+              {/*       <Button variant="outline"> */}
+              {/*         <IconCalendar className="h-4 w-4 mr-2" /> */}
+              {/*         Quick Range */}
+              {/*       </Button> */}
+              {/*     </DropdownMenuTrigger> */}
+              {/*     <DropdownMenuContent align="end"> */}
+              {/*       <DropdownMenuItem onClick={() => setQuickRange("7days")}> */}
+              {/*         Last 7 Days */}
+              {/*       </DropdownMenuItem> */}
+              {/*       <DropdownMenuItem onClick={() => setQuickRange("30days")}> */}
+              {/*         Last 30 Days */}
+              {/*       </DropdownMenuItem> */}
+              {/*       <DropdownMenuItem onClick={() => setQuickRange("3months")}> */}
+              {/*         Last 3 Months */}
+              {/*       </DropdownMenuItem> */}
+              {/*     </DropdownMenuContent> */}
+              {/*   </DropdownMenu> */}
+              {/* </div> */}
             </div>
 
             <Tabs defaultValue="dashboard" className="w-full h-full">
@@ -189,6 +165,7 @@ export function Page() {
 
               <TabsContent className="space-y-4" value="dashboard">
                 <PageDashoard
+                  merchants={merchantNames}
                   data={transactionsUSD}
                   columns={columns}
                   countries={countries}

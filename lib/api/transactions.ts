@@ -9,16 +9,40 @@ export interface CreateReportResponse {
   status: string;
 }
 
+export async function getAllTransactions(batchSize = 10000): Promise<BaseTransaction[]> {
+  let page = 1;
+  const limit = 1000;
+  let allData: BaseTransaction[] = [];
 
-export async function getAllTransactions(): Promise<BaseTransaction[]> {
-  const res = await fetch(`${API_URL}/transactions/v2`, {
-    headers: { Accept: 'application/json' },
-  });
+  console.log("Starting transaction download...");
 
-  if (!res.ok) throw new Error('Failed to fetch reports');
+  while (true) {
+    const res = await fetch(`${API_URL}/transactions/v2?page=${page}&limit=${limit}`, {
+      headers: { Accept: 'application/json' },
+    });
 
-  const data: BaseTransaction[] = await res.json();
-  console.log("TRANSACTIONS FROM API:", data);
+    if (!res.ok) throw new Error(`Failed on page ${page}`);
 
-  return data;
+    const json = await res.json();
+
+    const transactions = json.data as BaseTransaction[];
+    const meta = json.meta;
+
+    allData.push(...transactions);
+
+    if (page % 50 === 0) {
+      console.log(`Downloaded ${allData.length} transactions so far...`);
+    }
+
+    if (allData.length >= batchSize) {
+      console.log(`Batch of ${batchSize} reached`);
+    }
+
+    if (!meta.hasNextPage) break;
+
+    page++;
+  }
+
+  console.log(`Finished: total downloaded = ${allData.length}`);
+  return allData;
 }

@@ -5,9 +5,7 @@ import { useForm } from 'react-hook-form'
 import { CreateReportSchema, CreateReportSchemaType } from '@/lib/zod/createReport'
 import { Step } from '@/components/ui/stepHandler'
 import ReportTypeSelect from './paths/selectPath'
-import { FinancialReportPath } from './paths/financialReport/financialReportPath'
 import { BaseTransaction } from '@/lib/types/transaction'
-import { ResumeReportPath } from './paths/resumeReport/resumeReportPath'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useCreateReport } from '@/hooks/useGenerateReport'
 import { toast } from 'sonner'
@@ -80,28 +78,28 @@ export default function ReportForm({ transactions, setShow }: ReportFormProps) {
         <Step isActive={step === 0} isPast={step > 0} direction={direction}>
           <ReportTypeSelect control={control} onNext={handleNext} />
         </Step>
-        {reportType === 'finance' && (
-          <FinancialReportPath
-            step={step}
-            direction={direction}
-            form={form}
-            errors={errors}
-            onNext={handleNext}
-            onBack={handleBack}
-            onSubmit={handleSubmit(onSubmit)}
-          />
-        )}
-        {reportType === 'resume' && (
-          <ResumeReportPath
-            step={step}
-            direction={direction}
-            form={form}
-            errors={errors}
-            onNext={handleNext}
-            onBack={handleBack}
-            onSubmit={handleSubmit(onSubmit)}
-          />
-        )}
+        {/* {reportType === 'finance' && ( */}
+        {/*   <FinancialReportPath */}
+        {/*     step={step} */}
+        {/*     direction={direction} */}
+        {/*     form={form} */}
+        {/*     errors={errors} */}
+        {/*     onNext={handleNext} */}
+        {/*     onBack={handleBack} */}
+        {/*     onSubmit={handleSubmit(onSubmit)} */}
+        {/*   /> */}
+        {/* )} */}
+        {/* {reportType === 'resume' && ( */}
+        {/*   <ResumeReportPath */}
+        {/*     step={step} */}
+        {/*     direction={direction} */}
+        {/*     form={form} */}
+        {/*     errors={errors} */}
+        {/*     onNext={handleNext} */}
+        {/*     onBack={handleBack} */}
+        {/*     onSubmit={handleSubmit(onSubmit)} */}
+        {/*   /> */}
+        {/* )} */}
       </div>
 
       <div className="flex justify-center gap-2 mt-6">

@@ -1,7 +1,7 @@
 import { createReport, CreateReportResponse } from '@/lib/api/reportGenerator';
 import { CreateReportSchemaType } from '@/lib/zod/createReport';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { toast } from 'sonner'; // ✅ Shadcn 2025 uses `sonner` for toasts
+import { toast } from 'sonner';
 
 export function useCreateReport() {
   const queryClient = useQueryClient();

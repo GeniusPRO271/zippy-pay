@@ -16,7 +16,7 @@ export interface BaseTransaction {
   zippy_test: boolean;
   url_OK: string;
   url_ERROR: string;
-  dateRequest: Date;
+  dateRequest: string;
   code: number;
   status: 'pending' | 'ok' | 'error';
 }

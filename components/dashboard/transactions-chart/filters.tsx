@@ -10,12 +10,19 @@ interface TableFiltersProps<TData> {
   countries: string[]
   payMethods: string[]
   providers: string[]
+  merchants: string[]
 }
 
 function TransactionsChartFilters<TData>(
   { table, countries, columnFilters, payMethods, providers }: TableFiltersProps<TData>) {
   return (
     <div className="flex gap-2 transition-all">
+      {/* <MultiSelectCombobox */}
+      {/*   table={table} */}
+      {/*   columnId="merchantName" */}
+      {/*   label="merchantName" */}
+      {/*   options={toOptions(["2021juegaloCom-9n3u"])} */}
+      {/* /> */}
       <MultiSelectCombobox
         table={table}
         columnId="provider"

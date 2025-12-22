@@ -38,6 +38,7 @@ interface DataTableProps<TData, TValue> {
   dateRange: DateRange | undefined;
   dateRangeTrx: DateRange;
   providers: string[];
+  merchants: string[];
 }
 
 export function PageDashoard<TData extends BaseTransaction, TValue>({
@@ -48,10 +49,13 @@ export function PageDashoard<TData extends BaseTransaction, TValue>({
   dateRangeTrx,
   countries,
   providers,
+  merchants
 }: DataTableProps<TData, TValue>) {
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
   const [rowSelection, setRowSelection] = React.useState({});
 
+  console.log("FILTERS: ", columnFilters)
+  console.log("COLUMNs: ", columns)
   const table = useReactTable({
     data,
     columns,
@@ -71,6 +75,9 @@ export function PageDashoard<TData extends BaseTransaction, TValue>({
       rowSelection,
       columnFilters,
     },
+    debugTable: true,
+    debugHeaders: true,
+    debugColumns: true,
   });
 
   const activeDateRange = React.useMemo(() => {
@@ -117,6 +124,7 @@ export function PageDashoard<TData extends BaseTransaction, TValue>({
             {data.length > 0 && (
               <TransactionsChartFilters
                 table={table}
+                merchants={merchants}
                 payMethods={payMethods}
                 countries={countries}
                 columnFilters={columnFilters}

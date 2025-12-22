@@ -21,6 +21,28 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useTransactions } from "@/hooks/transactions/useTransactions";
 import { Spinner } from "@/components/ui/spinner";
 
+function convertFirestoreTimestamp(obj: any): any {
+  if (!obj || typeof obj !== "object") return obj;
+
+  if (
+    typeof obj._seconds === "number" &&
+    typeof obj._nanoseconds === "number"
+  ) {
+    return new Date(
+      obj._seconds * 1000 + obj._nanoseconds / 1_000_000
+    ).toISOString();
+  }
+
+  return obj;
+}
+
+function normalizeTransaction(t: any): BaseTransaction {
+  return {
+    ...t,
+    dateRequest: convertFirestoreTimestamp(t.dateRequest),
+  };
+}
+
 export function EmptyState({
   setTransactionsAction,
   setIsLoadingAction,
@@ -80,42 +102,32 @@ export function EmptyState({
     }
   };
 
+  /* ------------------------------------------------------
+     🔥 Parse JSON or NDJSON and convert dateRequest
+  ------------------------------------------------------ */
   const parseJSONFile = async (file: File): Promise<BaseTransaction[]> => {
     const text = await file.text();
 
-    const fileSizeMB = file.size / (1024 * 1024);
-    if (fileSizeMB > 10) {
-      console.warn(
-        `[WARNING] Large file detected: ${file.name} (${fileSizeMB.toFixed(2)}MB)`,
-      );
-    }
-
     try {
+      // Try normal JSON
       const parsed = JSON.parse(text);
-      const transactions: BaseTransaction[] = Array.isArray(parsed) ? parsed : [parsed];
+      const array = Array.isArray(parsed) ? parsed : [parsed];
+      const valid = array.filter((t) => t && typeof t === "object");
 
-      const validTransactions = transactions.filter((t) => t && typeof t === "object");
-
-      if (validTransactions.length !== transactions.length) {
-        console.warn(
-          `[WARNING] ${transactions.length - validTransactions.length
-          } invalid transactions filtered out from ${file.name}`,
-        );
-      }
-
-      return validTransactions;
+      return valid.map(normalizeTransaction);
     } catch (err) {
+      // Try NDJSON
       try {
-        const lines = text.split("\n").filter((line) => line.trim());
-        const transactions = lines.map((line) => JSON.parse(line));
-        console.info(`[INFO] Successfully parsed ${file.name} as NDJSON`);
-        return transactions.filter((t) => t && typeof t === "object");
-      } catch (ndjsonErr) {
+        const lines = text.split("\n").filter((l) => l.trim());
+        const parsed = lines.map((l) => JSON.parse(l));
+        const valid = parsed.filter((t) => t && typeof t === "object");
+
+        return valid.map(normalizeTransaction);
+      } catch {
         throw new Error(`Invalid JSON format in ${file.name}`);
       }
     }
   };
-
 
   const { data, isLoading } = useTransactions();
 
@@ -131,6 +143,7 @@ export function EmptyState({
           load sample data.
         </EmptyDescription>
       </EmptyHeader>
+
       <EmptyContent>
         {error && (
           <Alert variant="destructive" className="mb-4">
@@ -154,11 +167,11 @@ export function EmptyState({
             className="hidden"
             onChange={handleFileImport}
           />
+
           <Button onClick={() => document.getElementById("file-input")?.click()}>
             Import Data
             <IconUpload className="ml-2 h-4 w-4" />
           </Button>
-
 
           <Button
             disabled={isLoading || !data}
@@ -166,12 +179,7 @@ export function EmptyState({
             onClick={() => setTransactionsAction(data!)}
           >
             Load Real Data
-
-            {isLoading && !data ? (
-              <Spinner />
-            ) : (
-              <IconDatabase className="ml-2 h-4 w-4" />
-            )}
+            {isLoading && !data ? <Spinner /> : <IconDatabase className="ml-2 h-4 w-4" />}
           </Button>
         </div>
       </EmptyContent>

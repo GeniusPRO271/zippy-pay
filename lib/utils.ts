@@ -5,6 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function fromFirestoreObjectToDate(obj: { seconds: number; nanoseconds: number }): Date {
+  return new Date(obj.seconds * 1000 + obj.nanoseconds / 1_000_000);
+}
+
 export function luhnCheck(cardNumber: string): boolean {
   console.log("[DEBUG] CARD NUMBER BEFORE LUNCHECK: ", cardNumber)
   // remove non-digit characters just in case
