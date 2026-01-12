@@ -83,9 +83,14 @@ export function maskEC(value: string): string {
   return value.replace(/\D/g, "").slice(0, 10);
 }
 
-export function toOptions(arr: string[]) {
+export type Option = {
+  value: string;
+  label: string;
+};
+
+export function toOptions<T>(arr: T[], valueField: keyof T, labelField: keyof T): Option[] {
   return arr.map((item) => ({
-    value: item,
-    label: item.charAt(0).toUpperCase() + item.slice(1),
-  }))
+    value: String(item[valueField]),   // Convert value to string
+    label: String(item[labelField]),   // Convert label to string
+  }));
 }

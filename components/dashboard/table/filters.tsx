@@ -27,8 +27,6 @@ function TableFilters<TData>(
         className="max-w-sm h-8 font-sm"
       />
       <MultiSelectCombobox
-        table={table}
-        columnId="status"
         label="Status"
         options={[
           { value: "ok", label: "OK" },

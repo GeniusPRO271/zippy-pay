@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button"
 import StatusBadge from "./statusBadge"
 import { format } from "date-fns"
 import { BaseTransaction } from "@/lib/types/transaction"
-import { generateGcpLogLink, timestampToDate } from "@/lib/analytics/utils"
 import DetailSheet from "../detail-sheet"
 import { STATUS_CONFIG } from "./statusConfig"
 
@@ -220,11 +219,6 @@ export const columns: ColumnDef<BaseTransaction>[] = [
               Details
             </DropdownMenuItem>
           </DetailSheet>
-          <DropdownMenuItem
-            onClick={() => window.open(generateGcpLogLink(row.original.id), "_blank")}
-          >
-            Check Logs
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu >
     ),

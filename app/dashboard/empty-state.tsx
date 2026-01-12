@@ -18,8 +18,9 @@ import {
 import { BaseTransaction } from "@/lib/types/transaction";
 import { useState } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { useTransactions } from "@/hooks/transactions/useTransactions";
 import { Spinner } from "@/components/ui/spinner";
+import { useDashboardStats } from "@/hooks/statistics/useStats";
+import { DashboardStatsType } from "@/lib/types/statistics";
 
 
 interface FirestoreTimestamp {
@@ -27,7 +28,6 @@ interface FirestoreTimestamp {
   _nanoseconds: number
 }
 
-// ----- Helpers -----
 
 function convertFirestoreTimestamp(obj: unknown): string | unknown {
   if (!obj || typeof obj !== "object") return obj
@@ -56,7 +56,7 @@ export function EmptyState({
   setTransactionsAction,
   setIsLoadingAction,
 }: {
-  setTransactionsAction: React.Dispatch<React.SetStateAction<BaseTransaction[]>>;
+  setTransactionsAction: React.Dispatch<React.SetStateAction<DashboardStatsType | undefined>>;
   setIsLoadingAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [error, setError] = useState<string | null>(null);
@@ -96,7 +96,6 @@ export function EmptyState({
         }
       }
 
-      setTransactionsAction(allTransactions);
 
       if (allTransactions.length === 0 && fileArray.length > 0) {
         setError("No valid transactions found in the uploaded files.");
@@ -115,14 +114,12 @@ export function EmptyState({
     const text = await file.text();
 
     try {
-      // Try normal JSON
       const parsed = JSON.parse(text);
       const array = Array.isArray(parsed) ? parsed : [parsed];
       const valid = array.filter((t) => t && typeof t === "object");
 
       return valid.map(normalizeTransaction);
     } catch (err) {
-      // Try NDJSON
       try {
         const lines = text.split("\n").filter((l) => l.trim());
         const parsed = lines.map((l) => JSON.parse(l));
@@ -135,7 +132,7 @@ export function EmptyState({
     }
   };
 
-  const { data, isLoading } = useTransactions();
+  const { data, isLoading, refetch } = useDashboardStats({});
 
   return (
     <Empty>
@@ -178,17 +175,22 @@ export function EmptyState({
             Import Data
             <IconUpload className="ml-2 h-4 w-4" />
           </Button>
-
           <Button
-            disabled={isLoading || !data}
             variant="secondary"
-            onClick={() => setTransactionsAction(data!)}
+            disabled={isLoading}
+            onClick={() => {
+              refetch().then((result) => {
+                if (result.data) {
+                  setTransactionsAction(result.data)
+                }
+              })
+            }}
           >
             Load Real Data
-            {isLoading && !data ? <Spinner /> : <IconDatabase className="ml-2 h-4 w-4" />}
+            {isLoading ? <Spinner /> : <IconDatabase className="ml-2 h-4 w-4" />}
           </Button>
         </div>
       </EmptyContent>
-    </Empty>
+    </Empty >
   );
 }

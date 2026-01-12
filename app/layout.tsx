@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./providers";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
+import { Providers } from "./providers";
+import AuthProviderWrapper from "./AuthProviderWrapper";
+import { verifySession } from "./actions/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,11 +22,10 @@ export const metadata: Metadata = {
   description: "Created by Benjamin Toro",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -37,10 +38,12 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            <main className="min-h-screen w-full overflow-scroll scrollbar-hidden h-screen">
-              {children}
-              <Toaster position="top-center" />
-            </main>
+            <AuthProviderWrapper>
+              <main className="min-h-screen w-full overflow-scroll scrollbar-hidden h-screen">
+                {children}
+                <Toaster position="top-center" />
+              </main>
+            </AuthProviderWrapper>
           </Providers>
         </ThemeProvider>
       </body>

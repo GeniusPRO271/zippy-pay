@@ -11,10 +11,9 @@ import { useCreateReport } from '@/hooks/useGenerateReport'
 import { toast } from 'sonner'
 
 interface ReportFormProps {
-  transactions: BaseTransaction[]
   setShow: React.Dispatch<React.SetStateAction<boolean>>
 }
-export default function ReportForm({ transactions, setShow }: ReportFormProps) {
+export default function ReportForm({ setShow }: ReportFormProps) {
   const [step, setStep] = useState(0)
   const [direction, setDirection] = useState<'forward' | 'backward'>('forward')
 
@@ -23,7 +22,6 @@ export default function ReportForm({ transactions, setShow }: ReportFormProps) {
     defaultValues: {
       reportType: "finance",
       parameters: {},
-      transactions: transactions
     }
   });
 

@@ -1,5 +1,5 @@
-import * as React from "react"
-import { Button } from "@/components/ui/button"
+import * as React from "react";
+import { Button } from "@/components/ui/button";
 import {
   Command,
   CommandEmpty,
@@ -7,62 +7,40 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import { IconCirclePlus } from "@tabler/icons-react"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Table } from "@tanstack/react-table"
+} from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { IconCirclePlus } from "@tabler/icons-react";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface Option {
-  value: string
-  label: string
+  value: string;
+  label: string;
 }
 
-interface MultiSelectComboboxProps<TData> {
-  table: Table<TData>
-  columnId: string
-  options: Option[]
-  label?: string
+interface MultiSelectComboboxProps {
+  options: Option[];
+  label?: string;
+  value?: string[]; // controlled selected values
+  onChange?: (values: string[]) => void;
 }
 
-export function MultiSelectCombobox<TData>({
-  table,
-  columnId,
+export function MultiSelectCombobox({
   options,
   label = "Filter",
-}: MultiSelectComboboxProps<TData>) {
-  const [open, setOpen] = React.useState(false)
-
-  // Get the current values from the table state
-  const values: string[] =
-    (table.getState().columnFilters.find((f) => f.id === columnId)?.value as string[]) || []
+  value = [],
+  onChange,
+}: MultiSelectComboboxProps) {
+  const [open, setOpen] = React.useState(false);
 
   const toggleValue = (val: string) => {
-    const newValues = values.includes(val)
-      ? values.filter((v) => v !== val)
-      : [...values, val]
+    const next = value.includes(val)
+      ? value.filter((v) => v !== val)
+      : [...value, val];
 
-    // Update the table filter
-    table.setColumnFilters((filters) => {
-      const existingFilter = filters.find((f) => f.id === columnId)
-      if (existingFilter) {
-        return newValues.length > 0
-          ? filters.map((f) =>
-            f.id === columnId ? { ...f, value: newValues } : f
-          )
-          : filters.filter((f) => f.id !== columnId)
-      } else if (newValues.length > 0) {
-        return [...filters, { id: columnId, value: newValues }]
-      }
-      return filters
-    })
-  }
+    onChange?.(next);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -74,30 +52,28 @@ export function MultiSelectCombobox<TData>({
           aria-expanded={open}
           className="border-dashed flex items-center justify-between gap-2"
         >
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex items-center gap-2">
             <IconCirclePlus size={16} />
             <span>{label}</span>
           </div>
-          {values.length > 0 && <Separator orientation="vertical" />}
+
+          {value.length > 0 && <Separator orientation="vertical" />}
+
           <div className="flex items-center gap-1">
-            {values.length > 2 ? (
+            {value.length > 2 ? (
               <Badge variant="secondary" className="text-xs px-2 py-0">
-                {values.length} selected
+                {value.length} selected
               </Badge>
-            ) : values.length > 0 ? (
-              values.map((val) => {
-                const option = options.find((f) => f.value === val)
+            ) : (
+              value.map((val) => {
+                const option = options.find((o) => o.value === val);
                 return (
-                  <Badge
-                    key={val}
-                    variant="secondary"
-                    className="text-xs px-2 py-0"
-                  >
+                  <Badge key={val} variant="secondary" className="text-xs px-2 py-0">
                     {option?.label ?? val}
                   </Badge>
-                )
+                );
               })
-            ) : null}
+            )}
           </div>
         </Button>
       </PopoverTrigger>
@@ -119,7 +95,7 @@ export function MultiSelectCombobox<TData>({
                   onSelect={() => toggleValue(item.value)}
                 >
                   <Checkbox
-                    checked={values.includes(item.value)}
+                    checked={value.includes(item.value)}
                     onCheckedChange={() => toggleValue(item.value)}
                     onClick={(e) => e.stopPropagation()}
                   />
@@ -131,5 +107,5 @@ export function MultiSelectCombobox<TData>({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }

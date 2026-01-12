@@ -4,7 +4,6 @@ import RawJsonBlock from "./raw-json-block";
 import { BaseTransaction } from "@/lib/types/transaction";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { format } from "date-fns";
-import { timestampToDate } from "@/lib/analytics/utils";
 
 function DetailSheet({ children, data }: { children: ReactNode, data: BaseTransaction }) {
   return (

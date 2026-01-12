@@ -6,9 +6,11 @@ import { IconMoodSad } from "@tabler/icons-react";
 import { BaseTransaction } from "@/lib/types/transaction";
 import React from "react";
 import ReportGeneratorPage from "../reportGeneration";
+import { Country } from "@/lib/types/country";
+import { PayMethod } from "@/lib/types/payMethod";
 
 export default function ReportsTable(
-  { transactions, countries, payMethods }: { transactions: BaseTransaction[], countries: string[], payMethods: string[] }
+  { countries, payMethods }: { countries: Country[], payMethods: PayMethod[] }
 ) {
   const { data, isLoading } = useReports()
 
@@ -45,7 +47,7 @@ export default function ReportsTable(
         />
         :
         <div className="flex items-center justify-center">
-          <ReportGeneratorPage transactions={transactions} setShow={setShow} />
+          <ReportGeneratorPage setShow={setShow} />
         </div>
       }
     </div>

@@ -10,16 +10,17 @@ import {
 import { RevenueCountry } from "@/lib/types/transaction"
 import TransactionChart from "./transactionChart"
 import CountryCard from "./countryCard"
-import { ChartConfig, RevenueChartData } from "@/lib/analytics/utils"
 import { ArrowUpDown } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { IconEye, IconEyeOff } from "@tabler/icons-react"
+import { Country } from "@/lib/types/country"
+import { ChartConfig, RevenueEntry } from "@/lib/types/statistics"
 export const description = "An interactive area chart"
 
 
 interface DataTableProps {
-  data: { data: RevenueChartData[]; config: ChartConfig }
-  countries: string[]
+  data: { data: RevenueEntry[]; config: ChartConfig }
+  countries: Country[]
   revenueByCountry: RevenueCountry[]
 }
 

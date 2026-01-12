@@ -88,7 +88,7 @@ function CountryCard({
                   : "text-green-500"
                 }`}
             >
-              {Math.abs(country.lastWeekIncrease)}%
+              {Math.abs(country.lastWeekIncrease).toFixed(2)}%
               {country.lastWeekIncrease === 0 ? null : country.lastWeekIncrease < 0 ? (
                 <IconCaretDownFilled className="scale-80" />
               ) : (

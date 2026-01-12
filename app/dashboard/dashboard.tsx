@@ -2,140 +2,69 @@
 
 import * as React from "react";
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
-import { DateRange } from "react-day-picker";
-import {
   IconCaretDownFilled,
   IconFlagCheck,
   IconMenuOrder,
   IconSubscript,
 } from "@tabler/icons-react";
 
-import type { BaseTransaction } from "@/lib/types/transaction";
-import { useAnalyticsWorker } from "@/lib/analytics/useAnalyticsWorker";
-
-import TransactionsChartFilters from "@/components/dashboard/transactions-chart/filters";
 import AnalyticsCard from "@/components/dashboard/analyticsCard";
 import AnalyticChart from "@/components/dashboard/chart/analyticChart";
 import AnalyticsCard2 from "@/components/dashboard/analyticsCard2";
 import AnalyticsCard3 from "@/components/dashboard/transactions-chart/analyticsCard3";
 import AnalyticChart3 from "@/components/dashboard/chart/analyticChart3";
 import { AnalyticsCard5 } from "@/components/dashboard/transactions-revenue-chart/analyticsCard5";
-import DashbaordTable from "@/components/dashboard/table/table";
+import { StatsFilters } from "@/lib/types/statistics";
+import { Country } from "@/lib/types/country";
+import { Provider } from "@/lib/types/provider";
+import { Merchant } from "@/lib/types/merchant";
+import { PayMethod } from "@/lib/types/payMethod";
+import TransactionsChartFilters from "@/components/dashboard/transactions-chart/filters";
+import { useDashboardStats } from "@/hooks/statistics/useStats";
+import { DashboardSkeleton } from "@/components/dashboard/skeleton";
 
-interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
-  countries: string[];
-  payMethods: string[];
-  dateRange: DateRange | undefined;
-  dateRangeTrx: DateRange;
-  providers: string[];
-  merchants: string[];
+interface DataTableProps {
+  countries: Country[];
+  providers: Provider[];
+  merchants: Merchant[];
+  payMethods: PayMethod[];
 }
 
-export function PageDashoard<TData extends BaseTransaction, TValue>({
-  columns,
-  data,
+export function PageDashoard({
   payMethods,
-  dateRange,
-  dateRangeTrx,
   countries,
   providers,
   merchants
-}: DataTableProps<TData, TValue>) {
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [rowSelection, setRowSelection] = React.useState({});
+}: DataTableProps) {
+  const [columnFilters, setColumnFilters] = React.useState<StatsFilters>({});
+  const { data: analyticsData, isLoading } = useDashboardStats(columnFilters)
 
-  console.log("FILTERS: ", columnFilters)
-  console.log("COLUMNs: ", columns)
-  const table = useReactTable({
-    data,
-    columns,
-    initialState: {
-      columnFilters,
-      columnVisibility: {
-        commerceReqId: false,
-      },
-    },
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onColumnFiltersChange: setColumnFilters,
-    onRowSelectionChange: setRowSelection,
-    state: {
-      rowSelection,
-      columnFilters,
-    },
-    debugTable: true,
-    debugHeaders: true,
-    debugColumns: true,
-  });
-
-  const activeDateRange = React.useMemo(() => {
-    if (dateRange?.from && dateRange?.to) {
-      return { from: dateRange.from, to: dateRange.to };
-    }
-    return { from: dateRangeTrx.from!, to: dateRangeTrx.to! };
-  }, [dateRange, dateRangeTrx]);
-
-  const { analyticsData, loading, error } = useAnalyticsWorker({
-    data: data as BaseTransaction[],
-    from: activeDateRange.from,
-    to: activeDateRange.to,
-    filters: columnFilters,
-  });
-  console.log("DATA ANALYTIC: ", analyticsData)
-
-  if (error) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <span className="text-sm text-red-500">Analytics error: {error}</span>
-      </div>
-    );
+  if (isLoading || !analyticsData) {
+    return <DashboardSkeleton />;
   }
 
-  if (!analyticsData) {
-    return (
-      <div className="w-full h-full flex items-center justify-center">
-        <span className="text-xs text-muted-foreground">
-          {loading ? "Computing analytics..." : "No analytics available for current filters."}
-        </span>
-      </div>
-    );
-  }
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full mb-4">
       <div className="sticky top-0 z-50 bg-background py-2">
         <div className="items-center justify-between flex">
           <div className="flex gap-2 items-center justify-between flex-1 px-2">
             <span className="text-xs text-muted-foreground">
               All monetary values have been converted to U.S. dollars (USD) for consistency.
             </span>
-            {data.length > 0 && (
+            {analyticsData && (
               <TransactionsChartFilters
-                table={table}
+                columnFilters={columnFilters}
+                setColumnFilters={setColumnFilters}
                 merchants={merchants}
                 payMethods={payMethods}
                 countries={countries}
-                columnFilters={columnFilters}
                 providers={providers}
               />
             )}
           </div>
         </div>
       </div>
-
-      {/* Top summary cards */}
       <div className="flex gap-4 mt-4">
         <AnalyticsCard
           icon={IconSubscript}
@@ -143,10 +72,10 @@ export function PageDashoard<TData extends BaseTransaction, TValue>({
           tooltip="Total number of new transactions"
           value={analyticsData.totalTransactions}
           description={
-            dateRange?.from && dateRange?.to ? "From period selected" : "Since last week"
+            "Since last week"
           }
           footerLabel="Details"
-          footerValue={analyticsData.lastWeekIncreaseCount.percentage.toFixed(1)}
+          footerValue={analyticsData.lastWeekIncreaseCount.toFixed(1)}
           chart={<AnalyticChart chartData={analyticsData.last5WeeksData} />}
         />
 
@@ -159,11 +88,11 @@ export function PageDashoard<TData extends BaseTransaction, TValue>({
             currency: "USD",
           }).format(Number(analyticsData.avgOrderValue))}
           description={
-            dateRange?.from && dateRange?.to ? "From period selected" : "Since last week"
+            "Since last week"
           }
           footerLabel="Details"
-          footerValue={analyticsData.lastWeekIncreaseAOV.percentage.toFixed(1)}
-          footerIcon={dateRange?.from && dateRange?.to ? undefined : IconCaretDownFilled}
+          footerValue={analyticsData.lastWeekIncreaseAOV.toFixed(1)}
+          footerIcon={IconCaretDownFilled}
           chart={<AnalyticChart chartData={analyticsData.last5WeeksAOVData} />}
         />
 
@@ -172,11 +101,9 @@ export function PageDashoard<TData extends BaseTransaction, TValue>({
           title="Success Rate"
           tooltip="Success rate of transactions"
           value={analyticsData.successRate.toFixed(2) + "%"}
-          description={
-            dateRange?.from && dateRange?.to ? "From period selected" : "Since last week"
-          }
+          description={"Since last week"}
           footerLabel="Details"
-          footerValue={analyticsData.lastWeekIncreaseSuccessRate.percentage.toFixed(1)}
+          footerValue={analyticsData.lastWeekIncreaseSuccessRate.toFixed(1)}
           chart={<AnalyticChart chartData={analyticsData.last5WeeksSuccessRateData} />}
         />
 
@@ -187,27 +114,25 @@ export function PageDashoard<TData extends BaseTransaction, TValue>({
         />
       </div>
 
-      {/* Middle charts */}
       <div className="flex space-x-4 mt-4">
         <AnalyticsCard3 data={analyticsData.transactionsForChart} />
         <AnalyticChart3 data={analyticsData.trxRate} />
       </div>
 
-      {/* Revenue by country + day */}
       <div className="flex space-x-4 mt-4">
         <AnalyticsCard5
           countries={countries}
-          data={analyticsData.revenuByDay}
+          data={{ data: analyticsData.revenuByDay, config: analyticsData.chartConfig }}
           revenueByCountry={analyticsData.revenueByCountry}
         />
       </div>
 
-      {/* Analytics-specific table: we show at most e.g. 5k rows for safety */}
-      <DashbaordTable
-        countries={countries}
-        transactions={analyticsData.transactionByDateRange}
-        payMethods={payMethods}
-      />
+
+      {/* <DashbaordTable */}
+      {/*   countries={countries} */}
+      {/*   transactions={analyticsData.transactionByDateRange} */}
+      {/*   payMethods={payMethods} */}
+      {/* /> */}
     </div>
   );
 }
