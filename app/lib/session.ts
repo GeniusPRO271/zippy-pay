@@ -30,7 +30,7 @@ export async function encrypt(payload: SessionPayload): Promise<string> {
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
-    .setExpirationTime('1m')
+    .setExpirationTime('7d')
     .sign(encodedKey)
 }
 
