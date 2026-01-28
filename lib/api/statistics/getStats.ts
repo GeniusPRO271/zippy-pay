@@ -1,40 +1,64 @@
-import { DashboardStatsType, StatsFilters } from "@/lib/types/statistics"
-import { axiosWithAuth } from "../config"
+import {
+  DashboardStatsType,
+  StatsFilters,
+} from "@/lib/types/statistics";
+import { axiosWithAuth } from "../config";
+import { fromZonedTime } from "date-fns-tz";
+
+const CHILE_TIMEZONE = "America/Santiago";
+
+/**
+ * Converts a Chile-local date to a UTC ISO string (Z)
+ * required by the API / Zod schema.
+ */
+function chileToUTCISOString(date: string | Date): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+
+  // Interpret the date as Chile local time, then convert to UTC
+  const utcDate = fromZonedTime(d, CHILE_TIMEZONE);
+
+  return utcDate.toISOString();
+}
 
 export async function getDashboardStats(
   filters?: StatsFilters
 ): Promise<DashboardStatsType> {
-
   try {
-    const params = new URLSearchParams()
+    console.log("CALLING API WITH FILTERS:", filters);
 
-    const merchantIds = filters?.merchantIds ? ([] as string[]).concat(filters.merchantIds) : []
-    const providerIds = filters?.providerIds ? ([] as string[]).concat(filters.providerIds) : []
-    const countryIds = filters?.countryIds ? ([] as string[]).concat(filters.countryIds) : []
-    const payMethodIds = filters?.payMethodIds ? ([] as string[]).concat(filters.payMethodIds) : []
+    const params = new URLSearchParams();
 
-    merchantIds.forEach(id => params.append("merchantId", id))
-    providerIds.forEach(id => params.append("providerId", id))
-    countryIds.forEach(id => params.append("countryId", id))
-    payMethodIds.forEach(id => params.append("payMethodId", id))
+    const merchantIds = filters?.merchantId ?? [];
+    const providerIds = filters?.providerId ?? [];
+    const countryIds = filters?.countryId ?? [];
+    const payMethodIds = filters?.payMethodId ?? [];
 
-    const now = new Date()
-    const thirtyDaysAgo = new Date()
-    thirtyDaysAgo.setDate(now.getDate() - 30)
+    merchantIds.forEach((id) => params.append("merchantId", id));
+    providerIds.forEach((id) => params.append("providerId", id));
+    countryIds.forEach((id) => params.append("countryId", id));
+    payMethodIds.forEach((id) => params.append("payMethodId", id));
 
-    const from = filters?.dateRange?.from ?? thirtyDaysAgo.toISOString()
-    const to = filters?.dateRange?.to ?? now.toISOString()
+    // ✅ Chile timezone → UTC ISO (Zod compatible)
+    if (filters?.from) {
+      params.append("from", chileToUTCISOString(filters.from));
+    }
 
-    params.append("from", from)
-    params.append("to", to)
+    if (filters?.to) {
+      params.append("to", chileToUTCISOString(filters.to));
+    }
 
-    const api = await axiosWithAuth()
+    const api = await axiosWithAuth();
 
-    const { data } = await api.get<DashboardStatsType>(`/api/stats?${params.toString()}`)
+    const { data } = await api.get<DashboardStatsType>(
+      `/api/stats?${params.toString()}`
+    );
 
-    return data
+    return data;
   } catch (error) {
-    console.error("[getDashboardStats] Error fetching dashboard stats:", error)
-    throw error
+    console.error(
+      "[getDashboardStats] Error fetching dashboard stats:",
+      error
+    );
+    throw error;
   }
 }

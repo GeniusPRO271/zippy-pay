@@ -69,18 +69,43 @@ export interface ChartDataWeekly {
   amount: number;
 }
 
+
 export const StatsFilterSchema = z.object({
-  merchantIds: z.array(z.string().uuid()).optional(),
-  providerIds: z.array(z.string().uuid()).optional(),
-  countryIds: z.array(z.string().uuid()).optional(),
-  payMethodIds: z.array(z.string().uuid()).optional(),
-  dateRange: z
-    .object({
-      from: z.string().datetime().optional(),
-      to: z.string().datetime().optional(),
-    })
-    .optional(),
-});
+  merchantId: z
+    .union([z.string().uuid(), z.array(z.string().uuid())])
+    .optional()
+    .transform((val) => (val ? ([] as string[]).concat(val) : [])),
 
-export type StatsFilters = z.infer<typeof StatsFilterSchema>;
+  providerId: z
+    .union([z.string().uuid(), z.array(z.string().uuid())])
+    .optional()
+    .transform((val) => (val ? ([] as string[]).concat(val) : [])),
 
+  countryId: z
+    .union([z.string().uuid(), z.array(z.string().uuid())])
+    .optional()
+    .transform((val) => (val ? ([] as string[]).concat(val) : [])),
+
+  payMethodId: z
+    .union([z.string().uuid(), z.array(z.string().uuid())])
+    .optional()
+    .transform((val) => (val ? ([] as string[]).concat(val) : [])),
+
+  from: z
+    .string()
+    .datetime()
+    .optional()
+    .or(z.literal("")),
+
+  to: z
+    .string()
+    .datetime()
+    .optional()
+    .or(z.literal("")),
+}).transform((filters) => ({
+  ...filters,
+  from: filters.from || undefined,
+  to: filters.to || undefined,
+}))
+
+export type StatsFilters = z.infer<typeof StatsFilterSchema>

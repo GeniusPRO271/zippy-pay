@@ -132,7 +132,19 @@ export function EmptyState({
     }
   };
 
-  const { data, isLoading, refetch } = useDashboardStats({});
+
+  const toDate = new Date();
+  const fromDate = new Date(toDate);
+  fromDate.setDate(toDate.getDate() - 30);
+
+  const { data, isLoading, refetch } = useDashboardStats({
+    merchantId: [],
+    providerId: [],
+    countryId: [],
+    payMethodId: [],
+    from: fromDate.toISOString(),
+    to: toDate.toISOString(),
+  });
 
   return (
     <Empty>

@@ -1,27 +1,33 @@
-import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import * as React from "react"
 
-export function DashboardSkeleton() {
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { Skeleton } from "@/components/ui/skeleton"
+
+type DashboardSkeletonProps = {
+  showHeader?: boolean
+}
+
+export function DashboardSkeleton({ showHeader = true }: DashboardSkeletonProps) {
   return (
     <div className="w-full h-full">
-      {/* Header Skeleton */}
-      <div className="sticky top-0 z-50 bg-background py-2">
-        <div className="items-center justify-between flex">
-          <div className="flex gap-2 items-center justify-between flex-1 px-2">
-            <Skeleton className="h-4 w-96" />
-            <div className="flex gap-2">
-              <Skeleton className="h-9 w-32" />
-              <Skeleton className="h-9 w-32" />
-              <Skeleton className="h-9 w-32" />
-              <Skeleton className="h-9 w-32" />
+      {showHeader && (
+        <div className="sticky top-0 z-50 bg-background py-2">
+          <div className="items-center justify-between flex">
+            <div className="flex gap-2 items-center justify-between flex-1 px-2">
+              <Skeleton className="h-4 w-96" />
+              <div className="flex gap-2">
+                <Skeleton className="h-9 w-32" />
+                <Skeleton className="h-9 w-32" />
+                <Skeleton className="h-9 w-32" />
+                <Skeleton className="h-9 w-32" />
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
-      {/* Analytics Cards Row */}
       <div className="flex gap-4 mt-4">
-        {[...Array(4)].map((_, i) => (
+        {Array.from({ length: 4 }).map((_, i) => (
           <Card key={i} className="flex-1">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <div className="space-y-2">
@@ -38,7 +44,6 @@ export function DashboardSkeleton() {
         ))}
       </div>
 
-      {/* Charts Row */}
       <div className="flex space-x-4 mt-4">
         <Card className="flex-1">
           <CardHeader>
@@ -58,7 +63,6 @@ export function DashboardSkeleton() {
         </Card>
       </div>
 
-      {/* Revenue Chart */}
       <div className="flex space-x-4 mt-4">
         <Card className="flex-1">
           <CardHeader>
@@ -70,5 +74,5 @@ export function DashboardSkeleton() {
         </Card>
       </div>
     </div>
-  );
+  )
 }
