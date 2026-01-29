@@ -35,7 +35,7 @@ export function Page() {
               <IconBolt className="mr-1" />
               Dashboard
             </TabsTrigger>
-            <TabsTrigger value="reports">
+            <TabsTrigger value="reports" disabled>
               <IconReport className="mr-1" />
               Reports
             </TabsTrigger>
