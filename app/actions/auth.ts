@@ -66,6 +66,7 @@ export async function verifySession() {
       refreshToken: payload.refreshToken,
     })
 
+
     const newExpiresAt = Date.now() + data.expiresIn * 1000
 
     const encrypted = await encrypt({

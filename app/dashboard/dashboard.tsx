@@ -130,6 +130,7 @@ export function PageDashoard({
               monthlyRevenue={analyticsData.monthlyRevenue}
               revenueChange={analyticsData.revenueChange}
             />
+
           </div>
 
           <div className="flex space-x-4 mt-4">

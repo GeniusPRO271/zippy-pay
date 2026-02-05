@@ -38,12 +38,12 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            <AuthProviderWrapper>
-              <main className="min-h-screen w-full overflow-scroll scrollbar-hidden h-screen">
-                {children}
-                <Toaster position="top-center" />
-              </main>
-            </AuthProviderWrapper>
+            {/* <AuthProviderWrapper> */}
+            <main className="min-h-screen w-full overflow-scroll scrollbar-hidden h-screen">
+              {children}
+              <Toaster position="top-center" />
+            </main>
+            {/* </AuthProviderWrapper> */}
           </Providers>
         </ThemeProvider>
       </body>

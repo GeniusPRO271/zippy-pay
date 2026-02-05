@@ -35,7 +35,7 @@ export function Page() {
               <IconBolt className="mr-1" />
               Dashboard
             </TabsTrigger>
-            <TabsTrigger value="reports" disabled>
+            <TabsTrigger value="reports" >
               <IconReport className="mr-1" />
               Reports
             </TabsTrigger>
@@ -55,12 +55,9 @@ export function Page() {
 
           <TabsContent value="analytics">Analytics content here.</TabsContent>
           <TabsContent value="reports">
-            {
-              merchants && countries && providers && payMethods &&
-              <div className="flex justify-center items-center">
-                <ReportsTable countries={countries} payMethods={payMethods} />
-              </div>
-            }
+            <div className="flex justify-center items-center">
+              <ReportsTable />
+            </div>
           </TabsContent>
         </Tabs>
       </div>
