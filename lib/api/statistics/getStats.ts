@@ -8,13 +8,22 @@ import { fromZonedTime } from "date-fns-tz";
 const CHILE_TIMEZONE = "America/Santiago";
 
 /**
- * Converts a Chile-local date to a UTC ISO string (Z)
- * required by the API / Zod schema.
+ * Convert a date to Chile local time
+ * and force start or end of day, then convert to UTC ISO string.
  */
-function chileToUTCISOString(date: string | Date): string {
-  const d = typeof date === "string" ? new Date(date) : date;
+function chileDayToUTCISOString(
+  date: string | Date,
+  type: "start" | "end"
+): string {
+  const d = typeof date === "string" ? new Date(date) : new Date(date);
 
-  // Interpret the date as Chile local time, then convert to UTC
+  if (type === "start") {
+    d.setHours(0, 0, 0, 0);
+  } else {
+    d.setHours(23, 59, 59, 999);
+  }
+
+  // Interpret the date as Chile local time → convert to UTC
   const utcDate = fromZonedTime(d, CHILE_TIMEZONE);
 
   return utcDate.toISOString();
@@ -38,13 +47,19 @@ export async function getDashboardStats(
     countryIds.forEach((id) => params.append("countryId", id));
     payMethodIds.forEach((id) => params.append("payMethodId", id));
 
-    // ✅ Chile timezone → UTC ISO (Zod compatible)
+    // ✅ Chile day boundaries → UTC ISO
     if (filters?.from) {
-      params.append("from", chileToUTCISOString(filters.from));
+      params.append(
+        "from",
+        chileDayToUTCISOString(filters.from, "start")
+      );
     }
 
     if (filters?.to) {
-      params.append("to", chileToUTCISOString(filters.to));
+      params.append(
+        "to",
+        chileDayToUTCISOString(filters.to, "end")
+      );
     }
 
     const api = await axiosWithAuth();

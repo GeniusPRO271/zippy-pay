@@ -1,6 +1,9 @@
+
 import { MonthlyRevenue } from "@/lib/types/transaction"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card"
+import { Card, CardAction, CardContent, CardFooter, CardHeader, CardTitle } from "../ui/card"
 import { AnalyticChart2 } from "./chart/analyticChart2"
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
+import { IconInfoCircle } from "@tabler/icons-react"
 
 function AnalyticsCard2(
   { revenue, monthlyRevenue, revenueChange }: { revenue: number, revenueChange: number, monthlyRevenue: MonthlyRevenue[] }
@@ -11,6 +14,16 @@ function AnalyticsCard2(
         <CardTitle className="flex gap-2 font-normal">
           <p className="text-[14px]">Total Revenue</p>
         </CardTitle>
+        <CardAction>
+          <Tooltip>
+            <TooltipTrigger className="cursor-pointer" asChild>
+              <IconInfoCircle size={18} className="text-gray-500" />
+            </TooltipTrigger>
+            <TooltipContent className="mb-1">
+              <p>Includes all revenue including payouts</p>
+            </TooltipContent>
+          </Tooltip>
+        </CardAction>
       </CardHeader>
       <CardContent className="justify-start items-start">
         <div>
@@ -24,7 +37,7 @@ function AnalyticsCard2(
             {new Intl.NumberFormat("en-US", {
               style: "currency",
               currency: "USD",
-            }).format(revenueChange)} {" "}
+            }).format(revenueChange)}
             from last period
           </p>
         </div>

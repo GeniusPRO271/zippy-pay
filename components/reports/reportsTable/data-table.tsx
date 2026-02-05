@@ -25,17 +25,16 @@ import React, { useState } from "react"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { IconAdjustmentsHorizontal, IconCirclePlus } from "@tabler/icons-react"
 import { Separator } from "@/components/ui/separator"
+import { redirect } from "next/navigation"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  setShow: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
-  setShow
 }: DataTableProps<TData, TValue>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -80,7 +79,7 @@ export function DataTable<TData, TValue>({
       <div className="mb-3 flex gap-2">
         <div className="flex items-center justify-between flex-1">
           <div className="flex items-center justify-start">
-            <Button size="sm" onClick={() => setShow(true)} variant="outline" className="border border-dashed">
+            <Button size="sm" onClick={() => redirect("/report-generator")} variant="outline" className="border border-dashed">
               <IconCirclePlus />
               Generate report
             </Button>

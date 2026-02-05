@@ -25,12 +25,10 @@ export const columns: ColumnDef<ReportRecord>[] = [
   },
   {
     accessorKey: "merchantName",
-    header: "Merchant",
+    header: "Name",
     cell: ({ row }) => {
       const createdAt = new Date(row.original.createdAt);
       const now = new Date();
-
-      // Difference in minutes
       const diffMs = now.getTime() - createdAt.getTime();
       const diffMinutes = diffMs / (1000 * 60);
 
