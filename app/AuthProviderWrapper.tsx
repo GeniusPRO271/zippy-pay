@@ -13,6 +13,7 @@ export default async function AuthProviderWrapper({
     <AuthProvider
       initialState={{
         email: session?.email ?? null,
+        role: session?.role ?? null,
         isAuthenticated: !!session,
         loading: false,
       }}

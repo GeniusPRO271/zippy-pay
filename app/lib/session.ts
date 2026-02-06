@@ -11,6 +11,7 @@ export type SessionPayload = {
   accessToken: string
   refreshToken: string
   email: string
+  role: string
   expiresAt: Date
 }
 
@@ -18,6 +19,7 @@ export type JWTPayload = {
   accessToken: string
   refreshToken: string
   email: string
+  role: string
   expiresAt: number
 }
 
@@ -26,6 +28,7 @@ export async function encrypt(payload: SessionPayload): Promise<string> {
     accessToken: payload.accessToken,
     refreshToken: payload.refreshToken,
     email: payload.email,
+    role: payload.role,
     expiresAt: payload.expiresAt.getTime(),
   })
     .setProtectedHeader({ alg: 'HS256' })
@@ -52,6 +55,7 @@ export async function createSession(data: {
   accessToken: string
   refreshToken: string
   email: string
+  role: string
 }): Promise<void> {
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
   const encrypted = await encrypt({ ...data, expiresAt })
