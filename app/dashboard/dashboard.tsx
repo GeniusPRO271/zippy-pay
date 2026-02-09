@@ -16,6 +16,7 @@ import AnalyticChart from "@/components/dashboard/chart/analyticChart"
 import AnalyticChart3 from "@/components/dashboard/chart/analyticChart3"
 import TransactionsChartFilters from "@/components/dashboard/transactions-chart/filters"
 import { DashboardSkeleton } from "@/components/dashboard/skeleton"
+import MerchantApprovalTable from "@/components/dashboard/merchant-approval-table"
 
 import { useDashboardStats } from "@/hooks/statistics/useStats"
 import { Country } from "@/lib/types/country"
@@ -147,6 +148,10 @@ export function PageDashoard({
               }}
               revenueByCountry={analyticsData.revenueByCountry}
             />
+          </div>
+
+          <div className="flex space-x-4 mt-4">
+            <MerchantApprovalTable />
           </div>
 
           {/*

@@ -69,6 +69,13 @@ export interface ChartDataWeekly {
   amount: number;
 }
 
+export interface MerchantApprovalRate {
+  merchantName: string;
+  approvalRateLast7hrs: number;
+  approvalRateLast12hrs: number;
+  totalTransactions: number;
+}
+
 
 export const StatsFilterSchema = z.object({
   merchantId: z

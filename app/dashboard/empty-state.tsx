@@ -100,8 +100,8 @@ export function EmptyState({
       if (allTransactions.length === 0 && fileArray.length > 0) {
         setError("No valid transactions found in the uploaded files.");
       }
-    } catch (err) {
-      console.error("[ERROR] File import failed:", err);
+    } catch (_err) {
+      console.error("[ERROR] File import failed:", _err);
       setError("An unexpected error occurred during import.");
     } finally {
       setIsLoadingAction(false);
@@ -119,7 +119,7 @@ export function EmptyState({
       const valid = array.filter((t) => t && typeof t === "object");
 
       return valid.map(normalizeTransaction);
-    } catch (err) {
+    } catch {
       try {
         const lines = text.split("\n").filter((l) => l.trim());
         const parsed = lines.map((l) => JSON.parse(l));
@@ -137,7 +137,7 @@ export function EmptyState({
   const fromDate = new Date(toDate);
   fromDate.setDate(toDate.getDate() - 30);
 
-  const { data, isLoading, refetch } = useDashboardStats({
+  const { isLoading, refetch } = useDashboardStats({
     merchantId: [],
     providerId: [],
     countryId: [],

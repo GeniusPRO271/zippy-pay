@@ -1,4 +1,3 @@
-import { Merchant } from "@/lib/types/merchant";
 import { axiosWithAuth } from "../config";
 
 export type MerchantFinanceOptions = {

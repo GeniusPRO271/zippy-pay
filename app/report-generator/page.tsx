@@ -9,7 +9,6 @@ import {
   useFormContext,
   useWatch,
 } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import {
@@ -52,13 +51,36 @@ import { useCreateReport } from "@/hooks/report/createReport";
 import { useMerchants } from "@/hooks/merchant/useMerchants";
 import { useMerchantFinanceOptions } from "@/hooks/merchant/useMerchantFinanceOptions";
 
-type CreateReportFormValues = z.input<typeof CreateReportRequestSchema>;
-
 type PayMethodNode = { payMethodId: string; payMethodName: string };
 type ProviderNode = {
   providerId: string;
   providerName: string;
   payMethods: PayMethodNode[];
+};
+
+type ProviderMethodFormValue = {
+  payMethodId: string;
+  payMethodName?: string;
+  commissionFormula: string;
+};
+
+type ProviderFormValue = {
+  providerId: string;
+  providerName?: string;
+  methods: ProviderMethodFormValue[];
+};
+
+type ReportFormValues = {
+  reportType: "approvalRate" | "finance";
+  reportName: string;
+  dateRange: { from: string; to: string; timezone: string };
+  reportParams?: {
+    merchantId: string;
+    countryId: string;
+    earlyPayment?: string;
+    retention?: string;
+    providers: ProviderFormValue[];
+  };
 };
 
 const NONE = "__none__";
@@ -124,7 +146,7 @@ function DateTimePickerField(props: {
   defaultTime: string;
 }) {
   const { name, label, disabled, defaultTime } = props;
-  const { control } = useFormContext<CreateReportFormValues>();
+  const { control } = useFormContext<ReportFormValues>();
 
   return (
     <Controller
@@ -218,25 +240,23 @@ function FinanceParamsFields(props: {
     getValues,
     watch,
     formState: { errors },
-  } = useFormContext<CreateReportFormValues>();
+  } = useFormContext<ReportFormValues>();
 
   const [payMethodsLoaded, setPayMethodsLoaded] = React.useState(false);
   const [formulaCache, setFormulaCache] = React.useState<Record<string, string>>(
     {},
   );
 
-  const merchantId =
-    (watch("reportParams.merchantId" as any) as string | undefined) ?? "";
-  const countryId =
-    (watch("reportParams.countryId" as any) as string | undefined) ?? "";
+  const merchantId = watch("reportParams.merchantId") ?? "";
+  const countryId = watch("reportParams.countryId") ?? "";
   const from = watch("dateRange.from");
   const to = watch("dateRange.to");
 
   const selectedProviders =
-    (useWatch({
+    useWatch({
       control,
-      name: "reportParams.providers" as any,
-    }) as any[] | undefined) ?? [];
+      name: "reportParams.providers",
+    }) ?? [];
 
   const countries = React.useMemo(() => {
     const list = financeOptions?.countries ?? [];
@@ -267,7 +287,7 @@ function FinanceParamsFields(props: {
   function resetPayMethodsAndSelection() {
     setPayMethodsLoaded(false);
     setFormulaCache({});
-    setValue("reportParams.providers" as any, [], {
+    setValue("reportParams.providers", [], {
       shouldDirty: true,
       shouldValidate: true,
     });
@@ -303,8 +323,7 @@ function FinanceParamsFields(props: {
   }) {
     const { provider, method, checked } = args;
 
-    const current =
-      ((getValues("reportParams.providers" as any) as any[]) ?? []) as any[];
+    const current = getValues("reportParams.providers") ?? [];
 
     const next = [...current];
     const providerIndex = next.findIndex(
@@ -333,7 +352,7 @@ function FinanceParamsFields(props: {
         const methods = [...(existingProvider.methods ?? [])];
 
         const exists = methods.some(
-          (m: any) => m.payMethodId === method.payMethodId,
+          (m: ProviderMethodFormValue) => m.payMethodId === method.payMethodId,
         );
         if (!exists) {
           methods.push({
@@ -350,7 +369,7 @@ function FinanceParamsFields(props: {
         };
       }
 
-      setValue("reportParams.providers" as any, next, {
+      setValue("reportParams.providers", next, {
         shouldDirty: true,
         shouldValidate: true,
       });
@@ -363,7 +382,7 @@ function FinanceParamsFields(props: {
     const methods = [...(existingProvider.methods ?? [])];
 
     const methodIndex = methods.findIndex(
-      (m: any) => m.payMethodId === method.payMethodId,
+      (m: ProviderMethodFormValue) => m.payMethodId === method.payMethodId,
     );
     if (methodIndex === -1) return;
 
@@ -381,27 +400,27 @@ function FinanceParamsFields(props: {
       next[providerIndex] = { ...existingProvider, methods };
     }
 
-    setValue("reportParams.providers" as any, next, {
+    setValue("reportParams.providers", next, {
       shouldDirty: true,
       shouldValidate: true,
     });
   }
 
-  const financeErrors = errors as any;
+  const financeErrors = errors;
   const providersErrorMsg =
     financeErrors?.reportParams?.providers?.message ??
     financeErrors?.reportParams?.providers?.root?.message;
 
   const merchantsErrorText =
-    merchantsError && (merchantsError as any)?.message
-      ? String((merchantsError as any).message)
+    merchantsError && merchantsError instanceof Error
+      ? merchantsError.message
       : merchantsError
         ? "Failed to load merchants."
         : "";
 
   const financeOptionsErrorText =
-    financeOptionsError && (financeOptionsError as any)?.message
-      ? String((financeOptionsError as any).message)
+    financeOptionsError && financeOptionsError instanceof Error
+      ? financeOptionsError.message
       : financeOptionsError
         ? "Failed to load finance options."
         : "";
@@ -435,7 +454,7 @@ function FinanceParamsFields(props: {
 
             <Controller
               control={control}
-              name={"reportParams.merchantId" as any}
+              name="reportParams.merchantId"
               render={({ field }) => (
                 <Select
                   value={field.value || NONE}
@@ -443,7 +462,7 @@ function FinanceParamsFields(props: {
                     const nextMerchantId = v === NONE ? "" : v;
                     field.onChange(nextMerchantId);
 
-                    setValue("reportParams.countryId" as any, "", {
+                    setValue("reportParams.countryId", "", {
                       shouldDirty: true,
                       shouldValidate: true,
                     });
@@ -485,7 +504,7 @@ function FinanceParamsFields(props: {
 
             <Controller
               control={control}
-              name={"reportParams.countryId" as any}
+              name="reportParams.countryId"
               render={({ field }) => (
                 <Select
                   value={field.value || NONE}
@@ -533,7 +552,7 @@ function FinanceParamsFields(props: {
               id="earlyPayment"
               inputMode="decimal"
               placeholder='e.g. "15000" or "15000.50"'
-              {...register("reportParams.earlyPayment" as any, {
+              {...register("reportParams.earlyPayment", {
                 setValueAs: (v) => (v === "" ? undefined : v),
               })}
             />
@@ -550,7 +569,7 @@ function FinanceParamsFields(props: {
               id="retention"
               inputMode="decimal"
               placeholder='e.g. "5000" or "5000.50"'
-              {...register("reportParams.retention" as any, {
+              {...register("reportParams.retention", {
                 setValueAs: (v) => (v === "" ? undefined : v),
               })}
             />
@@ -693,7 +712,7 @@ function FinanceParamsFields(props: {
                               <>
                                 <Input
                                   placeholder="e.g. amount * 0.03"
-                                  {...register(formulaName as any)}
+                                  {...register(formulaName)}
                                 />
                                 {formulaError ? (
                                   <p className="text-xs text-red-600">
@@ -734,7 +753,7 @@ export default function ReportGeneratorRHF() {
     [],
   );
 
-  const form = useForm<CreateReportFormValues>({
+  const form = useForm<ReportFormValues>({
     resolver: zodResolver(CreateReportRequestSchema),
     mode: "onSubmit",
     reValidateMode: "onChange",
@@ -758,7 +777,7 @@ export default function ReportGeneratorRHF() {
   const createReportMutation = useCreateReport();
 
   const unregisterReportParams = React.useCallback(() => {
-    form.unregister("reportParams" as any, {
+    form.unregister("reportParams", {
       keepValue: false,
       keepDefaultValue: false,
       keepDirty: false,
@@ -777,10 +796,10 @@ export default function ReportGeneratorRHF() {
     if (!isFinance) return;
 
     const curr = form.getValues();
-    if ((curr as any).reportParams) return;
+    if (curr.reportParams) return;
 
     setValue(
-      "reportParams" as any,
+      "reportParams",
       {
         merchantId: "",
         countryId: "",
@@ -792,8 +811,7 @@ export default function ReportGeneratorRHF() {
     );
   }, [isFinance, form, setValue]);
 
-  const merchantId =
-    (watch("reportParams.merchantId" as any) as string | undefined) ?? "";
+  const merchantId = watch("reportParams.merchantId") ?? "";
 
   const merchantsQuery = useMerchants();
   const financeOptionsQuery = useMerchantFinanceOptions(merchantId);
@@ -889,7 +907,7 @@ export default function ReportGeneratorRHF() {
                         )}
                       />
 
-                      {renderError((formState.errors as any)?.reportType?.message)}
+                      {renderError(formState.errors.reportType?.message)}
                     </div>
 
                     <div className="grid gap-2">

@@ -46,6 +46,7 @@ export function PopoverMultiSelect({
   React.useEffect(() => {
     setSelectedValues([])
     onChange?.([])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const toggleValue = (val: string) => {

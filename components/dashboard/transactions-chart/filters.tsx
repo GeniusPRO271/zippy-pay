@@ -76,8 +76,6 @@ function TransactionsChartFilters({
 
   const selectedRange: DateRange | undefined = draftRange ?? committedRange
 
-  const isComplete = (r?: DateRange) => !!(r?.from && r?.to)
-
   const handleDateSelect = (range?: DateRange) => {
     const from = range?.from
     if (!from) return
