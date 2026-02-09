@@ -10,6 +10,7 @@ export type LoginResponse = {
   refreshToken: string
   expiresIn: number
   email: string
+  role: string
 }
 
 export async function postLogin(params: LoginParams): Promise<LoginResponse> {
@@ -39,6 +40,7 @@ export type RefreshTokenResponse = {
   accessToken: string
   expiresIn: number
   email: string
+  role: string
 }
 
 export async function postRefreshToken(

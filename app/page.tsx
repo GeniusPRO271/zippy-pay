@@ -3,6 +3,7 @@ import * as React from "react"
 import {
   IconBolt,
   IconReport,
+  IconUsers,
 } from "@tabler/icons-react"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import PageDashoard from "./dashboard/dashboard"
@@ -12,12 +13,17 @@ import { useMerchants } from "@/hooks/merchant/useMerchants"
 import { usePayMethods } from "@/hooks/payMethod/usePayMethod"
 import ReportsTable from "@/components/reports/reportsTable"
 import { LogoutButton } from "@/components/ui/logOutButton"
+import { ImportDialog } from "@/components/dashboard/import-dialog"
+import { UserManagement } from "@/components/users/user-management"
+import { useAuth } from "@/context/auth"
 
 export function Page() {
   const { data: countries } = useCountries()
   const { data: providers } = useProviders()
   const { data: merchants } = useMerchants()
   const { data: payMethods } = usePayMethods()
+  const { auth } = useAuth()
+  const isSuperAdmin = auth.role === "superadmin"
 
   return (
     <>
@@ -26,7 +32,10 @@ export function Page() {
           <h1 className="scroll-m-20 text-center text-2xl font-bold tracking-tight text-balance">
             Dashboard
           </h1>
-          <LogoutButton />
+          <div className="flex items-center gap-2">
+            {isSuperAdmin && <ImportDialog />}
+            <LogoutButton />
+          </div>
         </div>
 
         <Tabs defaultValue="dashboard" className="w-full h-full">
@@ -39,6 +48,12 @@ export function Page() {
               <IconReport className="mr-1" />
               Reports
             </TabsTrigger>
+            {isSuperAdmin && (
+              <TabsTrigger value="users">
+                <IconUsers className="mr-1" />
+                Users
+              </TabsTrigger>
+            )}
           </TabsList>
 
           <TabsContent className="space-y-4" value="dashboard">
@@ -53,12 +68,17 @@ export function Page() {
             }
           </TabsContent>
 
-          <TabsContent value="analytics">Analytics content here.</TabsContent>
           <TabsContent value="reports">
             <div className="flex justify-center items-center">
               <ReportsTable />
             </div>
           </TabsContent>
+
+          {isSuperAdmin && (
+            <TabsContent value="users">
+              <UserManagement />
+            </TabsContent>
+          )}
         </Tabs>
       </div>
     </>

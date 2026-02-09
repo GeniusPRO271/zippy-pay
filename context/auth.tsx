@@ -5,6 +5,7 @@ import { logout as serverLogout } from "@/app/actions/auth"
 
 type AuthState = {
   email: string | null
+  role: string | null
   isAuthenticated: boolean
   loading: boolean
 }
@@ -39,6 +40,7 @@ export function AuthProvider({
 
     setAuth({
       email: null,
+      role: null,
       isAuthenticated: false,
       loading: false,
     })

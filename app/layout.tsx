@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "next-themes";
 import { Providers } from "./providers";
 import AuthProviderWrapper from "./AuthProviderWrapper";
-import { verifySession } from "./actions/auth";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -38,12 +37,12 @@ export default async function RootLayout({
           disableTransitionOnChange
         >
           <Providers>
-            {/* <AuthProviderWrapper> */}
-            <main className="min-h-screen w-full overflow-scroll scrollbar-hidden h-screen">
-              {children}
-              <Toaster position="top-center" />
-            </main>
-            {/* </AuthProviderWrapper> */}
+            <AuthProviderWrapper>
+              <main className="min-h-screen w-full overflow-scroll scrollbar-hidden h-screen">
+                {children}
+                <Toaster position="top-center" />
+              </main>
+            </AuthProviderWrapper>
           </Providers>
         </ThemeProvider>
       </body>

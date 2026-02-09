@@ -29,6 +29,7 @@ export async function loginAction(
       accessToken: result.accessToken,
       refreshToken: result.refreshToken,
       email: result.email,
+      role: result.role,
     });
   } catch (error) {
 
@@ -73,6 +74,7 @@ export async function verifySession() {
       accessToken: data.accessToken,
       refreshToken: payload.refreshToken,
       email: data.email,
+      role: data.role,
       expiresAt: new Date(newExpiresAt),
     })
 
