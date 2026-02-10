@@ -151,7 +151,7 @@ export function PageDashoard({
           </div>
 
           <div className="flex space-x-4 mt-4">
-            <MerchantApprovalTable />
+            <MerchantApprovalTable filters={columnFilters} countries={countries} />
           </div>
 
           {/*

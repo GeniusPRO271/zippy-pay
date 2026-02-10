@@ -1,6 +1,7 @@
 import {
   DashboardStatsType,
   StatsFilters,
+  ApprovalRatesResponse,
 } from "@/lib/types/statistics";
 import { axiosWithAuth } from "../config";
 import { fromZonedTime } from "date-fns-tz";
@@ -72,6 +73,42 @@ export async function getDashboardStats(
   } catch (error) {
     console.error(
       "[getDashboardStats] Error fetching dashboard stats:",
+      error
+    );
+    throw error;
+  }
+}
+
+export async function getApprovalRates(
+  page: number,
+  pageSize: number,
+  filters?: StatsFilters
+): Promise<ApprovalRatesResponse> {
+  try {
+    const params = new URLSearchParams();
+    params.append("page", String(page));
+    params.append("pageSize", String(pageSize));
+
+    const merchantIds = filters?.merchantId ?? [];
+    const providerIds = filters?.providerId ?? [];
+    const countryIds = filters?.countryId ?? [];
+    const payMethodIds = filters?.payMethodId ?? [];
+
+    merchantIds.forEach((id) => params.append("merchantId", id));
+    providerIds.forEach((id) => params.append("providerId", id));
+    countryIds.forEach((id) => params.append("countryId", id));
+    payMethodIds.forEach((id) => params.append("payMethodId", id));
+
+    const api = await axiosWithAuth();
+
+    const { data } = await api.get<ApprovalRatesResponse>(
+      `/api/stats/approval-rates?${params.toString()}`
+    );
+
+    return data;
+  } catch (error) {
+    console.error(
+      "[getApprovalRates] Error fetching approval rates:",
       error
     );
     throw error;

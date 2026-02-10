@@ -69,11 +69,33 @@ export interface ChartDataWeekly {
   amount: number;
 }
 
-export interface MerchantApprovalRate {
+export interface MerchantMethodDayData {
+  date: string;
+  approvalRate: number;
+  numTransactions: number;
+  providersUsed: string[];
+}
+
+export interface MerchantMethodRow {
+  method: string;
+  dailyData: MerchantMethodDayData[];
+}
+
+export interface MerchantApprovalData {
   merchantName: string;
-  approvalRateLast7hrs: number;
-  approvalRateLast12hrs: number;
-  totalTransactions: number;
+  methods: MerchantMethodRow[];
+}
+
+export interface ApprovalRatesPagination {
+  page: number;
+  pageSize: number;
+  totalDays: number;
+  totalPages: number;
+}
+
+export interface ApprovalRatesResponse {
+  data: MerchantApprovalData[];
+  pagination: ApprovalRatesPagination;
 }
 
 

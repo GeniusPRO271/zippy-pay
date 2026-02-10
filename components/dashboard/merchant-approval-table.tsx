@@ -1,15 +1,11 @@
 "use client"
 
+import { useState, useMemo } from "react"
+import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
+import { MultiSelectCombobox } from "./table/filter-dropdown"
+import { toOptions } from "@/lib/utils"
+import { Country } from "@/lib/types/country"
 import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getSortedRowModel,
-  SortingState,
-  useReactTable,
-} from "@tanstack/react-table"
-import {
-  Table,
   TableBody,
   TableCell,
   TableHead,
@@ -18,46 +14,36 @@ import {
 } from "@/components/ui/table"
 import {
   Card,
+  CardAction,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { useState } from "react"
-import { MerchantApprovalRate } from "@/lib/types/statistics"
+import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { useApprovalRates } from "@/hooks/statistics/useStats"
+import type {
+  MerchantApprovalData,
+  MerchantMethodDayData,
+  StatsFilters,
+} from "@/lib/types/statistics"
 
-const sampleData: MerchantApprovalRate[] = [
-  {
-    merchantName: "TechStore Inc",
-    approvalRateLast7hrs: 94.2,
-    approvalRateLast12hrs: 91.8,
-    totalTransactions: 1247,
-  },
-  {
-    merchantName: "Fashion Forward",
-    approvalRateLast7hrs: 87.5,
-    approvalRateLast12hrs: 85.3,
-    totalTransactions: 832,
-  },
-  {
-    merchantName: "Global Gadgets",
-    approvalRateLast7hrs: 72.1,
-    approvalRateLast12hrs: 78.6,
-    totalTransactions: 2103,
-  },
-  {
-    merchantName: "Home Essentials",
-    approvalRateLast7hrs: 96.8,
-    approvalRateLast12hrs: 95.4,
-    totalTransactions: 564,
-  },
-  {
-    merchantName: "Sports Kingdom",
-    approvalRateLast7hrs: 45.3,
-    approvalRateLast12hrs: 52.7,
-    totalTransactions: 1891,
-  },
-]
+const DAYS_PER_PAGE = 5
+const SERVER_PAGE_SIZE = 15
+
+interface MerchantApprovalTableProps {
+  filters?: StatsFilters
+  countries: Country[]
+}
+
+interface FlatRow {
+  merchantName: string
+  method: string
+  isFirstMethodOfMerchant: boolean
+  merchantMethodCount: number
+  dailyData: MerchantMethodDayData[]
+}
 
 function getApprovalRateColor(rate: number) {
   if (rate >= 80) return "text-green-600"
@@ -65,113 +51,284 @@ function getApprovalRateColor(rate: number) {
   return "text-red-600"
 }
 
-const columns: ColumnDef<MerchantApprovalRate>[] = [
-  {
-    accessorKey: "merchantName",
-    header: "Merchant",
-    cell: ({ row }) => (
-      <div className="font-medium">{row.original.merchantName}</div>
-    ),
-  },
-  {
-    accessorKey: "approvalRateLast7hrs",
-    header: "Appv Rate (7h)",
-    cell: ({ row }) => {
-      const rate = row.original.approvalRateLast7hrs
-      return (
-        <span className={`font-semibold ${getApprovalRateColor(rate)}`}>
-          {rate.toFixed(1)}%
-        </span>
-      )
-    },
-  },
-  {
-    accessorKey: "approvalRateLast12hrs",
-    header: "Appv Rate (12h)",
-    cell: ({ row }) => {
-      const rate = row.original.approvalRateLast12hrs
-      return (
-        <span className={`font-semibold ${getApprovalRateColor(rate)}`}>
-          {rate.toFixed(1)}%
-        </span>
-      )
-    },
-  },
-  {
-    accessorKey: "totalTransactions",
-    header: "Num. Transactions",
-    cell: ({ row }) => (
-      <div className="font-medium">
-        {row.original.totalTransactions.toLocaleString()}
-      </div>
-    ),
-  },
-]
-
-export default function MerchantApprovalTable() {
-  const [sorting, setSorting] = useState<SortingState>([])
-
-  const table = useReactTable({
-    data: sampleData,
-    columns,
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    state: { sorting },
+function formatDateRange(startDate: string, endDate: string): string {
+  const start = new Date(startDate + "T00:00:00")
+  const end = new Date(endDate + "T00:00:00")
+  const startStr = start.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
   })
+  const endStr = end.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })
+  return `${startStr} - ${endStr}`
+}
+
+function formatShortDate(dateStr: string): string {
+  const d = new Date(dateStr + "T00:00:00")
+  return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+}
+
+function deriveAllDates(data: MerchantApprovalData[]): string[] {
+  const dateSet = new Set<string>()
+  data.forEach((m) =>
+    m.methods.forEach((method) =>
+      method.dailyData.forEach((d) => dateSet.add(d.date))
+    )
+  )
+  return Array.from(dateSet).sort()
+}
+
+function flattenRows(data: MerchantApprovalData[]): FlatRow[] {
+  const rows: FlatRow[] = []
+  data.forEach((merchant) => {
+    merchant.methods.forEach((method, idx) => {
+      rows.push({
+        merchantName: merchant.merchantName,
+        method: method.method,
+        isFirstMethodOfMerchant: idx === 0,
+        merchantMethodCount: merchant.methods.length,
+        dailyData: method.dailyData,
+      })
+    })
+  })
+  return rows
+}
+
+export default function MerchantApprovalTable({
+  filters,
+  countries,
+}: MerchantApprovalTableProps) {
+  // Server-side pagination: page 1 = most recent 15 days
+  const [serverPage, setServerPage] = useState(1)
+  // Client-side offset within the current server page's dates
+  const [dayOffset, setDayOffset] = useState<number | null>(null)
+  // Local country filter for this widget
+  const [selectedCountryIds, setSelectedCountryIds] = useState<string[]>([])
+
+  const mergedFilters = useMemo(() => {
+    const base = filters ?? ({} as StatsFilters)
+    return {
+      ...base,
+      countryId: selectedCountryIds.length > 0 ? selectedCountryIds : base.countryId,
+    }
+  }, [filters, selectedCountryIds])
+
+  const { data: response, isLoading } = useApprovalRates(
+    serverPage,
+    SERVER_PAGE_SIZE,
+    mergedFilters
+  )
+
+  const approvalData = response?.data ?? []
+  const pagination = response?.pagination
+
+  const allDates = useMemo(() => deriveAllDates(approvalData), [approvalData])
+  const flatRows = useMemo(() => flattenRows(approvalData), [approvalData])
+
+  // Initialize dayOffset to show the most recent 5 days of this page
+  const effectiveDayOffset =
+    dayOffset !== null
+      ? dayOffset
+      : Math.max(0, allDates.length - DAYS_PER_PAGE)
+
+  const visibleDates = allDates.slice(
+    effectiveDayOffset,
+    effectiveDayOffset + DAYS_PER_PAGE
+  )
+
+  const totalPages = pagination?.totalPages ?? 1
+
+  // Can go left (older): either there are more days in this page, or there's a next server page
+  const canGoLeft =
+    effectiveDayOffset > 0 || serverPage < totalPages
+  // Can go right (newer): either there are more days in this page, or there's a previous server page (closer to today)
+  const canGoRight =
+    effectiveDayOffset + DAYS_PER_PAGE < allDates.length || serverPage > 1
+
+  const goLeft = () => {
+    if (effectiveDayOffset - DAYS_PER_PAGE >= 0) {
+      // Still within current server page
+      setDayOffset(effectiveDayOffset - DAYS_PER_PAGE)
+    } else if (serverPage < totalPages) {
+      // Need older data from next server page
+      setServerPage((prev) => prev + 1)
+      // Show the rightmost (most recent) slice of the new page
+      setDayOffset(null)
+    }
+  }
+
+  const goRight = () => {
+    if (effectiveDayOffset + DAYS_PER_PAGE < allDates.length) {
+      // Still within current server page
+      setDayOffset(effectiveDayOffset + DAYS_PER_PAGE)
+    } else if (serverPage > 1) {
+      // Need newer data from previous server page (closer to today)
+      setServerPage((prev) => prev - 1)
+      // Show the leftmost (oldest) slice of the new page
+      setDayOffset(0)
+    }
+  }
+
+  const dateRangeLabel =
+    visibleDates.length > 0
+      ? formatDateRange(
+          visibleDates[0],
+          visibleDates[visibleDates.length - 1]
+        )
+      : ""
+
+  const totalColumns = 2 + visibleDates.length
 
   return (
-    <Card className="w-full">
+    <Card className="w-full h-[600px]">
       <CardHeader>
         <CardTitle>Merchant Approval Rates</CardTitle>
         <CardDescription>
-          Approval rate breakdown per merchant over the last 7 and 12 hours
+          Daily approval rate breakdown per merchant and payment method
         </CardDescription>
+        <CardAction>
+          <div className="flex items-center gap-2">
+            <MultiSelectCombobox
+              label="Country"
+              options={toOptions(countries, "id", "name")}
+              value={selectedCountryIds}
+              onChange={(values) => {
+                setSelectedCountryIds(values)
+                setServerPage(1)
+                setDayOffset(null)
+              }}
+            />
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={goLeft}
+              disabled={!canGoLeft || isLoading}
+            >
+              <IconArrowLeft size={16} />
+            </Button>
+            <span className="text-sm text-muted-foreground whitespace-nowrap min-w-[160px] text-center">
+              {isLoading ? "Loading..." : dateRangeLabel}
+            </span>
+            <Button
+              variant="ghost"
+              size="icon-sm"
+              onClick={goRight}
+              disabled={!canGoRight || isLoading}
+            >
+              <IconArrowRight size={16} />
+            </Button>
+          </div>
+        </CardAction>
       </CardHeader>
-      <CardContent>
-        <Table>
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
+      <CardContent className="flex-1 overflow-auto min-h-0">
+        {isLoading ? (
+          <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">
+            Loading approval rates...
+          </div>
+        ) : (
+          <table className="w-full caption-bottom text-sm">
+            <TableHeader className="sticky top-0 z-10 bg-card">
+              <TableRow>
+                <TableHead className="border-r min-w-[140px] bg-card">
+                  Merchant
+                </TableHead>
+                <TableHead className="border-r min-w-[120px] bg-card">
+                  Method
+                </TableHead>
+                {visibleDates.map((date) => (
+                  <TableHead
+                    key={date}
+                    className="text-center border-r min-w-[130px] bg-card"
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-semibold">
+                        {formatShortDate(date)}
+                      </span>
+                      <span className="text-[10px] text-muted-foreground font-normal">
+                        Rate / Trx / Providers
+                      </span>
+                    </div>
                   </TableHead>
                 ))}
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id}>
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+            </TableHeader>
+            <TableBody>
+              {flatRows.length > 0 ? (
+                flatRows.map((row) => (
+                  <TableRow
+                    key={`${row.merchantName}-${row.method}`}
+                    className={
+                      row.isFirstMethodOfMerchant ? "border-t-2" : undefined
+                    }
+                  >
+                    {row.isFirstMethodOfMerchant && (
+                      <TableCell
+                        rowSpan={row.merchantMethodCount}
+                        className="font-medium align-top border-r"
+                      >
+                        {row.merchantName}
+                      </TableCell>
+                    )}
+                    <TableCell className="font-medium border-r">
+                      {row.method}
                     </TableCell>
-                  ))}
+                    {visibleDates.map((date) => {
+                      const dayData = row.dailyData.find(
+                        (d) => d.date === date
+                      )
+                      return (
+                        <TableCell
+                          key={date}
+                          className="border-r text-center"
+                        >
+                          {dayData ? (
+                            <div className="flex flex-col gap-1">
+                              <span
+                                className={`font-semibold text-sm ${getApprovalRateColor(dayData.approvalRate)}`}
+                              >
+                                {dayData.approvalRate.toFixed(1)}%
+                              </span>
+                              <span className="text-xs text-muted-foreground">
+                                {dayData.numTransactions.toLocaleString()} trx
+                              </span>
+                              <div className="flex flex-wrap gap-0.5 justify-center">
+                                {dayData.providersUsed.map((provider) => (
+                                  <Badge
+                                    key={provider}
+                                    variant="outline"
+                                    className="text-[10px] px-1 py-0"
+                                  >
+                                    {provider}
+                                  </Badge>
+                                ))}
+                              </div>
+                            </div>
+                          ) : (
+                            <span className="text-muted-foreground text-xs">
+                              --
+                            </span>
+                          )}
+                        </TableCell>
+                      )
+                    })}
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={totalColumns}
+                    className="h-24 text-center"
+                  >
+                    No results.
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
+              )}
+            </TableBody>
+          </table>
+        )}
       </CardContent>
     </Card>
   )

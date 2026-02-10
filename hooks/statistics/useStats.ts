@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query"
-import { DashboardStatsType, StatsFilters } from "@/lib/types/statistics"
-import { getDashboardStats } from "@/lib/api/statistics/getStats"
+import { DashboardStatsType, StatsFilters, ApprovalRatesResponse } from "@/lib/types/statistics"
+import { getDashboardStats, getApprovalRates } from "@/lib/api/statistics/getStats"
 import { toast } from "sonner"
 import { useRef } from "react"
 
@@ -26,6 +26,30 @@ export function useDashboardStats(filters?: StatsFilters, enabled = true) {
       onError: (error: Error) => {
         toast.error("Error loading dashboard", {
           description: error.message || "Failed to fetch analytics data. Please try again.",
+        })
+      },
+    },
+  })
+}
+
+export function useApprovalRates(
+  page: number,
+  pageSize: number,
+  filters?: StatsFilters,
+  enabled = true
+) {
+  return useQuery<ApprovalRatesResponse>({
+    queryKey: ["approval-rates", page, pageSize, filters],
+    queryFn: () => getApprovalRates(page, pageSize, filters),
+    staleTime: 5 * 60 * 1000,
+    enabled,
+    gcTime: 1000 * 60 * 60 * 24,
+    refetchOnWindowFocus: false,
+    retry: 2,
+    meta: {
+      onError: (error: Error) => {
+        toast.error("Error loading approval rates", {
+          description: error.message || "Failed to fetch approval rates.",
         })
       },
     },
