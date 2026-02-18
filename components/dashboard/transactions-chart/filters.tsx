@@ -14,6 +14,13 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
 import { cn, toOptions } from "@/lib/utils"
 import { Merchant } from "@/lib/types/merchant"
 import { Provider } from "@/lib/types/provider"
@@ -176,6 +183,25 @@ function TransactionsChartFilters({
           />
         </PopoverContent>
       </Popover>
+
+      <Select
+        value={columnFilters.comparisonType ?? "previous_period"}
+        onValueChange={(value) =>
+          setColumnFilters((prev) => ({
+            ...prev,
+            comparisonType: value as "previous_period" | "previous_month" | "previous_year",
+          }))
+        }
+      >
+        <SelectTrigger className="w-[180px] h-8 text-sm">
+          <SelectValue placeholder="Compare with..." />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="previous_period">Previous Period</SelectItem>
+          <SelectItem value="previous_month">Previous Month</SelectItem>
+          <SelectItem value="previous_year">Previous Year</SelectItem>
+        </SelectContent>
+      </Select>
 
       {hasFilters && (
         <Button

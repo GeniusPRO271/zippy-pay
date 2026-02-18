@@ -63,6 +63,10 @@ export async function getDashboardStats(
       );
     }
 
+    if (filters?.comparisonType) {
+      params.append("comparisonType", filters.comparisonType);
+    }
+
     const api = await axiosWithAuth();
 
     const { data } = await api.get<DashboardStatsType>(

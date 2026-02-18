@@ -2,9 +2,6 @@
 
 import { useState, useMemo } from "react"
 import { IconArrowLeft, IconArrowRight } from "@tabler/icons-react"
-import { MultiSelectCombobox } from "./table/filter-dropdown"
-import { toOptions } from "@/lib/utils"
-import { Country } from "@/lib/types/country"
 import {
   TableBody,
   TableCell,
@@ -21,28 +18,17 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { useApprovalRates } from "@/hooks/statistics/useStats"
 import type {
-  MerchantApprovalData,
-  MerchantMethodDayData,
+  ProviderApprovalData,
   StatsFilters,
 } from "@/lib/types/statistics"
 
 const DAYS_PER_PAGE = 6
 const SERVER_PAGE_SIZE = 15
 
-interface MerchantApprovalTableProps {
+interface ProviderApprovalTableProps {
   filters?: StatsFilters
-  countries: Country[]
-}
-
-interface FlatRow {
-  merchantName: string
-  method: string
-  isFirstMethodOfMerchant: boolean
-  merchantMethodCount: number
-  dailyData: MerchantMethodDayData[]
 }
 
 function getApprovalRateColor(rate: number) {
@@ -71,64 +57,34 @@ function formatShortDate(dateStr: string): string {
   return d.toLocaleDateString("en-US", { month: "short", day: "numeric" })
 }
 
-function deriveAllDates(data: MerchantApprovalData[]): string[] {
+function deriveAllDates(data: ProviderApprovalData[]): string[] {
   const dateSet = new Set<string>()
-  data.forEach((m) =>
-    m.methods.forEach((method) =>
-      method.dailyData.forEach((d) => dateSet.add(d.date))
-    )
+  data.forEach((p) =>
+    p.dailyData.forEach((d) => dateSet.add(d.date))
   )
   return Array.from(dateSet).sort()
 }
 
-function flattenRows(data: MerchantApprovalData[]): FlatRow[] {
-  const rows: FlatRow[] = []
-  data.forEach((merchant) => {
-    merchant.methods.forEach((method, idx) => {
-      rows.push({
-        merchantName: merchant.merchantName,
-        method: method.method,
-        isFirstMethodOfMerchant: idx === 0,
-        merchantMethodCount: merchant.methods.length,
-        dailyData: method.dailyData,
-      })
-    })
-  })
-  return rows
-}
-
-export default function MerchantApprovalTable({
+export default function ProviderApprovalTable({
   filters,
-  countries,
-}: MerchantApprovalTableProps) {
-  // Server-side pagination: page 1 = most recent 15 days
+}: ProviderApprovalTableProps) {
   const [serverPage, setServerPage] = useState(1)
-  // Client-side offset within the current server page's dates
   const [dayOffset, setDayOffset] = useState<number | null>(null)
-  // Local country filter for this widget
-  const [selectedCountryIds, setSelectedCountryIds] = useState<string[]>([])
-
-  const mergedFilters = useMemo(() => {
-    const base = filters ?? ({} as StatsFilters)
-    return {
-      ...base,
-      countryId: selectedCountryIds.length > 0 ? selectedCountryIds : base.countryId,
-    }
-  }, [filters, selectedCountryIds])
 
   const { data: response, isLoading } = useApprovalRates(
     serverPage,
     SERVER_PAGE_SIZE,
-    mergedFilters
+    filters
   )
 
-  const approvalData = response?.data ?? []
+  const providerData = useMemo(
+    () => response?.providerApprovalData ?? [],
+    [response?.providerApprovalData]
+  )
   const pagination = response?.pagination
 
-  const allDates = useMemo(() => deriveAllDates(approvalData), [approvalData])
-  const flatRows = useMemo(() => flattenRows(approvalData), [approvalData])
+  const allDates = useMemo(() => deriveAllDates(providerData), [providerData])
 
-  // Initialize dayOffset to show the most recent 5 days of this page
   const effectiveDayOffset =
     dayOffset !== null
       ? dayOffset
@@ -141,66 +97,45 @@ export default function MerchantApprovalTable({
 
   const totalPages = pagination?.totalPages ?? 1
 
-  // Can go left (older): either there are more days in this page, or there's a next server page
   const canGoLeft =
     effectiveDayOffset > 0 || serverPage < totalPages
-  // Can go right (newer): either there are more days in this page, or there's a previous server page (closer to today)
   const canGoRight =
     effectiveDayOffset + DAYS_PER_PAGE < allDates.length || serverPage > 1
 
   const goLeft = () => {
     if (effectiveDayOffset - DAYS_PER_PAGE >= 0) {
-      // Still within current server page
       setDayOffset(effectiveDayOffset - DAYS_PER_PAGE)
     } else if (serverPage < totalPages) {
-      // Need older data from next server page
       setServerPage((prev) => prev + 1)
-      // Show the rightmost (most recent) slice of the new page
       setDayOffset(null)
     }
   }
 
   const goRight = () => {
     if (effectiveDayOffset + DAYS_PER_PAGE < allDates.length) {
-      // Still within current server page
       setDayOffset(effectiveDayOffset + DAYS_PER_PAGE)
     } else if (serverPage > 1) {
-      // Need newer data from previous server page (closer to today)
       setServerPage((prev) => prev - 1)
-      // Show the leftmost (oldest) slice of the new page
       setDayOffset(0)
     }
   }
 
   const dateRangeLabel =
     visibleDates.length > 0
-      ? formatDateRange(
-          visibleDates[0],
-          visibleDates[visibleDates.length - 1]
-        )
+      ? formatDateRange(visibleDates[0], visibleDates[visibleDates.length - 1])
       : ""
 
-  const totalColumns = 2 + visibleDates.length
+  const totalColumns = 1 + visibleDates.length
 
   return (
-    <Card className="w-full h-[600px]">
+    <Card className="w-full h-[400px]">
       <CardHeader>
-        <CardTitle>Merchant Approval Rates</CardTitle>
+        <CardTitle>Provider Approval Rates</CardTitle>
         <CardDescription>
-          Daily approval rate breakdown per merchant and payment method
+          Daily approval rate breakdown per provider
         </CardDescription>
         <CardAction>
           <div className="flex items-center gap-2">
-            <MultiSelectCombobox
-              label="Country"
-              options={toOptions(countries, "id", "name")}
-              value={selectedCountryIds}
-              onChange={(values) => {
-                setSelectedCountryIds(values)
-                setServerPage(1)
-                setDayOffset(null)
-              }}
-            />
             <Button
               variant="ghost"
               size="icon-sm"
@@ -226,29 +161,26 @@ export default function MerchantApprovalTable({
       <CardContent className="flex-1 overflow-auto min-h-0">
         {isLoading ? (
           <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">
-            Loading approval rates...
+            Loading provider approval rates...
           </div>
         ) : (
           <table className="w-full caption-bottom text-sm">
             <TableHeader className="sticky top-0 z-10 bg-card">
               <TableRow>
-                <TableHead className="border-r min-w-[140px] bg-card">
-                  Merchant
-                </TableHead>
-                <TableHead className="border-r min-w-[120px] bg-card">
-                  Method
+                <TableHead className="border-r min-w-[160px] bg-card">
+                  Provider
                 </TableHead>
                 {visibleDates.map((date) => (
                   <TableHead
                     key={date}
-                    className="text-center border-r min-w-[130px] bg-card"
+                    className="text-center border-r min-w-[120px] bg-card"
                   >
                     <div className="flex flex-col">
                       <span className="font-semibold">
                         {formatShortDate(date)}
                       </span>
                       <span className="text-[10px] text-muted-foreground font-normal">
-                        Rate / Trx / Providers
+                        Rate / Trx
                       </span>
                     </div>
                   </TableHead>
@@ -256,27 +188,14 @@ export default function MerchantApprovalTable({
               </TableRow>
             </TableHeader>
             <TableBody>
-              {flatRows.length > 0 ? (
-                flatRows.map((row) => (
-                  <TableRow
-                    key={`${row.merchantName}-${row.method}`}
-                    className={
-                      row.isFirstMethodOfMerchant ? "border-t-2" : undefined
-                    }
-                  >
-                    {row.isFirstMethodOfMerchant && (
-                      <TableCell
-                        rowSpan={row.merchantMethodCount}
-                        className="font-medium align-top border-r"
-                      >
-                        {row.merchantName}
-                      </TableCell>
-                    )}
+              {providerData.length > 0 ? (
+                providerData.map((provider) => (
+                  <TableRow key={provider.providerName}>
                     <TableCell className="font-medium border-r">
-                      {row.method}
+                      {provider.providerName}
                     </TableCell>
                     {visibleDates.map((date) => {
-                      const dayData = row.dailyData.find(
+                      const dayData = provider.dailyData.find(
                         (d) => d.date === date
                       )
                       return (
@@ -294,17 +213,6 @@ export default function MerchantApprovalTable({
                               <span className="text-xs text-muted-foreground">
                                 {dayData.numTransactions.toLocaleString()} trx
                               </span>
-                              <div className="flex flex-wrap gap-0.5 justify-center">
-                                {dayData.providersUsed.map((provider) => (
-                                  <Badge
-                                    key={provider}
-                                    variant="outline"
-                                    className="text-[10px] px-1 py-0"
-                                  >
-                                    {provider}
-                                  </Badge>
-                                ))}
-                              </div>
                             </div>
                           ) : (
                             <span className="text-muted-foreground text-xs">

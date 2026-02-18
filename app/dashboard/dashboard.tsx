@@ -17,13 +17,23 @@ import AnalyticChart3 from "@/components/dashboard/chart/analyticChart3"
 import TransactionsChartFilters from "@/components/dashboard/transactions-chart/filters"
 import { DashboardSkeleton } from "@/components/dashboard/skeleton"
 import MerchantApprovalTable from "@/components/dashboard/merchant-approval-table"
+import ProviderApprovalTable from "@/components/dashboard/provider-approval-table"
+import PaymentBreakdownCards from "@/components/dashboard/payment-breakdown-cards"
 
 import { useDashboardStats } from "@/hooks/statistics/useStats"
 import { Country } from "@/lib/types/country"
 import { Merchant } from "@/lib/types/merchant"
 import { PayMethod } from "@/lib/types/payMethod"
 import { Provider } from "@/lib/types/provider"
-import { StatsFilters } from "@/lib/types/statistics"
+import { StatsFilters, ComparisonData } from "@/lib/types/statistics"
+import { format } from "date-fns"
+
+function formatComparisonLabel(comparison?: ComparisonData): string {
+  if (!comparison?.from || !comparison?.to) return "Since last week"
+  const from = format(new Date(comparison.from), "MMM d")
+  const to = format(new Date(comparison.to), "MMM d")
+  return `vs ${from} – ${to}`
+}
 
 interface DataTableProps {
   countries: Country[]
@@ -88,7 +98,7 @@ export function PageDashoard({
               title="New Transactions"
               tooltip="Total number of new transactions"
               value={analyticsData.totalTransactions}
-              description={"Since last week"}
+              description={formatComparisonLabel(analyticsData.comparison)}
               footerLabel="Details"
               footerValue={analyticsData.lastWeekIncreaseCount.toFixed(1)}
               chart={<AnalyticChart chartData={analyticsData.last5WeeksData} />}
@@ -102,7 +112,7 @@ export function PageDashoard({
                 style: "currency",
                 currency: "USD",
               }).format(Number(analyticsData.avgOrderValue))}
-              description={"Since last week"}
+              description={formatComparisonLabel(analyticsData.comparison)}
               footerLabel="Details"
               footerValue={analyticsData.lastWeekIncreaseAOV.toFixed(1)}
               footerIcon={IconCaretDownFilled}
@@ -116,7 +126,7 @@ export function PageDashoard({
               title="Success Rate"
               tooltip="Success rate of transactions"
               value={analyticsData.successRate.toFixed(2) + "%"}
-              description={"Since last week"}
+              description={formatComparisonLabel(analyticsData.comparison)}
               footerLabel="Details"
               footerValue={analyticsData.lastWeekIncreaseSuccessRate.toFixed(1)}
               chart={
@@ -130,9 +140,12 @@ export function PageDashoard({
               revenue={analyticsData.totalRevenue}
               monthlyRevenue={analyticsData.monthlyRevenue}
               revenueChange={analyticsData.revenueChange}
+              comparisonLabel={formatComparisonLabel(analyticsData.comparison)}
             />
 
           </div>
+
+          <PaymentBreakdownCards breakdown={analyticsData.paymentBreakdown} />
 
           <div className="flex space-x-4 mt-4">
             <AnalyticsCard3 data={analyticsData.transactionsForChart} />
@@ -152,6 +165,10 @@ export function PageDashoard({
 
           <div className="flex space-x-4 mt-4">
             <MerchantApprovalTable filters={columnFilters} countries={countries} />
+          </div>
+
+          <div className="flex space-x-4 mt-4">
+            <ProviderApprovalTable filters={columnFilters} />
           </div>
 
           {/*
