@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Skeleton } from "@/components/ui/skeleton"
 import { useApprovalRates } from "@/hooks/statistics/useStats"
 import type {
   MerchantApprovalData,
@@ -116,7 +117,7 @@ export default function MerchantApprovalTable({
     }
   }, [filters, selectedCountryIds])
 
-  const { data: response, isLoading } = useApprovalRates(
+  const { data: response, isFetching } = useApprovalRates(
     serverPage,
     SERVER_PAGE_SIZE,
     mergedFilters
@@ -205,18 +206,18 @@ export default function MerchantApprovalTable({
               variant="ghost"
               size="icon-sm"
               onClick={goLeft}
-              disabled={!canGoLeft || isLoading}
+              disabled={!canGoLeft || isFetching}
             >
               <IconArrowLeft size={16} />
             </Button>
             <span className="text-sm text-muted-foreground whitespace-nowrap min-w-[160px] text-center">
-              {isLoading ? "Loading..." : dateRangeLabel}
+              {isFetching ? "Loading..." : dateRangeLabel}
             </span>
             <Button
               variant="ghost"
               size="icon-sm"
               onClick={goRight}
-              disabled={!canGoRight || isLoading}
+              disabled={!canGoRight || isFetching}
             >
               <IconArrowRight size={16} />
             </Button>
@@ -224,10 +225,54 @@ export default function MerchantApprovalTable({
         </CardAction>
       </CardHeader>
       <CardContent className="flex-1 overflow-auto min-h-0">
-        {isLoading ? (
-          <div className="flex items-center justify-center h-32 text-muted-foreground text-sm">
-            Loading approval rates...
-          </div>
+        {isFetching ? (
+          <table className="w-full caption-bottom text-sm">
+            <TableHeader className="sticky top-0 z-10 bg-card">
+              <TableRow>
+                <TableHead className="border-r min-w-[140px] bg-card">
+                  <Skeleton className="h-4 w-20" />
+                </TableHead>
+                <TableHead className="border-r min-w-[120px] bg-card">
+                  <Skeleton className="h-4 w-16" />
+                </TableHead>
+                {Array.from({ length: DAYS_PER_PAGE }).map((_, i) => (
+                  <TableHead
+                    key={i}
+                    className="text-center border-r min-w-[130px] bg-card"
+                  >
+                    <div className="flex flex-col items-center gap-1">
+                      <Skeleton className="h-4 w-14" />
+                      <Skeleton className="h-3 w-24" />
+                    </div>
+                  </TableHead>
+                ))}
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {Array.from({ length: 6 }).map((_, rowIdx) => (
+                <TableRow key={rowIdx}>
+                  <TableCell className="border-r min-w-[140px]">
+                    <Skeleton className="h-4 w-20" />
+                  </TableCell>
+                  <TableCell className="border-r min-w-[120px]">
+                    <Skeleton className="h-4 w-16" />
+                  </TableCell>
+                  {Array.from({ length: DAYS_PER_PAGE }).map((_, colIdx) => (
+                    <TableCell
+                      key={colIdx}
+                      className="border-r text-center"
+                    >
+                      <div className="flex flex-col items-center gap-1">
+                        <Skeleton className="h-4 w-12" />
+                        <Skeleton className="h-3 w-14" />
+                        <Skeleton className="h-3 w-10" />
+                      </div>
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+            </TableBody>
+          </table>
         ) : (
           <table className="w-full caption-bottom text-sm">
             <TableHeader className="sticky top-0 z-10 bg-card">
@@ -257,21 +302,16 @@ export default function MerchantApprovalTable({
             </TableHeader>
             <TableBody>
               {flatRows.length > 0 ? (
-                flatRows.map((row) => (
+                flatRows.map((row, index) => (
                   <TableRow
-                    key={`${row.merchantName}-${row.method}`}
+                    key={`${row.merchantName}-${row.method}-${index}`}
                     className={
-                      row.isFirstMethodOfMerchant ? "border-t-2" : undefined
+                      row.isFirstMethodOfMerchant ? "border-t-2" : "border-b-0"
                     }
                   >
-                    {row.isFirstMethodOfMerchant && (
-                      <TableCell
-                        rowSpan={row.merchantMethodCount}
-                        className="font-medium align-top border-r"
-                      >
-                        {row.merchantName}
-                      </TableCell>
-                    )}
+                    <TableCell className="font-medium align-top border-r">
+                      {row.isFirstMethodOfMerchant ? row.merchantName : ""}
+                    </TableCell>
                     <TableCell className="font-medium border-r">
                       {row.method}
                     </TableCell>

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { decrypt } from './app/lib/session'
 import { refreshTokenIfNeeded } from './app/lib/token-refresh'
 
-const protectedRoutes = ['/', '/report-generator', '/dashboard']
+const protectedRoutes = ['/', '/reports', '/users', '/report-generator', '/dashboard', '/transactions']
 const publicRoutes = ['/auth/login']
 
 export default async function middleware(req: NextRequest) {

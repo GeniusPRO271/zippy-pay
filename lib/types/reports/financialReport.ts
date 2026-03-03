@@ -1,4 +1,5 @@
 import z from "zod";
+import { validateExcelFormula } from "@/lib/excelFormula";
 
 const UUID = z.string().uuid();
 
@@ -18,6 +19,13 @@ const MoneySchema = z
     message: 'Invalid money format (use "15000" or "15000.50")',
   });
 
+/**
+ * European Excel-style formula validation.
+ * Accepts: =IF(amount*1,7%<650;650*1,19;amount*1,7%*1,19)
+ */
+const EXCEL_FORMULA_TOKEN_REGEX =
+  /^=?(?:\s|[0-9]+(?:,[0-9]+)?%?|amount|IF|MIN|MAX|ABS|ROUND|SUM|[()+\-*/;.,]|<=|>=|==|!=|<|>|%)+$/i;
+
 const CommissionFormulaSchema = z
   .string()
   .trim()
@@ -27,17 +35,18 @@ const CommissionFormulaSchema = z
     message: "Formula must reference 'amount'",
   })
   .refine((s) => !s.includes("**"), {
-    message: "Exponentiation (** ) is not allowed",
+    message: "Exponentiation (**) is not allowed",
   })
   .refine(
+    (s) => EXCEL_FORMULA_TOKEN_REGEX.test(s),
+    { message: "Formula contains invalid tokens" },
+  )
+  .refine(
     (s) => {
-      const tokenRegex =
-        /^(?:\s|[0-9]+(?:\.[0-9]+)?|amount|Math\.(?:min|max)|[()+\-*/.,]|<=|>=|==|!=|<|>|\?|:)+$/;
-      return tokenRegex.test(s);
+      const result = validateExcelFormula(s);
+      return result.valid;
     },
-    {
-      message: "Formula contains invalid tokens",
-    },
+    { message: "Invalid formula syntax" },
   );
 
 /**
@@ -72,6 +81,7 @@ export const MerchantCountryCommissionParamsSchema = z
     // Optional money values
     earlyPayment: MoneySchema.optional(),
     retention: MoneySchema.optional(),
+    pending: MoneySchema.optional(),
 
     providers: z.array(ProviderCommissionInputSchema).min(1),
   })

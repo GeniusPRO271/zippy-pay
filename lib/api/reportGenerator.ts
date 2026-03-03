@@ -49,14 +49,18 @@ export async function getAllReports(): Promise<ReportRecord[]> {
   }
 }
 
-export async function downloadReport(reportId: string): Promise<Blob> {
+export interface DownloadReportResponse {
+  url: string
+  fileName: string
+}
+
+export async function downloadReport(
+  reportId: string
+): Promise<DownloadReportResponse> {
   try {
     const client = await axiosWithAuth()
-    const { data } = await client.get<Blob>(
-      `/api/reports/${reportId}/download`,
-      {
-        responseType: "blob",
-      }
+    const { data } = await client.get<DownloadReportResponse>(
+      `/api/reports/${reportId}/download`
     )
     return data
   } catch (err) {
@@ -66,19 +70,4 @@ export async function downloadReport(reportId: string): Promise<Blob> {
       error.response?.data?.error?.message ?? "Failed to download report"
     )
   }
-}
-
-export async function downloadReportFile(
-  reportId: string,
-  fileName?: string
-): Promise<void> {
-  const blob = await downloadReport(reportId)
-  const url = URL.createObjectURL(blob)
-
-  const a = document.createElement("a")
-  a.href = url
-  a.download = fileName || `report_${reportId}.xlsx`
-  a.click()
-
-  URL.revokeObjectURL(url)
 }

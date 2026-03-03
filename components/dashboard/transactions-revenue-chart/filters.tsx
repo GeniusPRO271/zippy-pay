@@ -3,7 +3,7 @@ import { ColumnFiltersState, Table } from "@tanstack/react-table"
 import { MultiSelectCombobox } from "../table/filter-dropdown"
 import { Button } from "@/components/ui/button"
 import { IconX } from "@tabler/icons-react"
-import { toOptions } from "@/lib/utils"
+import { toOptions, toUniquePayMethodOptions } from "@/lib/utils"
 import { PayMethod } from "@/lib/types/payMethod"
 import { Country } from "@/lib/types/country"
 
@@ -20,7 +20,7 @@ function TransactionsChartFilters<TData>(
     <div className="flex gap-2 transition-all">
       <MultiSelectCombobox
         label="Method"
-        options={toOptions(payMethods, "id", "name")}
+        options={toUniquePayMethodOptions(payMethods).options}
       />
       <MultiSelectCombobox
         label="Country"

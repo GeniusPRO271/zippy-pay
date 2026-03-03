@@ -168,14 +168,10 @@ const DownloadCell = ({ row }: { row: Row<ReportRecord> }) => {
         if (result.error) throw new Error("Download failed");
         if (!result.data) throw new Error("No file received");
 
-        const blobUrl = URL.createObjectURL(result.data);
-
         const a = document.createElement("a");
-        a.href = blobUrl;
-        a.download = `report_${reportId}.xlsx`;
+        a.href = result.data.url;
+        a.download = result.data.fileName || `report_${reportId}.xlsx`;
         a.click();
-
-        URL.revokeObjectURL(blobUrl);
 
         return { name: `Report ${reportId}` };
       },

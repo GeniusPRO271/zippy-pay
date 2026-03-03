@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { validateExcelFormula } from "@/lib/excelFormula";
 
 export const ReportFinanceProvidersSchemaStep1 = z
   .array(
@@ -38,23 +39,11 @@ export const ReportFinanceProvidersSchemaStep2 = z
               .trim()
               .min(1, { message: "Commission formula is required" })
               .regex(
-                /^[0-9+\-*/()?.:><=,\samountMathminax]*$/,
+                /^=?(?:\s|[0-9]+(?:,[0-9]+)?%?|amount|IF|MIN|MAX|ABS|ROUND|SUM|[()+\-*/;.,]|<=|>=|==|!=|<|>|%)+$/i,
                 "Formula contains invalid characters"
               )
               .refine(
-                (formula) => {
-                  try {
-                    const safeFormula = formula
-                      .replace(/amount/g, "100")
-                      .replace(/Math\.min/g, "Math.min")
-                      .replace(/Math\.max/g, "Math.max");
-                    const fn = new Function("Math", `return (${safeFormula});`);
-                    fn(Math);
-                    return true;
-                  } catch {
-                    return false;
-                  }
-                },
+                (formula) => validateExcelFormula(formula).valid,
                 "Invalid formula syntax"
               ),
           })

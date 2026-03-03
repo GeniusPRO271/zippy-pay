@@ -43,7 +43,7 @@ export function useApprovalRates(
     queryFn: () => getApprovalRates(page, pageSize, filters),
     staleTime: 5 * 60 * 1000,
     enabled,
-    gcTime: 1000 * 60 * 60 * 24,
+    gcTime: 0,
     refetchOnWindowFocus: false,
     retry: 2,
     meta: {
