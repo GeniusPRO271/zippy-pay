@@ -14,7 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import { cn, toOptions } from "@/lib/utils"
+import { cn, toOptions, toUniquePayMethodOptions } from "@/lib/utils"
 import { Merchant } from "@/lib/types/merchant"
 import { Provider } from "@/lib/types/provider"
 import { PayMethod } from "@/lib/types/payMethod"
@@ -41,6 +41,11 @@ function TransactionsChartFilters({
   payMethods,
   providers,
 }: TableFiltersProps) {
+  const { options: payMethodOptions, namesToIds, idsToNames } = React.useMemo(
+    () => toUniquePayMethodOptions(payMethods),
+    [payMethods]
+  )
+
   const [draftRange, setDraftRange] = React.useState<DateRange | undefined>()
 
   const committedRange: DateRange | undefined =
@@ -108,10 +113,10 @@ function TransactionsChartFilters({
     <div className="flex flex-wrap gap-2 transition-all">
       <MultiSelectCombobox
         label="PayMethod"
-        options={toOptions(payMethods, "id", "name")}
-        value={columnFilters.payMethodId || []}
-        onChange={(values) =>
-          setColumnFilters((prev) => ({ ...prev, payMethodId: values }))
+        options={payMethodOptions}
+        value={idsToNames(columnFilters.payMethodId || [])}
+        onChange={(names) =>
+          setColumnFilters((prev) => ({ ...prev, payMethodId: namesToIds(names) }))
         }
       />
 

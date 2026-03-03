@@ -94,3 +94,18 @@ export function toOptions<T>(arr: T[], valueField: keyof T, labelField: keyof T)
     label: String(item[labelField]),   // Convert label to string
   }));
 }
+
+export function toUniquePayMethodOptions(payMethods: { id: string; name: string }[]) {
+  const uniqueNames = [...new Set(payMethods.map(pm => pm.name))].sort()
+  const options: Option[] = uniqueNames.map(name => ({ value: name, label: name }))
+
+  const namesToIds = (names: string[]) =>
+    payMethods.filter(pm => names.includes(pm.name)).map(pm => pm.id)
+
+  const idsToNames = (ids: string[]) => {
+    const idSet = new Set(ids)
+    return [...new Set(payMethods.filter(pm => idSet.has(pm.id)).map(pm => pm.name))]
+  }
+
+  return { options, namesToIds, idsToNames }
+}

@@ -22,8 +22,9 @@ interface Option {
 interface MultiSelectComboboxProps {
   options: Option[];
   label?: string;
-  value?: string[]; // controlled selected values
+  value?: string[];
   onChange?: (values: string[]) => void;
+  showSelectAll?: boolean;
 }
 
 export function MultiSelectCombobox({
@@ -31,6 +32,7 @@ export function MultiSelectCombobox({
   label = "Filter",
   value = [],
   onChange,
+  showSelectAll = false,
 }: MultiSelectComboboxProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -87,6 +89,30 @@ export function MultiSelectCombobox({
           <CommandList>
             <CommandEmpty>No {label.toLowerCase()} found.</CommandEmpty>
             <CommandGroup>
+              {showSelectAll && (
+                <CommandItem
+                  className="flex items-center gap-2 font-medium"
+                  onSelect={() => {
+                    const allValues = options.map((o) => o.value);
+                    if (value.length === options.length) {
+                      onChange?.([]);
+                    } else {
+                      onChange?.(allValues);
+                    }
+                  }}
+                >
+                  <Checkbox
+                    checked={value.length === options.length && options.length > 0}
+                    onCheckedChange={() => {}}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  <span>
+                    {value.length === options.length && options.length > 0
+                      ? "Deselect All"
+                      : "Select All"}
+                  </span>
+                </CommandItem>
+              )}
               {options.map((item) => (
                 <CommandItem
                   key={item.value}
