@@ -6,7 +6,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 import { IconInfoCircle } from "@tabler/icons-react"
 
 function AnalyticsCard2(
-  { revenue, monthlyRevenue, revenueChange }: { revenue: number, revenueChange: number, monthlyRevenue: MonthlyRevenue[] }
+  { revenue, monthlyRevenue, revenueChange, comparisonLabel }: { revenue: number, revenueChange: number, monthlyRevenue: MonthlyRevenue[], comparisonLabel?: string }
 ) {
   return (
     <Card className="h-[182px] min-w-[381px] gap-0 flex-1">
@@ -38,7 +38,7 @@ function AnalyticsCard2(
               style: "currency",
               currency: "USD",
             }).format(revenueChange)}
-            from last period
+            {comparisonLabel ?? "from last period"}
           </p>
         </div>
       </CardContent>

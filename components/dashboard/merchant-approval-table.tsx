@@ -30,7 +30,7 @@ import type {
   StatsFilters,
 } from "@/lib/types/statistics"
 
-const DAYS_PER_PAGE = 5
+const DAYS_PER_PAGE = 6
 const SERVER_PAGE_SIZE = 15
 
 interface MerchantApprovalTableProps {

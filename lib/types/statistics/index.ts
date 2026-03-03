@@ -1,5 +1,21 @@
 import z from "zod";
 
+export interface PaymentBreakdown {
+  total: number;
+  payInTotal: number;
+  payOutTotal: number;
+  net: number;
+}
+
+export interface ComparisonData {
+  from: string;
+  to: string;
+  deltaTransactions: number;
+  deltaAOV: number;
+  deltaSuccessRate: number;
+  deltaRevenue: number;
+}
+
 export interface DashboardStatsType {
   totalTransactions: number;
   avgOrderValue: number;
@@ -19,6 +35,8 @@ export interface DashboardStatsType {
   lastWeekIncreaseCount: number;
   lastWeekIncreaseAOV: number;
   lastWeekIncreaseSuccessRate: number;
+  paymentBreakdown: PaymentBreakdown;
+  comparison?: ComparisonData;
 }
 
 export interface MonthlyRevenue {
@@ -93,8 +111,20 @@ export interface ApprovalRatesPagination {
   totalPages: number;
 }
 
+export interface ProviderDayData {
+  date: string;
+  approvalRate: number;
+  numTransactions: number;
+}
+
+export interface ProviderApprovalData {
+  providerName: string;
+  dailyData: ProviderDayData[];
+}
+
 export interface ApprovalRatesResponse {
   data: MerchantApprovalData[];
+  providerApprovalData: ProviderApprovalData[];
   pagination: ApprovalRatesPagination;
 }
 
@@ -131,6 +161,10 @@ export const StatsFilterSchema = z.object({
     .datetime()
     .optional()
     .or(z.literal("")),
+
+  comparisonType: z
+    .enum(["previous_period", "previous_month", "previous_year"])
+    .optional(),
 }).transform((filters) => ({
   ...filters,
   from: filters.from || undefined,
