@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import {
   Controller,
   FormProvider,
@@ -12,9 +11,8 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import {
-  ArrowLeft,
   CalendarIcon,
-  Home,
+  Info,
   Loader2,
 } from "lucide-react";
 
@@ -22,7 +20,7 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,6 +36,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
+import { FieldError } from "@/components/ui/field";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { toast } from "sonner";
 
 import {
   CreateReportRequestSchema,
@@ -79,6 +94,7 @@ type ReportFormValues = {
     countryId: string;
     earlyPayment?: string;
     retention?: string;
+    pending?: string;
     providers: ProviderFormValue[];
   };
 };
@@ -139,13 +155,60 @@ function buildLocalDateTimeString(date: Date, timeHHmm: string) {
   return `${toYmd(date)}T${safeTime}`;
 }
 
+function FieldLabel({
+  htmlFor,
+  children,
+  tooltip,
+}: {
+  htmlFor?: string;
+  children: React.ReactNode;
+  tooltip: string;
+}) {
+  return (
+    <div className="flex items-center gap-1.5">
+      <Label htmlFor={htmlFor}>{children}</Label>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Info className="h-3.5 w-3.5 text-muted-foreground cursor-help" />
+        </TooltipTrigger>
+        <TooltipContent side="top" className="max-w-xs">
+          {tooltip}
+        </TooltipContent>
+      </Tooltip>
+    </div>
+  );
+}
+
+function flattenErrors(
+  errors: Record<string, unknown>,
+): string[] {
+  const messages: string[] = [];
+  for (const key of Object.keys(errors)) {
+    const val = errors[key];
+    if (
+      val &&
+      typeof val === "object" &&
+      "message" in val &&
+      typeof (val as { message: unknown }).message === "string"
+    ) {
+      messages.push((val as { message: string }).message);
+    } else if (val && typeof val === "object") {
+      messages.push(
+        ...flattenErrors(val as Record<string, unknown>),
+      );
+    }
+  }
+  return messages;
+}
+
 function DateTimePickerField(props: {
   name: "dateRange.from" | "dateRange.to";
   label: string;
+  tooltip: string;
   disabled?: boolean;
   defaultTime: string;
 }) {
-  const { name, label, disabled, defaultTime } = props;
+  const { name, label, tooltip, disabled, defaultTime } = props;
   const { control } = useFormContext<ReportFormValues>();
 
   return (
@@ -159,7 +222,7 @@ function DateTimePickerField(props: {
 
         return (
           <div className="grid gap-2">
-            <Label>{label}</Label>
+            <FieldLabel tooltip={tooltip}>{label}</FieldLabel>
 
             <div className="grid gap-2 md:grid-cols-[1fr_160px] md:items-center">
               <Popover>
@@ -204,7 +267,7 @@ function DateTimePickerField(props: {
             </div>
 
             {fieldState.error?.message ? (
-              <p className="text-xs text-red-600">{fieldState.error.message}</p>
+              <FieldError>{fieldState.error.message}</FieldError>
             ) : null}
           </div>
         );
@@ -221,7 +284,6 @@ function FinanceParamsFields(props: {
   financeOptions: MerchantFinanceOptions | undefined;
   financeOptionsLoading: boolean;
   financeOptionsError: unknown;
-  refetchFinanceOptions: () => void;
 }) {
   const {
     merchants,
@@ -230,7 +292,6 @@ function FinanceParamsFields(props: {
     financeOptions,
     financeOptionsLoading,
     financeOptionsError,
-    refetchFinanceOptions,
   } = props;
 
   const {
@@ -242,15 +303,12 @@ function FinanceParamsFields(props: {
     formState: { errors },
   } = useFormContext<ReportFormValues>();
 
-  const [payMethodsLoaded, setPayMethodsLoaded] = React.useState(false);
   const [formulaCache, setFormulaCache] = React.useState<Record<string, string>>(
     {},
   );
 
   const merchantId = watch("reportParams.merchantId") ?? "";
   const countryId = watch("reportParams.countryId") ?? "";
-  const from = watch("dateRange.from");
-  const to = watch("dateRange.to");
 
   const selectedProviders =
     useWatch({
@@ -280,12 +338,7 @@ function FinanceParamsFields(props: {
     );
   }, [selectedCountry]);
 
-  const canLoadPayMethods = Boolean(
-    merchantId && countryId && from && to && !financeOptionsLoading,
-  );
-
   function resetPayMethodsAndSelection() {
-    setPayMethodsLoaded(false);
     setFormulaCache({});
     setValue("reportParams.providers", [], {
       shouldDirty: true,
@@ -430,27 +483,26 @@ function FinanceParamsFields(props: {
       <CardHeader className="space-y-1 bg-muted/40">
         <div className="text-sm font-semibold">Finance parameters</div>
         <div className="text-xs text-muted-foreground">
-          Select merchant → country → date range → load pay methods → select
-          methods and write commission formulas.
+          Select merchant and country, then choose pay methods and enter commission formulas.
         </div>
       </CardHeader>
 
       <CardContent className="grid gap-6 pt-6">
         {merchantsErrorText ? (
-          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
             {merchantsErrorText}
           </div>
         ) : null}
 
         {financeOptionsErrorText ? (
-          <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
             {financeOptionsErrorText}
           </div>
         ) : null}
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="grid gap-2">
-            <Label>Merchant</Label>
+            <FieldLabel tooltip="The merchant whose transactions will be included in this report">Merchant</FieldLabel>
 
             <Controller
               control={control}
@@ -493,14 +545,12 @@ function FinanceParamsFields(props: {
             />
 
             {financeErrors?.reportParams?.merchantId?.message ? (
-              <p className="text-xs text-red-600">
-                {financeErrors.reportParams.merchantId.message}
-              </p>
+              <FieldError>{financeErrors.reportParams.merchantId.message}</FieldError>
             ) : null}
           </div>
 
           <div className="grid gap-2">
-            <Label>Country of operation</Label>
+            <FieldLabel tooltip="Country to filter transactions by">Country of operation</FieldLabel>
 
             <Controller
               control={control}
@@ -538,16 +588,14 @@ function FinanceParamsFields(props: {
             />
 
             {financeErrors?.reportParams?.countryId?.message ? (
-              <p className="text-xs text-red-600">
-                {financeErrors.reportParams.countryId.message}
-              </p>
+              <FieldError>{financeErrors.reportParams.countryId.message}</FieldError>
             ) : null}
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-4 md:grid-cols-3">
           <div className="grid gap-2">
-            <Label htmlFor="earlyPayment">Early payment (optional)</Label>
+            <FieldLabel htmlFor="earlyPayment" tooltip="Amount deducted for early payment advances">Early payment (optional)</FieldLabel>
             <Input
               id="earlyPayment"
               inputMode="decimal"
@@ -557,14 +605,12 @@ function FinanceParamsFields(props: {
               })}
             />
             {financeErrors?.reportParams?.earlyPayment?.message ? (
-              <p className="text-xs text-red-600">
-                {financeErrors.reportParams.earlyPayment.message}
-              </p>
+              <FieldError>{financeErrors.reportParams.earlyPayment.message}</FieldError>
             ) : null}
           </div>
 
           <div className="grid gap-2">
-            <Label htmlFor="retention">Retention (optional)</Label>
+            <FieldLabel htmlFor="retention" tooltip="Amount held as retention from the settlement">Retention (optional)</FieldLabel>
             <Input
               id="retention"
               inputMode="decimal"
@@ -574,81 +620,133 @@ function FinanceParamsFields(props: {
               })}
             />
             {financeErrors?.reportParams?.retention?.message ? (
-              <p className="text-xs text-red-600">
-                {financeErrors.reportParams.retention.message}
-              </p>
+              <FieldError>{financeErrors.reportParams.retention.message}</FieldError>
+            ) : null}
+          </div>
+
+          <div className="grid gap-2">
+            <FieldLabel htmlFor="pending" tooltip="Amount marked as pending in the settlement">Pending (optional)</FieldLabel>
+            <Input
+              id="pending"
+              inputMode="decimal"
+              placeholder='e.g. "5000" or "5000.50"'
+              {...register("reportParams.pending", {
+                setValueAs: (v) => (v === "" ? undefined : v),
+              })}
+            />
+            {financeErrors?.reportParams?.pending?.message ? (
+              <FieldError>{financeErrors.reportParams.pending.message}</FieldError>
             ) : null}
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            disabled={!merchantId || financeOptionsLoading}
-            onClick={() => {
-              resetPayMethodsAndSelection();
-              refetchFinanceOptions();
-            }}
-          >
-            Reload finance options
-          </Button>
-
-          <Button
-            type="button"
-            disabled={!canLoadPayMethods}
-            onClick={() => setPayMethodsLoaded(true)}
-          >
-            Load pay methods
-          </Button>
-        </div>
-
         <div className="grid gap-3">
           <div>
-            <h4 className="text-sm font-semibold">
-              Providers → Pay methods → Commission formulas
-            </h4>
+            <div className="flex items-center gap-1">
+              <h4 className="text-sm font-semibold">
+                Providers → Pay methods → Commission formulas
+              </h4>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <Button variant="ghost" size="icon" className="h-6 w-6" type="button">
+                    <Info className="h-4 w-4 text-muted-foreground" />
+                    <span className="sr-only">Formula guide</span>
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-xl max-h-[80vh] overflow-y-auto">
+                  <DialogHeader>
+                    <DialogTitle>Formula Guide</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4 text-sm">
+                    <div>
+                      <h5 className="font-semibold mb-2">Basics</h5>
+                      <ul className="list-disc pl-4 space-y-1 text-muted-foreground">
+                        <li><span className="font-mono text-foreground">amount</span> — the transaction value</li>
+                        <li><span className="font-mono text-foreground">=</span> — optional prefix (like Excel)</li>
+                        <li><span className="font-mono text-foreground">,</span> — decimal separator (e.g. <span className="font-mono">1,5</span> = 1.5)</li>
+                        <li><span className="font-mono text-foreground">;</span> — function argument separator</li>
+                        <li><span className="font-mono text-foreground">%</span> — percentage (e.g. <span className="font-mono">1,7%</span> = 0.017)</li>
+                      </ul>
+                    </div>
+                    <Separator />
+                    <div>
+                      <h5 className="font-semibold mb-2">Available Functions</h5>
+                      <div className="space-y-2 text-muted-foreground">
+                        <div>
+                          <span className="font-mono text-foreground">IF(condition;then;else)</span>
+                          <p className="ml-4">Conditional: <span className="font-mono">=IF(amount&gt;1000;amount*2%;amount*3%)</span></p>
+                        </div>
+                        <div>
+                          <span className="font-mono text-foreground">MIN(a;b)</span>
+                          <p className="ml-4">Smallest value: <span className="font-mono">=MIN(amount*5%;1000)</span></p>
+                        </div>
+                        <div>
+                          <span className="font-mono text-foreground">MAX(a;b)</span>
+                          <p className="ml-4">Largest value: <span className="font-mono">=MAX(amount*1%;500)</span></p>
+                        </div>
+                        <div>
+                          <span className="font-mono text-foreground">ABS(value)</span>
+                          <p className="ml-4">Absolute value: <span className="font-mono">=ABS(amount*-1%)</span></p>
+                        </div>
+                        <div>
+                          <span className="font-mono text-foreground">ROUND(value)</span>
+                          <p className="ml-4">Round to integer: <span className="font-mono">=ROUND(amount*2,5%)</span></p>
+                        </div>
+                        <div>
+                          <span className="font-mono text-foreground">SUM(a;b;...)</span>
+                          <p className="ml-4">Sum values: <span className="font-mono">=SUM(amount*1%;amount*0,5%)</span></p>
+                        </div>
+                      </div>
+                    </div>
+                    <Separator />
+                    <div>
+                      <h5 className="font-semibold mb-2">Examples</h5>
+                      <div className="space-y-2">
+                        <div className="rounded-md bg-muted p-2 font-mono text-xs">
+                          =amount*3%
+                          <p className="text-muted-foreground font-sans mt-1">Fixed 3% commission</p>
+                        </div>
+                        <div className="rounded-md bg-muted p-2 font-mono text-xs">
+                          =IF(amount*1,7%&lt;650;650*1,19;amount*1,7%*1,19)
+                          <p className="text-muted-foreground font-sans mt-1">1.7% with 650 minimum, plus 19% tax</p>
+                        </div>
+                        <div className="rounded-md bg-muted p-2 font-mono text-xs">
+                          =MIN(amount*5%;2000)
+                          <p className="text-muted-foreground font-sans mt-1">5% capped at 2000</p>
+                        </div>
+                        <div className="rounded-md bg-muted p-2 font-mono text-xs">
+                          =MAX(amount*1%;500)
+                          <p className="text-muted-foreground font-sans mt-1">1% with a 500 floor</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
+            </div>
             <p className="mt-1 text-xs text-muted-foreground">
-              Select at least one pay method and enter a formula. Must include{" "}
-              <span className="font-mono">amount</span>.
+              Select at least one pay method and enter an Excel-style formula using{" "}
+              <span className="font-mono">amount</span> for the transaction value.
             </p>
           </div>
 
           {providersErrorMsg ? (
-            <div className="rounded-md border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+            <div className="rounded-md border border-destructive/20 bg-destructive/5 p-3 text-sm text-destructive">
               {providersErrorMsg}
             </div>
           ) : null}
 
-          {!payMethodsLoaded ? (
-            <div className="rounded-md border bg-muted/30 p-4 text-sm text-muted-foreground">
-              Click “Load pay methods” to display providers and pay methods.
-            </div>
-          ) : null}
-
-          {payMethodsLoaded && !selectedCountry ? (
-            <div className="rounded-md border bg-muted/30 p-4 text-sm text-muted-foreground">
-              Select a country to see pay methods.
-            </div>
-          ) : null}
-
-          {payMethodsLoaded && selectedCountry && providers.length === 0 ? (
+          {selectedCountry && providers.length === 0 ? (
             <div className="rounded-md border bg-muted/30 p-4 text-sm text-muted-foreground">
               No providers/pay methods available for this country.
             </div>
           ) : null}
 
-          {payMethodsLoaded &&
-            selectedCountry &&
+          {selectedCountry &&
             providers.map((p) => (
               <Card key={p.providerId} className="overflow-hidden">
                 <CardHeader className="bg-muted/40 py-4">
-                  <div>
-                    <div className="text-sm font-semibold">{p.providerName}</div>
-                    <div className="mt-1 font-mono text-xs text-muted-foreground">
-                      {p.providerId}
-                    </div>
-                  </div>
+                  <div className="text-sm font-semibold">{p.providerName}</div>
                 </CardHeader>
 
                 <CardContent className="grid gap-3 pt-6">
@@ -679,56 +777,39 @@ function FinanceParamsFields(props: {
                       return (
                         <div
                           key={m.payMethodId}
-                          className="grid gap-2 md:grid-cols-[auto_1fr_2fr] md:items-center"
+                          className={cn(
+                            "grid items-center gap-2",
+                            isSelected
+                              ? "md:grid-cols-[auto_1fr_2fr]"
+                              : "md:grid-cols-[auto_1fr]",
+                          )}
                         >
-                          <div className="pt-1">
-                            <Checkbox
-                              checked={isSelected}
-                              onCheckedChange={(checked) => {
-                                toggleMethod({
-                                  provider: p,
-                                  method: m,
-                                  checked: checked === true,
-                                });
-                              }}
-                            />
+                          <Checkbox
+                            checked={isSelected}
+                            onCheckedChange={(checked) => {
+                              toggleMethod({
+                                provider: p,
+                                method: m,
+                                checked: checked === true,
+                              });
+                            }}
+                          />
+
+                          <div className="text-sm font-medium">
+                            {m.payMethodName}
                           </div>
 
-                          <div>
-                            <div className="text-sm font-medium">
-                              {m.payMethodName}
-                            </div>
-                            <div className="font-mono text-xs text-muted-foreground">
-                              {m.payMethodId}
-                            </div>
-                          </div>
-
-                          <div className="grid gap-1">
-                            <div className="text-xs text-muted-foreground">
-                              Commission formula (required if selected)
-                            </div>
-
-                            {isSelected && formulaName ? (
-                              <>
-                                <Input
-                                  placeholder="e.g. amount * 0.03"
-                                  {...register(formulaName)}
-                                />
-                                {formulaError ? (
-                                  <p className="text-xs text-red-600">
-                                    {formulaError}
-                                  </p>
-                                ) : null}
-                              </>
-                            ) : (
+                          {isSelected && formulaName ? (
+                            <div className="grid gap-1">
                               <Input
-                                placeholder="e.g. amount * 0.03"
-                                disabled
-                                value=""
-                                readOnly
+                                placeholder="e.g. =amount*3%"
+                                {...register(formulaName)}
                               />
-                            )}
-                          </div>
+                              {formulaError ? (
+                                <FieldError>{formulaError}</FieldError>
+                              ) : null}
+                            </div>
+                          ) : null}
                         </div>
                       );
                     })}
@@ -742,8 +823,6 @@ function FinanceParamsFields(props: {
 }
 
 export default function ReportGeneratorRHF() {
-  const router = useRouter();
-
   const fromDefault = React.useMemo(
     () => formatLocalDatetimeValue(new Date(2026, 0, 1, 0, 0)),
     [],
@@ -805,6 +884,7 @@ export default function ReportGeneratorRHF() {
         countryId: "",
         earlyPayment: undefined,
         retention: undefined,
+        pending: undefined,
         providers: [],
       },
       { shouldDirty: false },
@@ -816,102 +896,78 @@ export default function ReportGeneratorRHF() {
   const merchantsQuery = useMerchants();
   const financeOptionsQuery = useMerchantFinanceOptions(merchantId);
 
-  function renderError(msg?: unknown) {
-    if (!msg || typeof msg !== "string") return null;
-    return <p className="text-xs text-red-600">{msg}</p>;
-  }
-
-  const onSubmit = handleSubmit(async (values) => {
-    const payload: CreateReportRequest = CreateReportRequestSchema.parse(values);
-    await createReportMutation.mutateAsync(payload);
-  });
+  const onSubmit = handleSubmit(
+    async (values) => {
+      const payload: CreateReportRequest = CreateReportRequestSchema.parse(values);
+      await createReportMutation.mutateAsync(payload);
+    },
+    (errors) => {
+      const messages = flattenErrors(errors as Record<string, unknown>);
+      toast.error("Please fix the following errors", {
+        description: messages.slice(0, 5).join("\n"),
+      });
+    },
+  );
 
   return (
-    <div className="min-h-screen">
-      <div className="fixed inset-x-0 top-0 z-50 border-b bg-background/80 backdrop-blur">
-        <div className="mx-auto flex items-center gap-2 px-4 py-3">
-          <Button
-            type="button"
-            variant="outline"
-            size="icon"
-            className="cursor-pointer"
-            aria-label="Go back"
-            onClick={() => router.back()}
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Button>
-
-          <Button
-            type="button"
-            className="cursor-pointer"
-            variant="outline"
-            size="icon"
-            aria-label="Home"
-            onClick={() => router.push("/")}
-          >
-            <Home className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-
-      <div className="mx-auto max-w-6xl px-4 pb-10 pt-20">
-        <header className="mb-5">
-          <h1 className="text-2xl font-semibold tracking-tight">
-            Report Generator
-          </h1>
-        </header>
-
+    <div>
+      <div className="mx-auto max-w-6xl pb-10">
         <FormProvider {...form}>
           <main className="grid gap-6">
             <Card>
               <CardHeader className="space-y-1">
-                <div className="grid gap-1">
-                  <div className="text-lg font-semibold">Create report</div>
-                  <div className="text-sm text-muted-foreground">
-                    Supported report types: approvalRate, finance
-                  </div>
-                </div>
+                <div className="text-lg font-semibold">Create report</div>
+                <CardDescription>
+                  Configure your report parameters below. Choose between an Approval Rate or Finance report type.
+                </CardDescription>
               </CardHeader>
 
               <CardContent>
                 <form onSubmit={onSubmit} className="grid gap-6">
                   <div className="grid gap-4 md:grid-cols-2">
                     <div className="grid gap-2">
-                      <Label>Report type</Label>
+                      <FieldLabel tooltip="Choose between Approval Rate (transaction success metrics) or Finance (settlement with commission formulas)">Report type</FieldLabel>
 
                       <Controller
                         control={control}
                         name="reportType"
                         render={({ field }) => (
-                          <Select
+                          <Tabs
                             value={field.value}
                             onValueChange={(v) => {
                               field.onChange(v);
-
                               if (v !== "finance") {
                                 unregisterReportParams();
                               }
                             }}
-                            disabled={createReportMutation.isPending}
                           >
-                            <SelectTrigger>
-                              <SelectValue placeholder="Select report type..." />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="approvalRate">
-                                approvalRate
-                              </SelectItem>
-                              <SelectItem value="finance">finance</SelectItem>
-                            </SelectContent>
-                          </Select>
+                            <TabsList className="w-full">
+                              <TabsTrigger
+                                value="approvalRate"
+                                disabled={createReportMutation.isPending}
+                                className="flex-1"
+                              >
+                                Approval Rate
+                              </TabsTrigger>
+                              <TabsTrigger
+                                value="finance"
+                                disabled={createReportMutation.isPending}
+                                className="flex-1"
+                              >
+                                Finance
+                              </TabsTrigger>
+                            </TabsList>
+                          </Tabs>
                         )}
                       />
 
-                      {renderError(formState.errors.reportType?.message)}
+                      {formState.errors.reportType?.message ? (
+                        <FieldError>{formState.errors.reportType.message}</FieldError>
+                      ) : null}
                     </div>
 
                     <div className="grid gap-2">
-                      <Label htmlFor="reportName">Report name</Label>
+                      <FieldLabel htmlFor="reportName" tooltip="A descriptive name for this report, shown in the reports list">Report name</FieldLabel>
                       <Input
                         id="reportName"
                         maxLength={120}
@@ -919,34 +975,34 @@ export default function ReportGeneratorRHF() {
                         {...register("reportName")}
                         disabled={createReportMutation.isPending}
                       />
-                      {renderError(formState.errors.reportName?.message)}
+                      {formState.errors.reportName?.message ? (
+                        <FieldError>{formState.errors.reportName.message}</FieldError>
+                      ) : null}
                     </div>
                   </div>
 
-                  <div className="grid gap-4 md:grid-cols-3">
+                  <div className="grid gap-4 md:grid-cols-2">
                     <DateTimePickerField
                       name="dateRange.from"
-                      label="From (Chile time)"
+                      label="From"
+                      tooltip="Start date/time for the report period"
                       defaultTime="00:00"
                       disabled={createReportMutation.isPending}
                     />
 
                     <DateTimePickerField
                       name="dateRange.to"
-                      label="To (Chile time)"
+                      label="To"
+                      tooltip="End date/time for the report period"
                       defaultTime="23:59"
                       disabled={createReportMutation.isPending}
                     />
+                  </div>
 
-                    <div className="grid gap-2">
-                      <Label htmlFor="timezone">Timezone</Label>
-                      <Input
-                        id="timezone"
-                        readOnly
-                        {...register("dateRange.timezone")}
-                      />
-                      {renderError(formState.errors.dateRange?.timezone?.message)}
-                    </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm text-muted-foreground">Timezone:</span>
+                    <Badge variant="secondary">America/Santiago</Badge>
+                    <input type="hidden" {...register("dateRange.timezone")} />
                   </div>
 
                   {isFinance ? (
@@ -957,11 +1013,12 @@ export default function ReportGeneratorRHF() {
                       financeOptions={financeOptionsQuery.data}
                       financeOptionsLoading={financeOptionsQuery.isLoading}
                       financeOptionsError={financeOptionsQuery.error}
-                      refetchFinanceOptions={() => financeOptionsQuery.refetch()}
                     />
                   ) : null}
 
-                  <div className="flex items-center gap-3">
+                  <Separator />
+
+                  <div className="flex items-center gap-4">
                     <Button
                       type="submit"
                       disabled={createReportMutation.isPending}
@@ -975,6 +1032,9 @@ export default function ReportGeneratorRHF() {
                         "Create report"
                       )}
                     </Button>
+                    <p className="text-xs text-muted-foreground">
+                      The report will be generated in the background and available in the reports list.
+                    </p>
                   </div>
                 </form>
               </CardContent>

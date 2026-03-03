@@ -48,6 +48,11 @@ function TransactionsChartFilters({
   payMethods,
   providers,
 }: TableFiltersProps) {
+  const { options: payMethodOptions, namesToIds, idsToNames } = React.useMemo(
+    () => toUniquePayMethodOptions(payMethods),
+    [payMethods]
+  )
+
   const [draftRange, setDraftRange] = React.useState<DateRange | undefined>()
 
   const committedRange: DateRange | undefined =
@@ -115,10 +120,10 @@ function TransactionsChartFilters({
     <div className="flex flex-wrap gap-2 transition-all">
       <MultiSelectCombobox
         label="PayMethod"
-        options={toOptions(payMethods, "id", "name")}
-        value={columnFilters.payMethodId || []}
-        onChange={(values) =>
-          setColumnFilters((prev) => ({ ...prev, payMethodId: values }))
+        options={payMethodOptions}
+        value={idsToNames(columnFilters.payMethodId || [])}
+        onChange={(names) =>
+          setColumnFilters((prev) => ({ ...prev, payMethodId: namesToIds(names) }))
         }
       />
 
