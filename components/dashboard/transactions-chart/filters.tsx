@@ -21,7 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { cn, toOptions } from "@/lib/utils"
+import { cn, toOptions, toUniquePayMethodOptions } from "@/lib/utils"
 import { Merchant } from "@/lib/types/merchant"
 import { Provider } from "@/lib/types/provider"
 import { PayMethod } from "@/lib/types/payMethod"
