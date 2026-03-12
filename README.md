@@ -1,4 +1,4 @@
-# Zippy Pay Frontend
+# Zippy Pay Operational Dashboard Frontend
 
 Next.js 15 dashboard application with React 19, Radix UI, and TanStack Query.
 
