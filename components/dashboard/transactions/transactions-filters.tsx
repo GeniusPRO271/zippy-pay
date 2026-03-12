@@ -134,7 +134,7 @@ function DebouncedInput({
   debounceMs?: number
 } & Omit<React.ComponentProps<"input">, "onChange">) {
   const [value, setValue] = React.useState(initialValue)
-  const timerRef = React.useRef<ReturnType<typeof setTimeout>>()
+  const timerRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined)
 
   React.useEffect(() => {
     setValue(initialValue)

@@ -58,7 +58,7 @@ export function validateExcelFormula(
       return { valid: false, error: "Formula produces non-finite result" };
     }
     return { valid: true };
-  } catch (e: any) {
-    return { valid: false, error: e?.message ?? "Invalid formula syntax" };
+  } catch (e: unknown) {
+    return { valid: false, error: e instanceof Error ? e.message : "Invalid formula syntax" };
   }
 }
