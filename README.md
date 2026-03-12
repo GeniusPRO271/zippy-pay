@@ -120,7 +120,6 @@ vercel
 Set environment variables in Vercel dashboard:
 - `NEXT_PUBLIC_API_URL`
 - `SESSION_SECRET`
-- `DATABASE_URL` (if using server-side DB queries)
 
 ## Project Structure
 
