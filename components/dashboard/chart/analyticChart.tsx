@@ -14,7 +14,6 @@ const chartConfig = {
 } satisfies ChartConfig
 
 function AnalyticChart({ chartData }: { chartData: ChartDataWeekly[] }) {
-  console.log("[DEBUG] CHART DATA: ", chartData)
   return (
     <ChartContainer config={chartConfig} className="h-[39px] w-full">
       <LineChart

@@ -37,10 +37,10 @@ export function AnalyticChart2(
           type="natural"
           fillOpacity={0}
           strokeWidth={2}
-          dot={({ payload, ...props }) => {
+          dot={({ index, ...props }) => {
             return (
               <Dot
-                key={payload.browser}
+                key={index}
                 r={3}
                 cx={props.cx}
                 cy={props.cy}

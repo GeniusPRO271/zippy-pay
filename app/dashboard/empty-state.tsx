@@ -1,7 +1,12 @@
-"use client"
+"use client";
 
-import { IconFolderCode, IconUpload } from "@tabler/icons-react"
-import { Button } from "@/components/ui/button"
+import {
+  IconFolderCode,
+  IconUpload,
+  IconDatabase,
+  IconAlertCircle,
+} from "@tabler/icons-react";
+import { Button } from "@/components/ui/button";
 import {
   Empty,
   EmptyContent,
@@ -9,43 +14,137 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from "@/components/ui/empty"
-import { BaseTransaction } from "@/lib/types/transaction"
+} from "@/components/ui/empty";
+import { BaseTransaction } from "@/lib/types/transaction";
+import { useState } from "react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Spinner } from "@/components/ui/spinner";
+import { useDashboardStats } from "@/hooks/statistics/useStats";
+import { DashboardStatsType } from "@/lib/types/statistics";
 
-export function EmptyState({ setTransactionsAction, setIsLoadingAction }: {
-  setTransactionsAction: React.Dispatch<React.SetStateAction<BaseTransaction[]>>, setIsLoadingAction: React.Dispatch<React.SetStateAction<boolean>>
+
+interface FirestoreTimestamp {
+  _seconds: number
+  _nanoseconds: number
+}
+
+
+function convertFirestoreTimestamp(obj: unknown): string | unknown {
+  if (!obj || typeof obj !== "object") return obj
+
+  const candidate = obj as FirestoreTimestamp
+  if (
+    typeof candidate._seconds === "number" &&
+    typeof candidate._nanoseconds === "number"
+  ) {
+    return new Date(
+      candidate._seconds * 1000 + candidate._nanoseconds / 1_000_000
+    ).toISOString()
+  }
+
+  return obj
+}
+
+function normalizeTransaction(t: Partial<BaseTransaction>): BaseTransaction {
+  return {
+    ...t,
+    dateRequest: convertFirestoreTimestamp(t.dateRequest) as string,
+  } as BaseTransaction
+}
+
+export function EmptyState({
+  setTransactionsAction,
+  setIsLoadingAction,
+}: {
+  setTransactionsAction: React.Dispatch<React.SetStateAction<DashboardStatsType | undefined>>;
+  setIsLoadingAction: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
+  const [error, setError] = useState<string | null>(null);
+  const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
 
-  const handleFileImport = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files
-    if (!files) return
+  const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
 
-    setIsLoadingAction(true)
-    const fileArray = Array.from(files)
-    let completed = 0
-    const imported: BaseTransaction[] = []
+    setError(null);
+    setIsLoadingAction(true);
+    setProgress({ current: 0, total: files.length });
 
-    fileArray.forEach((file) => {
-      const reader = new FileReader()
-      reader.onload = (e) => {
+    const fileArray = Array.from(files);
+    const allTransactions: BaseTransaction[] = [];
+
+    try {
+      for (let i = 0; i < fileArray.length; i++) {
+        const file = fileArray[i];
+        setProgress({ current: i + 1, total: fileArray.length });
+
         try {
-          const json = JSON.parse(e.target?.result as string)
-          const data: BaseTransaction[] = Array.isArray(json) ? json : [json]
-          imported.push(...data)
-        } catch (err) {
-          console.error(`[ERROR] Invalid JSON in file ${file.name}`, err)
-        } finally {
-          completed++
-          // Only update state once when ALL files are read
-          if (completed === fileArray.length) {
-            setTransactionsAction(imported)
-            setIsLoadingAction(false)
+          const transactions = await parseJSONFile(file);
+
+          const BATCH_SIZE = 1000;
+          for (let j = 0; j < transactions.length; j += BATCH_SIZE) {
+            const batch = transactions.slice(j, j + BATCH_SIZE);
+            allTransactions.push(...batch);
+
+            if (j + BATCH_SIZE < transactions.length) {
+              await new Promise((resolve) => setTimeout(resolve, 0));
+            }
           }
+        } catch (err) {
+          console.error(`[ERROR] Failed to parse ${file.name}:`, err);
+          setError(`Failed to parse ${file.name}. Please ensure it's valid JSON.`);
         }
       }
-      reader.readAsText(file)
-    })
-  }
+
+
+      if (allTransactions.length === 0 && fileArray.length > 0) {
+        setError("No valid transactions found in the uploaded files.");
+      }
+    } catch (_err) {
+      console.error("[ERROR] File import failed:", _err);
+      setError("An unexpected error occurred during import.");
+    } finally {
+      setIsLoadingAction(false);
+      setProgress(null);
+      event.target.value = "";
+    }
+  };
+
+  const parseJSONFile = async (file: File): Promise<BaseTransaction[]> => {
+    const text = await file.text();
+
+    try {
+      const parsed = JSON.parse(text);
+      const array = Array.isArray(parsed) ? parsed : [parsed];
+      const valid = array.filter((t) => t && typeof t === "object");
+
+      return valid.map(normalizeTransaction);
+    } catch {
+      try {
+        const lines = text.split("\n").filter((l) => l.trim());
+        const parsed = lines.map((l) => JSON.parse(l));
+        const valid = parsed.filter((t) => t && typeof t === "object");
+
+        return valid.map(normalizeTransaction);
+      } catch {
+        throw new Error(`Invalid JSON format in ${file.name}`);
+      }
+    }
+  };
+
+
+  const toDate = new Date();
+  const fromDate = new Date(toDate);
+  fromDate.setDate(toDate.getDate() - 30);
+
+  const { isLoading, refetch } = useDashboardStats({
+    merchantId: [],
+    providerId: [],
+    countryId: [],
+    payMethodId: [],
+    from: fromDate.toISOString(),
+    to: toDate.toISOString(),
+  });
 
   return (
     <Empty>
@@ -55,11 +154,25 @@ export function EmptyState({ setTransactionsAction, setIsLoadingAction }: {
         </EmptyMedia>
         <EmptyTitle>No Data Yet</EmptyTitle>
         <EmptyDescription>
-          You haven&apos;t imported any merchants data yet. Get started by importing a
-          your first project.
+          You haven&apos;t imported any transactions yet. Get started by importing your data or
+          load sample data.
         </EmptyDescription>
       </EmptyHeader>
+
       <EmptyContent>
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <IconAlertCircle className="h-4 w-4" />
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {progress && (
+          <div className="mb-4 text-sm text-muted-foreground">
+            Processing file {progress.current} of {progress.total}...
+          </div>
+        )}
+
         <div className="flex gap-2">
           <input
             type="file"
@@ -69,19 +182,27 @@ export function EmptyState({ setTransactionsAction, setIsLoadingAction }: {
             className="hidden"
             onChange={handleFileImport}
           />
-          <Button className={"cursor-pointer"} onClick={() => document.getElementById("file-input")?.click()}>
+
+          <Button onClick={() => document.getElementById("file-input")?.click()}>
             Import Data
             <IconUpload className="ml-2 h-4 w-4" />
           </Button>
+          <Button
+            variant="secondary"
+            disabled={isLoading}
+            onClick={() => {
+              refetch().then((result) => {
+                if (result.data) {
+                  setTransactionsAction(result.data)
+                }
+              })
+            }}
+          >
+            Load Real Data
+            {isLoading ? <Spinner /> : <IconDatabase className="ml-2 h-4 w-4" />}
+          </Button>
         </div>
       </EmptyContent>
-      <Button
-        variant="link"
-        asChild
-        className="text-muted-foreground"
-        size="sm"
-      >
-      </Button>
-    </Empty>
-  )
+    </Empty >
+  );
 }

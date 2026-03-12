@@ -16,7 +16,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-import { ChartDataItem } from "@/lib/types/transaction"
+import { ChartDataItem } from "@/lib/types/statistics"
 
 export const description = "A donut chart showing status distribution"
 
@@ -41,6 +41,7 @@ const chartConfig = {
 
 export default function AnalyticChart3({ data }: { data: ChartDataItem[] }) {
   const totalCount = React.useMemo(() => {
+    console.log(data)
     return data.reduce((acc, curr) => acc + curr.count, 0)
   }, [data])
 
@@ -70,6 +71,11 @@ export default function AnalyticChart3({ data }: { data: ChartDataItem[] }) {
               <Label
                 content={({ viewBox }) => {
                   if (viewBox && "cx" in viewBox && "cy" in viewBox) {
+                    const text = totalCount.toLocaleString()
+                    const baseFont = 28
+                    const length = text.length
+                    const fontSize = Math.max(8, baseFont - Math.max(0, (length - 6) * 2))
+
                     return (
                       <text
                         x={viewBox.cx}
@@ -80,14 +86,21 @@ export default function AnalyticChart3({ data }: { data: ChartDataItem[] }) {
                         <tspan
                           x={viewBox.cx}
                           y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
+                          style={{
+                            fill: "var(--foreground)",
+                            fontSize: `${fontSize}px`,
+                            fontWeight: 700,
+                          }}
                         >
-                          {totalCount.toLocaleString()}
+                          {text}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
+                          y={(viewBox.cy || 0) + fontSize * 0.9}
+                          style={{
+                            fill: "var(--muted-foreground)",
+                            fontSize: "12px",
+                          }}
                         >
                           Total Items
                         </tspan>
@@ -103,21 +116,21 @@ export default function AnalyticChart3({ data }: { data: ChartDataItem[] }) {
       <CardFooter className="flex-col gap-2 text-sm">
         <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1.5">
-            <CheckCircle2 className="h-4 w-4" style={{ color: '#2B9D90' }} />
+            <CheckCircle2 className="h-4 w-4" style={{ color: "#2B9D90" }} />
             <span className="font-medium">
-              {(data.find(d => d.status === 'success')?.count || 0).toLocaleString()} Success
+              {(data.find(d => d.status === "Success")?.count || 0).toLocaleString()} Success
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <Clock className="h-4 w-4" style={{ color: '#E8DE51' }} />
+            <Clock className="h-4 w-4" style={{ color: "#E8DE51" }} />
             <span className="font-medium">
-              {(data.find(d => d.status === 'pending')?.count || 0).toLocaleString()} Pending
+              {(data.find(d => d.status === "Pending")?.count || 0).toLocaleString()} Pending
             </span>
           </div>
           <div className="flex items-center gap-1.5">
-            <AlertCircle className="h-4 w-4" style={{ color: '#E76E50' }} />
+            <AlertCircle className="h-4 w-4" style={{ color: "#E76E50" }} />
             <span className="font-medium">
-              {(data.find(d => d.status === 'fail')?.count || 0).toLocaleString()} Fail
+              {(data.find(d => d.status === "Failed")?.count || 0).toLocaleString()} Fail
             </span>
           </div>
         </div>

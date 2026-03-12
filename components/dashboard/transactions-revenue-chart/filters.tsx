@@ -3,13 +3,15 @@ import { ColumnFiltersState, Table } from "@tanstack/react-table"
 import { MultiSelectCombobox } from "../table/filter-dropdown"
 import { Button } from "@/components/ui/button"
 import { IconX } from "@tabler/icons-react"
-import { toOptions } from "@/lib/utils"
+import { toOptions, toUniquePayMethodOptions } from "@/lib/utils"
+import { PayMethod } from "@/lib/types/payMethod"
+import { Country } from "@/lib/types/country"
 
 interface TableFiltersProps<TData> {
   table: Table<TData>
   columnFilters: ColumnFiltersState,
-  countries: string[]
-  payMethods: string[]
+  countries: Country[]
+  payMethods: PayMethod[]
 }
 
 function TransactionsChartFilters<TData>(
@@ -17,16 +19,12 @@ function TransactionsChartFilters<TData>(
   return (
     <div className="flex gap-2 transition-all">
       <MultiSelectCombobox
-        table={table}
-        columnId="payMethod"
         label="Method"
-        options={toOptions(payMethods)}
+        options={toUniquePayMethodOptions(payMethods).options}
       />
       <MultiSelectCombobox
-        table={table}
-        columnId="country"
         label="Country"
-        options={toOptions(countries)}
+        options={toOptions(countries, "id", "name")}
       />
       {columnFilters.length > 0 &&
         <Button onClick={() => { table.resetColumnFilters() }} className="text-sm" size={"sm"} variant={"ghost"}>

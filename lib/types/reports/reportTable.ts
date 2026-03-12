@@ -3,7 +3,7 @@ export interface ReportRecord {
   merchantName: string;
   reportType: "financial" | "resume";
   country: string;
-  status: 'queued' | 'processing' | 'done' | 'failed';
+  status: "queued" | "processing" | "done" | "failed";
   resultUrl: string;
   createdAt: string;
   updatedAt: string;

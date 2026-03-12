@@ -5,6 +5,10 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
+export function fromFirestoreObjectToDate(obj: { seconds: number; nanoseconds: number }): Date {
+  return new Date(obj.seconds * 1000 + obj.nanoseconds / 1_000_000);
+}
+
 export function luhnCheck(cardNumber: string): boolean {
   console.log("[DEBUG] CARD NUMBER BEFORE LUNCHECK: ", cardNumber)
   // remove non-digit characters just in case
@@ -57,19 +61,10 @@ export function validateRUT(rut: string): boolean {
     multiplier = multiplier < 7 ? multiplier + 1 : 2;
   }
 
-  console.log("[DEBUG]: Calculations:", calculations.join(", "));
-  console.log("[DEBUG]: Total sum:", sum);
-
   const expectedDV = 11 - (sum % 11);
-  let dvCalc = expectedDV === 11 ? "0" : expectedDV === 10 ? "K" : expectedDV.toString();
-
-  console.log("[DEBUG]: Expected check digit calculation: 11 - (" + sum + " % 11) = 11 - " + (sum % 11) + " = " + expectedDV);
-  console.log("[DEBUG]: Final calculated check digit:", dvCalc);
-  console.log("[DEBUG]: Provided check digit:", dv);
+  const dvCalc = expectedDV === 11 ? "0" : expectedDV === 10 ? "K" : expectedDV.toString();
 
   const isValid = dv === dvCalc;
-  console.log("[DEBUG]: Validation result:", isValid ? "VALID" : "INVALID");
-  console.log("[DEBUG]: ----------------------------------------");
 
   return isValid;
 }
@@ -88,9 +83,30 @@ export function maskEC(value: string): string {
   return value.replace(/\D/g, "").slice(0, 10);
 }
 
-export function toOptions(arr: string[]) {
+export type Option = {
+  value: string;
+  label: string;
+};
+
+export function toOptions<T>(arr: T[], valueField: keyof T, labelField: keyof T): Option[] {
   return arr.map((item) => ({
-    value: item,
-    label: item.charAt(0).toUpperCase() + item.slice(1),
-  }))
+    value: String(item[valueField]),   // Convert value to string
+    label: String(item[labelField]),   // Convert label to string
+  }));
 }
+
+export function toUniquePayMethodOptions(payMethods: { id: string; name: string }[]) {
+  const uniqueNames = [...new Set(payMethods.map(pm => pm.name))].sort()
+  const options: Option[] = uniqueNames.map(name => ({ value: name, label: name }))
+
+  const namesToIds = (names: string[]) =>
+    payMethods.filter(pm => names.includes(pm.name)).map(pm => pm.id)
+
+  const idsToNames = (ids: string[]) => {
+    const idSet = new Set(ids)
+    return [...new Set(payMethods.filter(pm => idSet.has(pm.id)).map(pm => pm.name))]
+  }
+
+  return { options, namesToIds, idsToNames }
+}
+

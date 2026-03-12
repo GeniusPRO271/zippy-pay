@@ -1,20 +1,19 @@
 import { Input } from "@/components/ui/input"
 import { ColumnFiltersState, Table } from "@tanstack/react-table"
 import { MultiSelectCombobox } from "./filter-dropdown"
-import { toOptions } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { IconX } from "@tabler/icons-react"
 
 interface TableFiltersProps<TData> {
   table: Table<TData>
-  globalFilter: any,
+  globalFilter: string[],
   columnFilters: ColumnFiltersState,
   countries: string[]
   payMethods: string[]
 }
 
 function TableFilters<TData>(
-  { table, globalFilter, countries, columnFilters, payMethods }: TableFiltersProps<TData>) {
+  { table, globalFilter, columnFilters }: TableFiltersProps<TData>) {
   return (
     <div className="flex gap-2 w-full">
       <Input
@@ -28,8 +27,6 @@ function TableFilters<TData>(
         className="max-w-sm h-8 font-sm"
       />
       <MultiSelectCombobox
-        table={table}
-        columnId="status"
         label="Status"
         options={[
           { value: "ok", label: "OK" },

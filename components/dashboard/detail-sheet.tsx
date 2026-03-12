@@ -4,7 +4,6 @@ import RawJsonBlock from "./raw-json-block";
 import { BaseTransaction } from "@/lib/types/transaction";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../ui/table";
 import { format } from "date-fns";
-import { timestampToDate } from "@/lib/analytics/utils";
 
 function DetailSheet({ children, data }: { children: ReactNode, data: BaseTransaction }) {
   return (
@@ -75,7 +74,7 @@ function DetailSheet({ children, data }: { children: ReactNode, data: BaseTransa
               <TableRow>
                 <TableCell className="font-medium">Date Requested</TableCell>
                 <TableCell>
-                  {format(timestampToDate(data.dateRequest), "dd/MM/yyyy hh:mm")}
+                  {format(data.dateRequest, "dd/MM/yyyy hh:mm")}
                 </TableCell>
               </TableRow>
             </TableBody>

@@ -1,65 +1,73 @@
-import { ReportRecord } from "../types/reports/reportTable";
-import { BaseTransaction } from "../types/transaction";
-import { FinalMerchantCommissionType } from "../zod/reportForm";
-import { ReportResumeType } from "../zod/reportResumeForm";
-
-const API_URL = 'http://localhost:3110';
-
-export interface CreateReportRequest {
-  reportType: 'financial' | 'resume';
-  application?: FinalMerchantCommissionType | ReportResumeType
-  transactions: BaseTransaction[];
-}
+import { AxiosError } from "axios"
+import { ReportRecord } from "../types/reports/reportTable"
+import { CreateReportSchemaType } from "../zod/createReport"
+import { axiosWithAuth } from "./config"
 
 export interface CreateReportResponse {
-  id: string;
-  status: string;
+  id: string
+  status: string
+}
+
+type ApiErrorResponse = {
+  error?: {
+    message?: string
+  }
 }
 
 export async function createReport(
-  payload: CreateReportRequest
+  payload: CreateReportSchemaType
 ): Promise<CreateReportResponse> {
-  const res = await fetch(`${API_URL}/reports`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
+  try {
+    const client = await axiosWithAuth()
+    const { data } = await client.post<CreateReportResponse>(
+      "/api/reports",
+      payload
+    )
+    return data
+  } catch (err) {
+    const error = err as AxiosError<ApiErrorResponse>
 
-  if (!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error?.message || `Failed to create report (${res.status})`);
+    const message =
+      error.response?.data?.error?.message ??
+      `Failed to create report (${error.response?.status})`
+
+    throw new Error(message)
   }
-
-  return res.json();
 }
-
 
 export async function getAllReports(): Promise<ReportRecord[]> {
-  const res = await fetch(`${API_URL}/reports`, {
-    headers: { Accept: 'application/json' },
-  });
-  if (!res.ok) throw new Error('Failed to fetch reports');
-  return res.json();
-}
+  try {
+    const client = await axiosWithAuth()
+    const { data } = await client.get<ReportRecord[]>("/api/reports")
+    return data
+  } catch (err) {
+    const error = err as AxiosError<ApiErrorResponse>
 
-export async function downloadReport(reportId: string): Promise<Blob> {
-  const res = await fetch(`${API_URL}/reports/${reportId}/download`, {
-    method: 'GET',
-  });
-
-  if (!res.ok) {
-    throw new Error(`Failed to download report: ${res.statusText}`);
+    throw new Error(
+      error.response?.data?.error?.message ?? "Failed to fetch reports"
+    )
   }
-
-  return await res.blob();
 }
 
-export async function downloadReportFile(reportId: string, fileName?: string) {
-  const blob = await downloadReport(reportId);
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = fileName || `report_${reportId}.xlsx`;
-  a.click();
-  URL.revokeObjectURL(url);
+export interface DownloadReportResponse {
+  url: string
+  fileName: string
+}
+
+export async function downloadReport(
+  reportId: string
+): Promise<DownloadReportResponse> {
+  try {
+    const client = await axiosWithAuth()
+    const { data } = await client.get<DownloadReportResponse>(
+      `/api/reports/${reportId}/download`
+    )
+    return data
+  } catch (err) {
+    const error = err as AxiosError<ApiErrorResponse>
+
+    throw new Error(
+      error.response?.data?.error?.message ?? "Failed to download report"
+    )
+  }
 }

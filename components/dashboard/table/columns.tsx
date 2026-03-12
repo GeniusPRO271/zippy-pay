@@ -1,14 +1,13 @@
 "use client"
 
 import { Badge } from "@/components/ui/badge"
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, Row } from "@tanstack/react-table"
 import { IconArrowDown, IconArrowUp, IconDotsVertical } from "@tabler/icons-react"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 import StatusBadge from "./statusBadge"
 import { format } from "date-fns"
 import { BaseTransaction } from "@/lib/types/transaction"
-import { generateGcpLogLink, timestampToDate } from "@/lib/analytics/utils"
 import DetailSheet from "../detail-sheet"
 import { STATUS_CONFIG } from "./statusConfig"
 
@@ -130,9 +129,9 @@ export const columns: ColumnDef<BaseTransaction>[] = [
     accessorKey: "dateRequest",
     enableHiding: false,
     enableSorting: true,
-    sortingFn: (rowA: any, rowB: any, columnId: string) => {
-      const dateA = timestampToDate(rowA.original[columnId])
-      const dateB = timestampToDate(rowB.original[columnId])
+    sortingFn: (rowA: Row<BaseTransaction>, rowB: Row<BaseTransaction>) => {
+      const dateA = new Date(rowA.original.dateRequest)
+      const dateB = new Date(rowB.original.dateRequest)
 
       const timeA = dateA?.getTime?.() ?? 0
       const timeB = dateB?.getTime?.() ?? 0
@@ -191,7 +190,7 @@ export const columns: ColumnDef<BaseTransaction>[] = [
     },
     cell: ({ row }) => (
       <div>
-        {format(timestampToDate(row.original.dateRequest), "dd/MM/yyyy hh:mm")}
+        {format(row.original.dateRequest, "dd/MM/yyyy hh:mm")}
       </div>
     )
   },
@@ -220,11 +219,6 @@ export const columns: ColumnDef<BaseTransaction>[] = [
               Details
             </DropdownMenuItem>
           </DetailSheet>
-          <DropdownMenuItem
-            onClick={() => window.open(generateGcpLogLink(row.original.id), "_blank")}
-          >
-            Check Logs
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu >
     ),

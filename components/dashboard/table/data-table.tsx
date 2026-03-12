@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
-import React, { useEffect, useState } from "react"
+import React, { useState } from "react"
 import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { IconAdjustmentsHorizontal } from "@tabler/icons-react"
 import { Separator } from "@/components/ui/separator"
@@ -42,7 +42,7 @@ export function DataTable<TData, TValue>({
 }: DataTableProps<TData, TValue>) {
 
   const [sorting, setSorting] = React.useState<SortingState>([])
-  const [globalFilter, setGlobalFilter] = useState<any>([])
+  const [globalFilter, setGlobalFilter] = useState<string[]>([])
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({

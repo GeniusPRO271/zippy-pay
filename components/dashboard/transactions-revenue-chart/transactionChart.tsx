@@ -1,8 +1,9 @@
 "use client"
+
 import React, { useMemo } from "react"
-import { ChartContainer } from "@/components/ui/chart"
 import { Area, AreaChart, CartesianGrid, XAxis, YAxis, Tooltip } from "recharts"
-import { ChartConfig, RevenueChartData } from "@/lib/analytics/utils"
+import { ChartContainer } from "@/components/ui/chart"
+import { ChartConfig, RevenueEntry } from "@/lib/types/statistics"
 
 export const description = "Revenue chart in USD"
 
@@ -24,12 +25,18 @@ const darkPalette = [
   "#22d3ee",
 ]
 
+type TransformedRevenueEntry = {
+  date: string
+  total: number
+  [key: string]: number | string
+}
+
 function TransactionChart({
   transactionsByDay,
   config,
   filter,
 }: {
-  transactionsByDay: RevenueChartData[]
+  transactionsByDay: RevenueEntry[]
   config: ChartConfig
   filter: Record<string, boolean>
 }) {
@@ -39,13 +46,30 @@ function TransactionChart({
     typeof window !== "undefined" &&
     document.documentElement.classList.contains("dark")
 
+  const transactionsByDayTransformed = useMemo(() => {
+    const grouped: Record<string, TransformedRevenueEntry> = {}
+
+    transactionsByDay.forEach(({ date, name, revenue }) => {
+      if (!grouped[date]) {
+        grouped[date] = { date, total: 0 }
+      }
+
+      grouped[date][name] = revenue
+      grouped[date].total += revenue
+    })
+
+    return Object.values(grouped)
+  }, [transactionsByDay])
+
   const palette = isDark ? darkPalette : lightPalette
 
   const colorMap = useMemo(() => {
     const map: Record<string, string> = { total: palette[0] }
+
     countries.forEach((country, index) => {
       map[country] = palette[(index + 1) % palette.length]
     })
+
     return map
   }, [countries, palette])
 
@@ -55,12 +79,10 @@ function TransactionChart({
 
   const totalShowState = filter?.total === true
 
-  console.log("totalState:", totalShowState)
-  console.log("filter revenue chart:", filter)
   return (
     <div className="flex flex-col items-center gap-4">
       <ChartContainer config={config} className="aspect-auto h-[250px] w-full">
-        <AreaChart data={transactionsByDay}>
+        <AreaChart data={transactionsByDayTransformed}>
           <defs>
             {Object.entries(colorMap).map(([key, color]) => (
               <linearGradient
@@ -109,47 +131,43 @@ function TransactionChart({
           <Tooltip
             cursor={false}
             content={({ active, payload, label }) => {
-              if (!active || !payload) return null
-              // Filter tooltip entries to match visible countries + total
+              if (!active || !payload || !label) return null
+
               const filteredPayload = payload.filter(
                 (entry) =>
                   entry.name === "total" ||
                   visibleCountries.includes(entry.name as string)
               )
+
               return (
                 <div className="rounded-lg border bg-background/90 p-2 shadow-md backdrop-blur-md">
-                  <p className="text-sm font-medium mb-1">
+                  <p className="mb-1 text-sm font-medium">
                     {new Date(label).toLocaleDateString("en-US", {
                       month: "short",
                       day: "numeric",
                       year: "numeric",
                     })}
                   </p>
-                  {filteredPayload.map((entry) => {
-                    const color = colorMap[entry.name as string]
-                    return (
-                      <div
-                        key={entry.name}
-                        className="flex items-center gap-2 text-sm"
-                      >
-                        <span
-                          className="h-2 w-2 rounded-full"
-                        />
-                        <span className="font-medium">{entry.name}:</span>
-                        <span>
-                          {new Intl.NumberFormat("en-US", {
-                            style: "currency",
-                            currency: "USD",
-                          }).format(entry.value as number)}
-                        </span>
-                      </div>
-                    )
-                  })}
+
+                  {filteredPayload.map((entry) => (
+                    <div
+                      key={entry.name}
+                      className="flex items-center gap-2 text-sm"
+                    >
+                      <span className="h-2 w-2 rounded-full" />
+                      <span className="font-medium">{entry.name}:</span>
+                      <span>
+                        {new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(entry.value as number)}
+                      </span>
+                    </div>
+                  ))}
                 </div>
               )
             }}
           />
-
 
           {totalShowState && (
             <Area
@@ -161,35 +179,30 @@ function TransactionChart({
               stackId="b"
             />
           )}
-          {
-            visibleCountries.map((country) => (
-              <Area
-                key={country}
-                dataKey={country}
-                type="natural"
-                fill={`url(#fill-${country})`}
-                stroke={colorMap[country]}
-                strokeWidth={2}
-                stackId={country}
-              />
-            ))
-          }
+
+          {visibleCountries.map((country) => (
+            <Area
+              key={country}
+              dataKey={country}
+              type="natural"
+              fill={`url(#fill-${country})`}
+              stroke={colorMap[country]}
+              strokeWidth={2}
+              stackId={country}
+            />
+          ))}
         </AreaChart>
       </ChartContainer>
 
       <div className="flex flex-wrap justify-center gap-4 text-sm">
         <div className="flex items-center gap-2">
-          <span
-            className="h-3 w-3 rounded"
-          ></span>
+          <span className="h-3 w-3 rounded" />
           <span className="font-medium">Total</span>
         </div>
 
         {visibleCountries.map((country) => (
           <div key={country} className="flex items-center gap-2">
-            <span
-              className="h-3 w-3 rounded"
-            ></span>
+            <span className="h-3 w-3 rounded" />
             <span className="font-medium">{country}</span>
           </div>
         ))}
